@@ -13,8 +13,10 @@ function Layout() {
 
   return (
     <>
-      <Paper sx={{ pb: '50px', minHeight: '100vh' }}>
-        <Outlet />
+      <Paper sx={{ pb: '50px', minHeight: '100vh', display: 'flex' }}>
+        <Box sx={{ flex: 1 }}>
+          <Outlet />
+        </Box>
       </Paper>
       <AppBar position='fixed' color='primary' sx={{ top: 'auto', bottom: 0 }}>
         <Toolbar>

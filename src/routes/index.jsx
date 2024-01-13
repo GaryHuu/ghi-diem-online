@@ -1,6 +1,7 @@
 import Layout from '@/components/Layout'
 import { createBrowserRouter } from 'react-router-dom'
 import HomePage from '@/pages/HomePage'
+import { ROUTES } from './constants'
 
 const router = createBrowserRouter([
   {
@@ -8,13 +9,13 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: '/',
+        path: ROUTES.HOME,
         element: <HomePage />,
       },
 
       {
-        path: '/foo',
-        element: <div>foo</div>,
+        path: ROUTES.CREATE_NEW_GAME,
+        element: <div>New Game</div>,
       },
       {
         path: '/bar',
