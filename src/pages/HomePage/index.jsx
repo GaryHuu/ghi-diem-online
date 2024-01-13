@@ -23,8 +23,8 @@ function HomePage() {
       <Stack justifyContent='center' alignItems='center' spacing={1}>
         <img
           style={{
-            width: '60%',
-            maxWidth: '550px',
+            width: '65%',
+            maxWidth: '350px',
             borderRadius: '16px',
           }}
           src={BannerHome}
