@@ -14,7 +14,7 @@ function Layout() {
   return (
     <>
       <Paper
-        sx={{ pb: '50px', minHeight: 'calc(100vh - 50px)', display: 'flex' }}
+        sx={{ pb: '50px', minHeight: '100vh', display: 'flex' }}
       >
         <Box sx={{ flex: 1 }}>
           <Outlet />

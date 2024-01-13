@@ -1,4 +1,4 @@
 export const ROUTES = {
   HOME: '/',
-  CREATE_NEW_GAME: '/create-new-game',
+  CREATE_NEW_GAME: '/create-a-new-game',
 }

@@ -41,13 +41,24 @@ function HomePage() {
       </Stack>
       <Stack spacing={1}>
         <Button
+          sx={{
+            borderRadius: '50px',
+          }}
+          size='large'
           variant='contained'
           startIcon={<AddIcon />}
           onClick={handleStartNewGameClick}
         >
           Bắt Đầu
         </Button>
-        <Button variant='outlined' startIcon={<ArrowRightIcon />}>
+        <Button
+          sx={{
+            borderRadius: '50px',
+          }}
+          size='large'
+          variant='outlined'
+          startIcon={<ArrowRightIcon />}
+        >
           Tiếp tục
         </Button>
       </Stack>

@@ -1,6 +1,7 @@
 import Layout from '@/components/Layout'
-import { createBrowserRouter } from 'react-router-dom'
+import CreatingPage from '@/pages/CreatingPage'
 import HomePage from '@/pages/HomePage'
+import { createBrowserRouter } from 'react-router-dom'
 import { ROUTES } from './constants'
 
 const router = createBrowserRouter([
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
 
       {
         path: ROUTES.CREATE_NEW_GAME,
-        element: <div>New Game</div>,
+        element: <CreatingPage />,
       },
       {
         path: '/bar',
