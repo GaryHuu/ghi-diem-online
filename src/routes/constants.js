@@ -1,4 +1,5 @@
 export const ROUTES = {
   HOME: '/',
-  CREATE_NEW_GAME: '/create-a-new-game',
+  CREATE_NEW_MATCH: '/match/create',
+  MATCH: '/match/:id',
 }

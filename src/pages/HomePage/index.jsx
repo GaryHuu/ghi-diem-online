@@ -5,12 +5,13 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useNavigate } from 'react-router-dom'
+import ListingMatchesDialog from '@/components/ListingMatchesDialog'
 
 function HomePage() {
   const navigate = useNavigate()
 
   const handleStartNewGameClick = () => {
-    navigate(ROUTES.CREATE_NEW_GAME)
+    navigate(ROUTES.CREATE_NEW_MATCH)
   }
 
   return (
@@ -41,9 +42,6 @@ function HomePage() {
       </Stack>
       <Stack spacing={1}>
         <Button
-          sx={{
-            borderRadius: '50px',
-          }}
           size='large'
           variant='contained'
           startIcon={<AddIcon />}
@@ -51,16 +49,15 @@ function HomePage() {
         >
           Bắt Đầu
         </Button>
-        <Button
-          sx={{
-            borderRadius: '50px',
-          }}
-          size='large'
-          variant='outlined'
-          startIcon={<ArrowRightIcon />}
-        >
-          Tiếp tục
-        </Button>
+        <ListingMatchesDialog>
+          <Button
+            size='large'
+            variant='outlined'
+            startIcon={<ArrowRightIcon />}
+          >
+            Tiếp tục
+          </Button>
+        </ListingMatchesDialog>
       </Stack>
     </Stack>
   )

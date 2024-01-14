@@ -15,7 +15,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: ROUTES.CREATE_NEW_GAME,
+        path: ROUTES.CREATE_NEW_MATCH,
         element: <CreatingPage />,
       },
       {
