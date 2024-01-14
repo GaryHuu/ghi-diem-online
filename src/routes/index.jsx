@@ -13,14 +13,13 @@ const router = createBrowserRouter([
         path: ROUTES.HOME,
         element: <HomePage />,
       },
-
       {
         path: ROUTES.CREATE_NEW_MATCH,
         element: <CreatingPage />,
       },
       {
-        path: '/bar',
-        element: <div>foo</div>,
+        path: ROUTES.MATCH,
+        element: <div>Đang code phần này...</div>,
       },
     ],
   },
