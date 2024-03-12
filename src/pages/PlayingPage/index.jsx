@@ -1,9 +1,15 @@
+import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
-import { getMatchByID } from '@/db'
+import { createNewPlayerOfMatch, getMatchByID, getPlayersOfMatch } from '@/db'
+import AddIcon from '@mui/icons-material/Add'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { Box, Stack, Typography } from '@mui/material'
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { renamePlayerOfMatch } from '@/db'
+import { toast } from 'react-toastify'
 
 const Header = ({ match }) => {
   return (
@@ -21,7 +27,7 @@ const Header = ({ match }) => {
           fontWeight: 'bold',
         }}
       >
-        Bàn: {match?.name}
+        Trận đấu: {match?.name}
       </Typography>
       <Typography
         sx={{
@@ -29,7 +35,7 @@ const Header = ({ match }) => {
           fontWeight: 'bold',
         }}
       >
-        Ván: 12
+        Ván: 1
       </Typography>
     </Stack>
   )
@@ -42,7 +48,7 @@ Header.propTypes = {
   }),
 }
 
-const Player = ({ name = '' }) => {
+const Player = ({ name = '', onRename = () => {} }) => {
   return (
     <Stack
       direction='row'
@@ -59,7 +65,10 @@ const Player = ({ name = '' }) => {
             whiteSpace: 'nowrap',
             fontWeight: 'bold',
             fontSize: '15px',
+            cursor: 'pointer',
+            userSelect: 'none',
           }}
+          onClick={onRename}
         >
           {name}
         </Typography>
@@ -91,9 +100,20 @@ const Player = ({ name = '' }) => {
 
 Player.propTypes = {
   name: PropTypes.string,
+  onRename: PropTypes.func,
 }
 
-const Players = () => {
+const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
+  const creatingPlayerDialog = useRef(null)
+
+  const handleCreateNewPlayer = (name, playerID) => {
+    onCreateNewPlayer(name, playerID)
+  }
+
+  const handleRenamePlayer = (player) => () => {
+    creatingPlayerDialog.current?.editPlayerName(player)
+  }
+
   return (
     <Stack
       gap='1rem'
@@ -101,16 +121,73 @@ const Players = () => {
         padding: '1rem',
       }}
     >
-      <Player name='Will Smith' />
-      <Player name='Michelle Obama' />
-      <Player name='Leonardo DiCaprio' />
+      {players.length === 0 && (
+        <Typography
+          textAlign='center'
+          p={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+          }}
+        >
+          <SentimentVeryDissatisfiedIcon />
+          Bạn chưa bất kỳ người chơi nào. <br /> Vui lòng tạo bằng cách ấn nút
+          bên dưới
+        </Typography>
+      )}
+      {players.map((player) => (
+        <Player
+          key={player.id}
+          name={player.name}
+          onRename={handleRenamePlayer(player)}
+        />
+      ))}
+      <CreatingPlayerDialog
+        ref={creatingPlayerDialog}
+        onSubmit={handleCreateNewPlayer}
+      >
+        <Button variant='contained' size='small'>
+          <AddIcon />
+        </Button>
+      </CreatingPlayerDialog>
     </Stack>
   )
 }
 
+Players.propTypes = {
+  players: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      id: PropTypes.number,
+    })
+  ),
+  onCreateNewPlayer: PropTypes.func,
+}
+
 function PlayingPage() {
   const { id } = useParams()
-  const match = getMatchByID(id)
+  const [players, setPlayers] = useState(getPlayersOfMatch(id))
+  const match = useMemo(() => getMatchByID(id), [id])
+
+  const handleCreateNewPlayer = (name, playerID) => {
+    let response
+    const isRename = !!playerID
+
+    if (isRename) {
+      response = renamePlayerOfMatch(match.id, playerID, name)
+    } else {
+      response = createNewPlayerOfMatch(match.id, name)
+    }
+
+    if (!response) {
+      toast.error('Tên người chơi đã tồn tại')
+    }
+
+    setPlayers(getPlayersOfMatch(match.id))
+  }
 
   return (
     <Box
@@ -119,7 +196,7 @@ function PlayingPage() {
       }}
     >
       <Header match={match} />
-      <Players />
+      <Players players={players} onCreateNewPlayer={handleCreateNewPlayer} />
     </Box>
   )
 }

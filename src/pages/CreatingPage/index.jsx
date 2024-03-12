@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField'
 import { useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
-const MIN_LENGTH = 3
+const MIN_LENGTH = 2
 const MAX_LENGTH = 16
 
 function CreatingPage() {

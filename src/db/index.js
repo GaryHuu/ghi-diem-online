@@ -18,6 +18,9 @@ export const createNewMatch = (name = '') => {
       JSON.stringify([newMatch, ...myCurrentMatches])
     )
 
+    // Set Default Players
+    localStorage.setItem(newId, JSON.stringify([]))
+
     return newMatch
   } catch (error) {
     console.error(error)
@@ -57,9 +60,74 @@ export const deleteTheMatch = (id) => {
 
     localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify(newMatches))
 
+    localStorage.removeItem(id)
+
     return newMatches
   } catch (error) {
     console.error(error)
     return []
+  }
+}
+
+export const getPlayersOfMatch = (id) => {
+  try {
+    const players = JSON.parse(localStorage.getItem(id)) || []
+    return players
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
+export const createNewPlayerOfMatch = (matchID, name = '') => {
+  try {
+    const newId = dayjs().valueOf()
+    const newPlayer = {
+      id: newId,
+      name,
+    }
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+
+    const existPlayerName = !!currentPlayers.find(
+      (player) => player.name === name
+    )
+
+    if (existPlayerName) {
+      return null
+    }
+
+    localStorage.setItem(
+      matchID,
+      JSON.stringify([...currentPlayers, newPlayer])
+    )
+
+    return newPlayer
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+export const renamePlayerOfMatch = (matchID, playerID, name = '') => {
+  try {
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+    const existPlayerName = !!currentPlayers.find(
+      (player) => player.name === name && player.id !== playerID
+    )
+
+    if (existPlayerName) {
+      return null
+    }
+
+    const index = currentPlayers.findIndex((player) => player.id === playerID)
+
+    currentPlayers[index].name = name
+
+    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
+
+    return currentPlayers
+  } catch (error) {
+    console.error(error)
+    return null
   }
 }
