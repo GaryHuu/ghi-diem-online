@@ -45,23 +45,20 @@ Header.propTypes = {
 const Player = ({ name = '' }) => {
   return (
     <Stack
-      gap='1rem'
+      direction='row'
+      justifyContent='space-between'
       sx={{
         padding: '1rem',
         border: `1.5px solid #1976d2`,
         borderRadius: '0.5rem',
       }}
     >
-      <Stack
-        direction='row'
-        gap='1rem'
-        alignItems='center'
-        justifyContent='space-between'
-      >
+      <Stack gap='0.5rem'>
         <Typography
           sx={{
             whiteSpace: 'nowrap',
             fontWeight: 'bold',
+            fontSize: '15px',
           }}
         >
           {name}
@@ -79,7 +76,7 @@ const Player = ({ name = '' }) => {
             }}
           >
             <Box>{`(`}</Box>
-            <ArrowUpwardIcon sx={{ height: '18px', marginLeft: '-4px' }} />
+            <ArrowUpwardIcon sx={{ height: '16px', marginLeft: '-4px' }} />
             <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
               3
             </Typography>
