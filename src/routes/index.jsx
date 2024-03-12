@@ -1,6 +1,7 @@
 import Layout from '@/components/Layout'
 import CreatingPage from '@/pages/CreatingPage'
 import HomePage from '@/pages/HomePage'
+import PlayingPage from '@/pages/PlayingPage'
 import { createBrowserRouter } from 'react-router-dom'
 import { ROUTES } from './constants'
 
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.MATCH,
-        element: <div>Đang code phần này...</div>,
+        element: <PlayingPage />,
       },
     ],
   },

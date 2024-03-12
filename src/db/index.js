@@ -37,6 +37,18 @@ export const getAllMatches = () => {
   }
 }
 
+export const getMatchByID = (id) => {
+  try {
+    const myCurrentMatches =
+      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
+
+    return myCurrentMatches.find((item) => item.id === +id)
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
 export const deleteTheMatch = (id) => {
   try {
     const myCurrentMatches =
