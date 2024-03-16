@@ -1,4 +1,4 @@
-import { createNewMatch } from '@/db'
+import db from '@/db'
 import { ROUTES } from '@/routes/constants'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -35,7 +35,7 @@ function CreatingPage() {
       return
     }
 
-    const newMatch = createNewMatch(name)
+    const newMatch = db.createNewMatch(name)
 
     if (newMatch) {
       const path = generatePath(ROUTES.MATCH, { id: newMatch.id })

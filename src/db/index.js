@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 
 const MY_IDS_OF_MATCHES = 'MY_IDS_OF_MATCHES'
 
-export const createNewMatch = (name = '') => {
+const createNewMatch = (name = '') => {
   try {
     const newId = dayjs().valueOf()
     const newMatch = {
@@ -28,7 +28,7 @@ export const createNewMatch = (name = '') => {
   }
 }
 
-export const getAllMatches = () => {
+const getAllMatches = () => {
   try {
     const myCurrentMatches =
       JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
@@ -40,7 +40,7 @@ export const getAllMatches = () => {
   }
 }
 
-export const getMatchByID = (id) => {
+const getMatchByID = (id) => {
   try {
     const myCurrentMatches =
       JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
@@ -52,7 +52,7 @@ export const getMatchByID = (id) => {
   }
 }
 
-export const deleteTheMatch = (id) => {
+const deleteTheMatch = (id) => {
   try {
     const myCurrentMatches =
       JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
@@ -69,7 +69,7 @@ export const deleteTheMatch = (id) => {
   }
 }
 
-export const getPlayersOfMatch = (id) => {
+const getPlayersOfMatch = (id) => {
   try {
     const players = JSON.parse(localStorage.getItem(id)) || []
     return players
@@ -79,7 +79,7 @@ export const getPlayersOfMatch = (id) => {
   }
 }
 
-export const createNewPlayerOfMatch = (matchID, name = '') => {
+const createNewPlayerOfMatch = (matchID, name = '') => {
   try {
     const newId = dayjs().valueOf()
     const newPlayer = {
@@ -96,15 +96,13 @@ export const createNewPlayerOfMatch = (matchID, name = '') => {
       return null
     }
 
-    let numberGamesPlayed = 0
+    let numberGamesPlayed = 1
 
     if (currentPlayers?.length !== 0) {
       numberGamesPlayed = currentPlayers?.[0]?.scores?.length
     }
 
-    newPlayer.scores = numberGamesPlayed
-      ? new Array(numberGamesPlayed).fill(0)
-      : []
+    newPlayer.scores = new Array(numberGamesPlayed).fill(0)
 
     localStorage.setItem(
       matchID,
@@ -118,7 +116,7 @@ export const createNewPlayerOfMatch = (matchID, name = '') => {
   }
 }
 
-export const renamePlayerOfMatch = (matchID, playerID, name = '') => {
+const renamePlayerOfMatch = (matchID, playerID, name = '') => {
   try {
     const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
     const existPlayerName = !!currentPlayers.find(
@@ -142,12 +140,12 @@ export const renamePlayerOfMatch = (matchID, playerID, name = '') => {
   }
 }
 
-export const getCurrentMatch = (matchID) => {
+const getCurrentGameNumber = (matchID) => {
   try {
     const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
 
     if (currentPlayers?.length !== 0) {
-      return currentPlayers?.[0]?.scores?.length + 1
+      return currentPlayers?.[0]?.scores?.length
     }
 
     return 1
@@ -155,4 +153,39 @@ export const getCurrentMatch = (matchID) => {
     console.error(error)
     return 1
   }
+}
+
+const changeScorePlayerOfMatch = (matchID, playerID, gameNumber, score) => {
+  try {
+    console.log({
+      matchID,
+      playerID,
+      gameNumber,
+      score,
+    })
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+
+    const index = currentPlayers.findIndex((player) => player.id === playerID)
+
+    currentPlayers[index].scores[gameNumber - 1] = score
+
+    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
+
+    return currentPlayers
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+export default {
+  createNewMatch,
+  getAllMatches,
+  getMatchByID,
+  deleteTheMatch,
+  getPlayersOfMatch,
+  createNewPlayerOfMatch,
+  renamePlayerOfMatch,
+  getCurrentGameNumber,
+  changeScorePlayerOfMatch,
 }

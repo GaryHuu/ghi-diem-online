@@ -1,5 +1,5 @@
 import ConfirmModal from '@/components/ConfirmModal'
-import { deleteTheMatch, getAllMatches } from '@/db'
+import db from '@/db'
 import { stringAvatar } from '@/helper'
 import { ROUTES } from '@/routes/constants'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -26,7 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 })
 
 function ListingMatchesDialog({ children }) {
-  const [matches, setMatches] = useState(getAllMatches())
+  const [matches, setMatches] = useState(db.getAllMatches())
   const confirmActionRef = useRef(null)
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
@@ -39,7 +39,7 @@ function ListingMatchesDialog({ children }) {
 
   const handleDelete = (id) => {
     confirmActionRef.current.confirm(() => {
-      const newList = deleteTheMatch(id)
+      const newList = db.deleteTheMatch(id)
       setMatches(newList)
     })
   }

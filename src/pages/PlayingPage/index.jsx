@@ -1,24 +1,19 @@
 import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
-import {
-  createNewPlayerOfMatch,
-  getMatchByID,
-  getPlayersOfMatch,
-  getCurrentMatch,
-} from '@/db'
+import db from '@/db'
 import AddIcon from '@mui/icons-material/Add'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { renamePlayerOfMatch } from '@/db'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
+import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp'
 
-const Header = ({ match, currentMatch }) => {
+const Header = ({ match, currentGameNumber }) => {
   return (
     <Stack
       alignItems='center'
@@ -32,6 +27,7 @@ const Header = ({ match, currentMatch }) => {
         left: 0,
         right: 0,
         backgroundColor: '#FFF',
+        zIndex: 2,
       }}
     >
       <Typography
@@ -51,7 +47,7 @@ const Header = ({ match, currentMatch }) => {
             fontWeight: 'bold',
           }}
         >
-          Ván: {currentMatch}
+          Ván: {currentGameNumber}
         </Typography>
         <IconButton>
           <KeyboardArrowRightIcon color='primary' />
@@ -62,21 +58,30 @@ const Header = ({ match, currentMatch }) => {
 }
 
 Header.propTypes = {
-  currentMatch: PropTypes.number,
+  currentGameNumber: PropTypes.number,
   match: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
   }),
 }
 
-const Player = ({ name = '', onRename = () => {} }) => {
-  const [score, setScore] = useState(0)
-
+const Player = ({
+  name = '',
+  onRename = () => {},
+  scores = [],
+  currentGameNumber = 0,
+  onScoreChange = () => {},
+}) => {
   const handleScoreChange = (newValue) => {
-    console.log('newValue', newValue)
-
-    setScore(newValue)
+    onScoreChange(newValue)
   }
+
+  const total = scores.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  )
+
+  const increasingTrendValue = scores[currentGameNumber - 2] || 0
 
   return (
     <Stack
@@ -102,27 +107,45 @@ const Player = ({ name = '', onRename = () => {} }) => {
           {name}
         </Typography>
         <Stack direction='row' gap='0.25rem'>
-          <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-            Điểm: 12
-          </Typography>
-          <Stack
-            direction='row'
-            alignItems='center'
+          <Typography
             sx={{
-              color: '#008000',
+              fontWeight: 'bold',
               fontSize: '14px',
+              color: total > 0 ? '#008000' : '#D32F2F',
             }}
           >
-            <Box>{`(`}</Box>
-            <ArrowUpwardIcon sx={{ height: '16px', marginLeft: '-4px' }} />
-            <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-              3
-            </Typography>
-            <Box>{`)`}</Box>
-          </Stack>
+            Điểm: {total}
+          </Typography>
+          {currentGameNumber === 1 && (
+            <Stack
+              direction='row'
+              alignItems='center'
+              sx={{
+                color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
+                fontSize: '14px',
+              }}
+            >
+              <Box>{`(`}</Box>
+              {increasingTrendValue >= 0 && (
+                <ArrowUpwardIcon sx={{ height: '16px', marginLeft: '-4px' }} />
+              )}
+              {increasingTrendValue < 0 && (
+                <ArrowDownwardSharpIcon
+                  sx={{ height: '16px', marginLeft: '-4px' }}
+                />
+              )}
+              <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                {increasingTrendValue}
+              </Typography>
+              <Box>{`)`}</Box>
+            </Stack>
+          )}
         </Stack>
       </Stack>
-      <InputScore value={score} onChange={handleScoreChange} />
+      <InputScore
+        value={scores[currentGameNumber - 1]}
+        onChange={handleScoreChange}
+      />
     </Stack>
   )
 }
@@ -130,9 +153,18 @@ const Player = ({ name = '', onRename = () => {} }) => {
 Player.propTypes = {
   name: PropTypes.string,
   onRename: PropTypes.func,
+  scores: PropTypes.arrayOf(PropTypes.number),
+  currentGameNumber: PropTypes.number,
+  onScoreChange: PropTypes.func,
 }
 
-const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
+const Players = ({
+  players = [],
+  onCreateNewPlayer = () => {},
+  currentGameNumber,
+  onScorePlayerChange = () => {},
+}) => {
+  const location = useLocation()
   const creatingPlayerDialog = useRef(null)
 
   const handleCreateNewPlayer = (name, playerID) => {
@@ -142,6 +174,17 @@ const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
   const handleRenamePlayer = (player) => () => {
     creatingPlayerDialog.current?.editPlayerName(player)
   }
+
+  const handleScorePlayerChange = (playerID) => (newValue) => {
+    onScorePlayerChange(playerID, newValue)
+  }
+
+  useLayoutEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }, [location.pathname])
 
   return (
     <Stack pt='74px'>
@@ -172,7 +215,10 @@ const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
           <Player
             key={player.id}
             name={player.name}
+            scores={player.scores}
+            currentGameNumber={currentGameNumber}
             onRename={handleRenamePlayer(player)}
+            onScoreChange={handleScorePlayerChange(player.id)}
           />
         ))}
         <CreatingPlayerDialog
@@ -196,29 +242,38 @@ Players.propTypes = {
     })
   ),
   onCreateNewPlayer: PropTypes.func,
+  currentGameNumber: PropTypes.number,
+  onScorePlayerChange: PropTypes.func,
 }
 
 function PlayingPage() {
   const { id } = useParams()
-  const [players, setPlayers] = useState(getPlayersOfMatch(id))
-  const match = useMemo(() => getMatchByID(id), [id])
-  const [currentMatch, setCurrentMatch] = useState(getCurrentMatch(id))
+  const [players, setPlayers] = useState(db.getPlayersOfMatch(id))
+  const match = useMemo(() => db.getMatchByID(id), [id])
+  const [currentGameNumber, setCurrentGameNumber] = useState(
+    db.getCurrentGameNumber(id)
+  )
 
   const handleCreateNewPlayer = (name, playerID) => {
     let response
     const isRename = !!playerID
 
     if (isRename) {
-      response = renamePlayerOfMatch(match.id, playerID, name)
+      response = db.renamePlayerOfMatch(match.id, playerID, name)
     } else {
-      response = createNewPlayerOfMatch(match.id, name)
+      response = db.createNewPlayerOfMatch(match.id, name)
     }
 
     if (!response) {
       toast.error('Tên người chơi đã tồn tại')
     }
 
-    setPlayers(getPlayersOfMatch(match.id))
+    setPlayers(db.getPlayersOfMatch(match.id))
+  }
+
+  const handleScorePlayerChange = (playerID, score) => {
+    db.changeScorePlayerOfMatch(id, playerID, currentGameNumber, score)
+    setPlayers(db.getPlayersOfMatch(match.id))
   }
 
   return (
@@ -227,8 +282,13 @@ function PlayingPage() {
         color: '#1976d2',
       }}
     >
-      <Header match={match} currentMatch={currentMatch} />
-      <Players players={players} onCreateNewPlayer={handleCreateNewPlayer} />
+      <Header match={match} currentGameNumber={currentGameNumber} />
+      <Players
+        players={players}
+        onCreateNewPlayer={handleCreateNewPlayer}
+        currentGameNumber={currentGameNumber}
+        onScorePlayerChange={handleScorePlayerChange}
+      />
     </Box>
   )
 }
