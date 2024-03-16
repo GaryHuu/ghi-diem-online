@@ -13,10 +13,8 @@ function Layout() {
 
   return (
     <>
-      <Paper
-        sx={{ pb: '50px', minHeight: '100vh', display: 'flex' }}
-      >
-        <Box sx={{ flex: 1 }}>
+      <Paper sx={{ pb: '56px', minHeight: '100vh', display: 'flex' }}>
+        <Box sx={{ flex: 1, overflowY: 'auto' }}>
           <Outlet />
         </Box>
       </Paper>

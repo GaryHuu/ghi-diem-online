@@ -20,6 +20,11 @@ const Header = ({ match }) => {
       sx={{
         padding: '1rem',
         borderBottom: '2px solid #CCC',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#FFF',
       }}
     >
       <Typography
@@ -49,6 +54,14 @@ Header.propTypes = {
 }
 
 const Player = ({ name = '', onRename = () => {} }) => {
+  const [score, setScore] = useState(0)
+
+  const handleScoreChange = (newValue) => {
+    console.log('newValue', newValue)
+
+    setScore(newValue)
+  }
+
   return (
     <Stack
       direction='row'
@@ -93,7 +106,7 @@ const Player = ({ name = '', onRename = () => {} }) => {
           </Stack>
         </Stack>
       </Stack>
-      <InputScore />
+      <InputScore value={score} onChange={handleScoreChange} />
     </Stack>
   )
 }
@@ -115,44 +128,46 @@ const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
   }
 
   return (
-    <Stack
-      gap='1rem'
-      sx={{
-        padding: '1rem',
-      }}
-    >
-      {players.length === 0 && (
-        <Typography
-          textAlign='center'
-          p={3}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px',
-          }}
-        >
-          <SentimentVeryDissatisfiedIcon />
-          Bạn chưa bất kỳ người chơi nào. <br /> Vui lòng tạo bằng cách ấn nút
-          bên dưới
-        </Typography>
-      )}
-      {players.map((player) => (
-        <Player
-          key={player.id}
-          name={player.name}
-          onRename={handleRenamePlayer(player)}
-        />
-      ))}
-      <CreatingPlayerDialog
-        ref={creatingPlayerDialog}
-        onSubmit={handleCreateNewPlayer}
+    <Stack pt='58px'>
+      <Stack
+        gap='1rem'
+        sx={{
+          padding: '1rem',
+        }}
       >
-        <Button variant='contained' size='small'>
-          <AddIcon />
-        </Button>
-      </CreatingPlayerDialog>
+        {players.length === 0 && (
+          <Typography
+            textAlign='center'
+            p={3}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '4px',
+            }}
+          >
+            <SentimentVeryDissatisfiedIcon />
+            Bạn chưa bất kỳ người chơi nào. <br /> Vui lòng tạo bằng cách ấn nút
+            bên dưới
+          </Typography>
+        )}
+        {players.map((player) => (
+          <Player
+            key={player.id}
+            name={player.name}
+            onRename={handleRenamePlayer(player)}
+          />
+        ))}
+        <CreatingPlayerDialog
+          ref={creatingPlayerDialog}
+          onSubmit={handleCreateNewPlayer}
+        >
+          <Button variant='contained' size='small'>
+            <AddIcon />
+          </Button>
+        </CreatingPlayerDialog>
+      </Stack>
     </Stack>
   )
 }

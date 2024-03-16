@@ -96,6 +96,16 @@ export const createNewPlayerOfMatch = (matchID, name = '') => {
       return null
     }
 
+    let numberGamesPlayed = 0
+
+    if (currentPlayers?.length !== 0) {
+      numberGamesPlayed = currentPlayers?.[0]?.scores?.length
+    }
+
+    newPlayer.scores = numberGamesPlayed
+      ? new Array(numberGamesPlayed).fill(0)
+      : []
+
     localStorage.setItem(
       matchID,
       JSON.stringify([...currentPlayers, newPlayer])
