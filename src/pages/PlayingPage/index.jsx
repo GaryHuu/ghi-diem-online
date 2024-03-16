@@ -1,17 +1,24 @@
 import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
-import { createNewPlayerOfMatch, getMatchByID, getPlayersOfMatch } from '@/db'
+import {
+  createNewPlayerOfMatch,
+  getMatchByID,
+  getPlayersOfMatch,
+  getCurrentMatch,
+} from '@/db'
 import AddIcon from '@mui/icons-material/Add'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { renamePlayerOfMatch } from '@/db'
 import { toast } from 'react-toastify'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 
-const Header = ({ match }) => {
+const Header = ({ match, currentMatch }) => {
   return (
     <Stack
       alignItems='center'
@@ -34,19 +41,28 @@ const Header = ({ match }) => {
       >
         Trận đấu: {match?.name}
       </Typography>
-      <Typography
-        sx={{
-          fontSize: '14px',
-          fontWeight: 'bold',
-        }}
-      >
-        Ván: 1
-      </Typography>
+      <Stack alignItems='center' direction='row' gap='0.5rem'>
+        <IconButton>
+          <KeyboardArrowLeftIcon color='primary' />
+        </IconButton>
+        <Typography
+          sx={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+          }}
+        >
+          Ván: {currentMatch}
+        </Typography>
+        <IconButton>
+          <KeyboardArrowRightIcon color='primary' />
+        </IconButton>
+      </Stack>
     </Stack>
   )
 }
 
 Header.propTypes = {
+  currentMatch: PropTypes.number,
   match: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
@@ -128,7 +144,7 @@ const Players = ({ players = [], onCreateNewPlayer = () => {} }) => {
   }
 
   return (
-    <Stack pt='58px'>
+    <Stack pt='74px'>
       <Stack
         gap='1rem'
         sx={{
@@ -186,6 +202,7 @@ function PlayingPage() {
   const { id } = useParams()
   const [players, setPlayers] = useState(getPlayersOfMatch(id))
   const match = useMemo(() => getMatchByID(id), [id])
+  const [currentMatch, setCurrentMatch] = useState(getCurrentMatch(id))
 
   const handleCreateNewPlayer = (name, playerID) => {
     let response
@@ -210,7 +227,7 @@ function PlayingPage() {
         color: '#1976d2',
       }}
     >
-      <Header match={match} />
+      <Header match={match} currentMatch={currentMatch} />
       <Players players={players} onCreateNewPlayer={handleCreateNewPlayer} />
     </Box>
   )

@@ -141,3 +141,18 @@ export const renamePlayerOfMatch = (matchID, playerID, name = '') => {
     return null
   }
 }
+
+export const getCurrentMatch = (matchID) => {
+  try {
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+
+    if (currentPlayers?.length !== 0) {
+      return currentPlayers?.[0]?.scores?.length + 1
+    }
+
+    return 1
+  } catch (error) {
+    console.error(error)
+    return 1
+  }
+}
