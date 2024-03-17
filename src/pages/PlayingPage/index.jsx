@@ -311,7 +311,7 @@ const Player = ({
           >
             Điểm: {total}
           </Typography>
-          {currentGameNumber !== 1 && (
+          {currentGameNumber !== 1 && !isFinished && (
             <Stack
               direction='row'
               alignItems='center'
