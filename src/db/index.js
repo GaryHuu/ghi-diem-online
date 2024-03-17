@@ -157,12 +157,6 @@ const getCurrentGameNumber = (matchID) => {
 
 const changeScorePlayerOfMatch = (matchID, playerID, gameNumber, score) => {
   try {
-    console.log({
-      matchID,
-      playerID,
-      gameNumber,
-      score,
-    })
     const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
 
     const index = currentPlayers.findIndex((player) => player.id === playerID)
@@ -178,6 +172,39 @@ const changeScorePlayerOfMatch = (matchID, playerID, gameNumber, score) => {
   }
 }
 
+const calculateTotalScoreValid = (matchID, gameNumber) => {
+  try {
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+    const scores = []
+
+    currentPlayers.forEach((player) => {
+      scores.push(player?.scores?.[gameNumber - 1])
+    })
+
+    const total = scores.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue
+    }, 0)
+
+    return total === 0
+  } catch (error) {
+    return false
+  }
+}
+
+const createANewGameNumber = (matchID) => {
+  try {
+    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+
+    currentPlayers.forEach((player) => {
+      player.scores.push(0)
+    })
+
+    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
+  } catch (error) {
+    return []
+  }
+}
+
 export default {
   createNewMatch,
   getAllMatches,
@@ -188,4 +215,6 @@ export default {
   renamePlayerOfMatch,
   getCurrentGameNumber,
   changeScorePlayerOfMatch,
+  calculateTotalScoreValid,
+  createANewGameNumber,
 }

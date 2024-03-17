@@ -12,8 +12,15 @@ import PropTypes from 'prop-types'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants'
 
-const Header = ({ match, currentGameNumber }) => {
+const Header = ({
+  match,
+  currentGameNumber,
+  onContinuePlay = () => {},
+  onPreviousPreview = () => {},
+  onNextPreview = () => {},
+}) => {
   const isEnableFinish = useMemo(() => {
     return db.getCurrentGameNumber(match.id) === currentGameNumber
   }, [currentGameNumber, match.id])
@@ -52,7 +59,7 @@ const Header = ({ match, currentGameNumber }) => {
         </Typography>
         <Stack direction='row' alignItems='center' gap='2px'>
           {currentGameNumber !== 1 && (
-            <IconButton sx={{ padding: 0 }}>
+            <IconButton sx={{ padding: 0 }} onClick={onPreviousPreview}>
               <KeyboardArrowLeftIcon color='primary' />
             </IconButton>
           )}
@@ -65,7 +72,7 @@ const Header = ({ match, currentGameNumber }) => {
             Ván: {currentGameNumber}
           </Typography>
           {isEnablePreviewNext && (
-            <IconButton sx={{ padding: 0 }}>
+            <IconButton sx={{ padding: 0 }} onClick={onNextPreview}>
               <KeyboardArrowRightIcon color='primary' />
             </IconButton>
           )}
@@ -73,7 +80,7 @@ const Header = ({ match, currentGameNumber }) => {
       </Stack>
       <Stack alignItems='center' direction='row' gap='0.5rem'>
         {isEnableContinue && (
-          <Button variant='outlined'>
+          <Button variant='outlined' onClick={onContinuePlay}>
             <Typography
               sx={{
                 fontSize: '13px',
@@ -108,6 +115,9 @@ Header.propTypes = {
     name: PropTypes.string,
     id: PropTypes.number,
   }),
+  onContinuePlay: PropTypes.func,
+  onNextPreview: PropTypes.func,
+  onPreviousPreview: PropTypes.func,
 }
 
 const Player = ({
@@ -300,6 +310,29 @@ function PlayingPage() {
     db.getCurrentGameNumber(id)
   )
 
+  const handleContinuePlay = () => {
+    if (players?.length < MIN_PLAYERS_OF_MATCH) {
+      toast.error(
+        `Số lượng người chơi phải ít nhất ${MIN_PLAYERS_OF_MATCH} người`
+      )
+      return
+    }
+
+    const isValid = db.calculateTotalScoreValid(
+      match.id,
+      db.getCurrentGameNumber(id)
+    )
+
+    if (!isValid) {
+      toast.error('Tổng số điểm của 1 ván phải bằng 0')
+      return
+    }
+
+    db.createANewGameNumber(match.id)
+    setPlayers(db.getPlayersOfMatch(match.id))
+    setCurrentGameNumber(db.getCurrentGameNumber(id))
+  }
+
   const handleCreateNewPlayer = (name, playerID) => {
     let response
     const isRename = !!playerID
@@ -322,13 +355,30 @@ function PlayingPage() {
     setPlayers(db.getPlayersOfMatch(match.id))
   }
 
+  const handleChangeCurrentGameNumber = (newValue) => () => {
+    const isValid = db.calculateTotalScoreValid(match.id, currentGameNumber)
+
+    if (!isValid) {
+      toast.error('Tổng số điểm của 1 ván phải bằng 0')
+      return
+    }
+
+    setCurrentGameNumber(newValue)
+  }
+
   return (
     <Box
       sx={{
         color: '#1976d2',
       }}
     >
-      <Header match={match} currentGameNumber={currentGameNumber} />
+      <Header
+        match={match}
+        currentGameNumber={currentGameNumber}
+        onContinuePlay={handleContinuePlay}
+        onPreviousPreview={handleChangeCurrentGameNumber(currentGameNumber - 1)}
+        onNextPreview={handleChangeCurrentGameNumber(currentGameNumber + 1)}
+      />
       <Players
         players={players}
         onCreateNewPlayer={handleCreateNewPlayer}
