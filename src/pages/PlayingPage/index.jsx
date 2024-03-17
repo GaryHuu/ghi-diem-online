@@ -1,19 +1,134 @@
+import ConfirmModal from '@/components/ConfirmModal'
 import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
 import db from '@/db'
+import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants'
 import AddIcon from '@mui/icons-material/Add'
 import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import CloseIcon from '@mui/icons-material/Close'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
+import SportsScoreRoundedIcon from '@mui/icons-material/SportsScoreRounded'
+import { stringAvatar } from '@/helper'
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Slide,
+  Stack,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import PropTypes from 'prop-types'
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants'
-import ConfirmModal from '@/components/ConfirmModal'
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />
+})
+
+const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
+  const listLeader = useMemo(() => {
+    const items = []
+
+    players.forEach((player) => {
+      items.push({
+        id: player.id,
+        name: player.name,
+        total: player.scores.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          0
+        ),
+      })
+    })
+
+    return items.sort((a, b) => -a.total + b.total)
+  }, [players])
+
+  return (
+    <Dialog
+      onClose={onClose}
+      open={isOpen}
+      TransitionComponent={Transition}
+      scroll='paper'
+      fullScreen
+    >
+      <AppBar sx={{ position: 'fixed' }}>
+        <Toolbar>
+          <IconButton
+            edge='start'
+            color='inherit'
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
+            Bảng xếp hạng
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <List sx={{ padding: '1rem', pt: 'calc(56px + 1rem)' }}>
+        {listLeader.map((player, index) => (
+          <ListItem
+            disablePadding
+            key={player.id}
+            sx={{
+              mb: '1rem',
+            }}
+          >
+            <Typography sx={{ mr: '1rem', fontWeight: 'bold' }}>
+              Top {index + 1}:
+            </Typography>
+            <ListItemAvatar>
+              <Avatar {...stringAvatar(player.name)} />
+            </ListItemAvatar>
+            <ListItemText
+              sx={{
+                m: '0',
+                '.MuiListItemText-primary': {
+                  fontWeight: 'bold',
+                },
+                '.MuiListItemText-secondary': {
+                  fontWeight: 'bold',
+                },
+              }}
+              primary={player.name}
+              secondary={`Tổng: ${player.total}`}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Dialog>
+  )
+}
+
+LeaderBoard.propTypes = {
+  players: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      id: PropTypes.number,
+    })
+  ),
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+}
 
 const Header = ({
   match,
@@ -21,6 +136,8 @@ const Header = ({
   onContinuePlay = () => {},
   onPreviousPreview = () => {},
   onNextPreview = () => {},
+  onFinish = () => {},
+  onShowResult = () => {},
 }) => {
   const isEnableFinish = useMemo(() => {
     return db.getCurrentGameNumber(match.id) === currentGameNumber
@@ -80,7 +197,7 @@ const Header = ({
         </Stack>
       </Stack>
       <Stack alignItems='center' direction='row' gap='0.5rem'>
-        {isEnableContinue && (
+        {isEnableContinue && !match.isFinished && (
           <Button variant='outlined' onClick={onContinuePlay}>
             <Typography
               sx={{
@@ -93,8 +210,8 @@ const Header = ({
           </Button>
         )}
 
-        {isEnableFinish && (
-          <Button variant='contained'>
+        {isEnableFinish && !match.isFinished && (
+          <Button variant='contained' onClick={onFinish}>
             <Typography
               sx={{
                 fontSize: '13px',
@@ -102,6 +219,22 @@ const Header = ({
               }}
             >
               Kết thúc
+            </Typography>
+          </Button>
+        )}
+        {match.isFinished && (
+          <Button
+            variant='outlined'
+            onClick={onShowResult}
+            startIcon={<SportsScoreRoundedIcon />}
+          >
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 'bold',
+              }}
+            >
+              Kết quả
             </Typography>
           </Button>
         )}
@@ -115,10 +248,13 @@ Header.propTypes = {
   match: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
+    isFinished: PropTypes.bool,
   }),
   onContinuePlay: PropTypes.func,
   onNextPreview: PropTypes.func,
   onPreviousPreview: PropTypes.func,
+  onFinish: PropTypes.func,
+  onShowResult: PropTypes.func,
 }
 
 const Player = ({
@@ -128,6 +264,7 @@ const Player = ({
   currentGameNumber = 0,
   onScoreChange = () => {},
   onAutoFill = () => {},
+  isFinished = false,
 }) => {
   const handleScoreChange = (newValue) => {
     onScoreChange(newValue)
@@ -202,22 +339,22 @@ const Player = ({
       </Stack>
       <Stack gap='0.25rem'>
         <InputScore
+          disabled={isFinished}
           value={scores[currentGameNumber - 1]}
           onChange={handleScoreChange}
         />
-        <Typography
-          onClick={onAutoFill}
-          sx={{
-            fontSize: '14px',
-            textAlign: 'center',
-            cursor: 'pointer',
-            '&:hover': {
-              textDecoration: 'underline',
-            },
-          }}
-        >
-          Tự động điền
-        </Typography>
+        {!isFinished && (
+          <Typography
+            onClick={onAutoFill}
+            sx={{
+              fontSize: '14px',
+              textAlign: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            Tự động điền
+          </Typography>
+        )}
       </Stack>
     </Stack>
   )
@@ -230,9 +367,11 @@ Player.propTypes = {
   currentGameNumber: PropTypes.number,
   onScoreChange: PropTypes.func,
   onAutoFill: PropTypes.func,
+  isFinished: PropTypes.bool,
 }
 
 const Players = ({
+  match,
   players = [],
   onCreateNewPlayer = () => {},
   currentGameNumber,
@@ -246,6 +385,8 @@ const Players = ({
   }
 
   const handleRenamePlayer = (player) => () => {
+    if (match.isFinished) return
+
     creatingPlayerDialog.current?.editPlayerName(player)
   }
 
@@ -305,16 +446,19 @@ const Players = ({
             onRename={handleRenamePlayer(player)}
             onScoreChange={handleScorePlayerChange(player.id)}
             onAutoFill={handleAutoFill(player.id)}
+            isFinished={match.isFinished}
           />
         ))}
-        <CreatingPlayerDialog
-          ref={creatingPlayerDialog}
-          onSubmit={handleCreateNewPlayer}
-        >
-          <Button variant='contained' size='small' startIcon={<AddIcon />}>
-            Thêm người chơi
-          </Button>
-        </CreatingPlayerDialog>
+        {!match.isFinished && (
+          <CreatingPlayerDialog
+            ref={creatingPlayerDialog}
+            onSubmit={handleCreateNewPlayer}
+          >
+            <Button variant='contained' size='small' startIcon={<AddIcon />}>
+              Thêm người chơi
+            </Button>
+          </CreatingPlayerDialog>
+        )}
       </Stack>
     </Stack>
   )
@@ -327,16 +471,22 @@ Players.propTypes = {
       id: PropTypes.number,
     })
   ),
+  match: PropTypes.shape({
+    name: PropTypes.string,
+    id: PropTypes.number,
+    isFinished: PropTypes.bool,
+  }),
   onCreateNewPlayer: PropTypes.func,
   currentGameNumber: PropTypes.number,
   onScorePlayerChange: PropTypes.func,
 }
 
 function PlayingPage() {
+  const [isShowLeaderBoard, setIsShowLeaderBoard] = useState(false)
   const confirmActionRef = useRef(null)
   const { id } = useParams()
   const [players, setPlayers] = useState(db.getPlayersOfMatch(id))
-  const match = useMemo(() => db.getMatchByID(id), [id])
+  const [match, setMatch] = useState(db.getMatchByID(id))
   const [currentGameNumber, setCurrentGameNumber] = useState(
     db.getCurrentGameNumber(id)
   )
@@ -399,6 +549,60 @@ function PlayingPage() {
     setCurrentGameNumber(newValue)
   }
 
+  const handleFinishMatch = () => {
+    if (players?.length < MIN_PLAYERS_OF_MATCH) {
+      toast.error(
+        `Số lượng người chơi phải ít nhất ${MIN_PLAYERS_OF_MATCH} người`
+      )
+      return
+    }
+
+    const isValid = db.calculateTotalScoreValid(
+      match.id,
+      db.getCurrentGameNumber(id)
+    )
+
+    if (!isValid) {
+      toast.error('Tổng số điểm của 1 ván phải bằng 0')
+      return
+    }
+
+    const response = db.calculateTotalScoreValidToFinish(match.id)
+
+    if (!response) {
+      toast.error('Something went wrong!')
+      return
+    }
+
+    const { isValid: isValidTotal, gameNumbersInvalid } = response
+
+    if (!isValidTotal) {
+      toast.error(
+        `Tổng số điểm của ván ${gameNumbersInvalid.join(', ')} phải bằng 0`
+      )
+
+      return
+    }
+
+    confirmActionRef.current.confirm(() => {
+      setIsShowLeaderBoard(true)
+      db.finishTheMatch(match.id)
+      setMatch(db.getMatchByID(match.id))
+    })
+  }
+
+  const handleLeaderBoardClose = () => {
+    setIsShowLeaderBoard(false)
+  }
+
+  const handleShowResult = () => {
+    setIsShowLeaderBoard(true)
+  }
+
+  useEffect(() => {
+    setIsShowLeaderBoard(match.isFinished)
+  }, [match.isFinished])
+
   return (
     <Box
       sx={{
@@ -411,14 +615,22 @@ function PlayingPage() {
         onContinuePlay={handleContinuePlay}
         onPreviousPreview={handleChangeCurrentGameNumber(currentGameNumber - 1)}
         onNextPreview={handleChangeCurrentGameNumber(currentGameNumber + 1)}
+        onFinish={handleFinishMatch}
+        onShowResult={handleShowResult}
       />
       <Players
+        match={match}
         players={players}
         onCreateNewPlayer={handleCreateNewPlayer}
         currentGameNumber={currentGameNumber}
         onScorePlayerChange={handleScorePlayerChange}
       />
       <ConfirmModal ref={confirmActionRef} />
+      <LeaderBoard
+        players={players}
+        isOpen={isShowLeaderBoard}
+        onClose={handleLeaderBoardClose}
+      />
     </Box>
   )
 }
