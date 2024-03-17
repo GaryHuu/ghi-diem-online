@@ -2,6 +2,7 @@ import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
 import db from '@/db'
 import AddIcon from '@mui/icons-material/Add'
+import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
@@ -11,12 +12,22 @@ import PropTypes from 'prop-types'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp'
 
 const Header = ({ match, currentGameNumber }) => {
+  const isEnableFinish = useMemo(() => {
+    return db.getCurrentGameNumber(match.id) === currentGameNumber
+  }, [currentGameNumber, match.id])
+
+  const isEnablePreviewNext = useMemo(() => {
+    return db.getCurrentGameNumber(match.id) > currentGameNumber
+  }, [currentGameNumber, match.id])
+
+  const isEnableContinue = useMemo(() => {
+    return db.getCurrentGameNumber(match.id) === currentGameNumber
+  }, [currentGameNumber, match.id])
+
   return (
     <Stack
-      alignItems='center'
       justifyContent='space-between'
       direction='row'
       sx={{
@@ -30,28 +41,62 @@ const Header = ({ match, currentGameNumber }) => {
         zIndex: 2,
       }}
     >
-      <Typography
-        sx={{
-          fontWeight: 'bold',
-        }}
-      >
-        Trận đấu: {match?.name}
-      </Typography>
-      <Stack alignItems='center' direction='row' gap='0.5rem'>
-        <IconButton>
-          <KeyboardArrowLeftIcon color='primary' />
-        </IconButton>
+      <Stack gap='2px'>
         <Typography
           sx={{
-            fontSize: '14px',
             fontWeight: 'bold',
+            fontSize: '15px',
           }}
         >
-          Ván: {currentGameNumber}
+          Trận: {match?.name}
         </Typography>
-        <IconButton>
-          <KeyboardArrowRightIcon color='primary' />
-        </IconButton>
+        <Stack direction='row' alignItems='center' gap='2px'>
+          {currentGameNumber !== 1 && (
+            <IconButton sx={{ padding: 0 }}>
+              <KeyboardArrowLeftIcon color='primary' />
+            </IconButton>
+          )}
+          <Typography
+            sx={{
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+          >
+            Ván: {currentGameNumber}
+          </Typography>
+          {isEnablePreviewNext && (
+            <IconButton sx={{ padding: 0 }}>
+              <KeyboardArrowRightIcon color='primary' />
+            </IconButton>
+          )}
+        </Stack>
+      </Stack>
+      <Stack alignItems='center' direction='row' gap='0.5rem'>
+        {isEnableContinue && (
+          <Button variant='outlined'>
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 'bold',
+              }}
+            >
+              Chơi tiếp
+            </Typography>
+          </Button>
+        )}
+
+        {isEnableFinish && (
+          <Button variant='contained'>
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 'bold',
+              }}
+            >
+              Kết thúc
+            </Typography>
+          </Button>
+        )}
       </Stack>
     </Stack>
   )
@@ -71,7 +116,6 @@ const Player = ({
   scores = [],
   currentGameNumber = 0,
   onScoreChange = () => {},
-  onDoubleClick = () => {},
 }) => {
   const handleScoreChange = (newValue) => {
     onScoreChange(newValue)
@@ -85,73 +129,70 @@ const Player = ({
   const increasingTrendValue = scores[currentGameNumber - 2] || 0
 
   return (
-    <div onDoubleClick={onDoubleClick}>
-      <Stack
-        direction='row'
-        justifyContent='space-between'
-        sx={{
-          padding: '1rem',
-          border: `1.5px solid #1976d2`,
-          borderRadius: '0.5rem',
-        }}
-      >
-        <Stack gap='0.5rem'>
+    <Stack
+      direction='row'
+      justifyContent='space-between'
+      sx={{
+        padding: '1rem',
+        border: `1.5px solid #1976d2`,
+        borderRadius: '0.5rem',
+      }}
+    >
+      <Stack gap='0.5rem'>
+        <Typography
+          sx={{
+            whiteSpace: 'nowrap',
+            fontWeight: 'bold',
+            fontSize: '15px',
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+          onClick={onRename}
+        >
+          {name}
+        </Typography>
+        <Stack direction='row' gap='0.25rem'>
           <Typography
             sx={{
-              whiteSpace: 'nowrap',
               fontWeight: 'bold',
-              fontSize: '15px',
-              cursor: 'pointer',
-              userSelect: 'none',
+              fontSize: '14px',
+              color:
+                total >= 0 ? (total === 0 ? '#1976D2' : '#008000') : '#D32F2F',
             }}
-            onClick={onRename}
           >
-            {name}
+            Điểm: {total}
           </Typography>
-          <Stack direction='row' gap='0.25rem'>
-            <Typography
+          {currentGameNumber !== 1 && (
+            <Stack
+              direction='row'
+              alignItems='center'
               sx={{
-                fontWeight: 'bold',
+                color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
                 fontSize: '14px',
-                color: total >= 0 ? '#008000' : '#D32F2F',
               }}
             >
-              Điểm: {total}
-            </Typography>
-            {currentGameNumber !== 1 && (
-              <Stack
-                direction='row'
-                alignItems='center'
-                sx={{
-                  color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
-                  fontSize: '14px',
-                }}
-              >
-                <Box>{`(`}</Box>
-                {increasingTrendValue >= 0 && (
-                  <ArrowUpwardIcon
-                    sx={{ height: '16px', marginLeft: '-4px' }}
-                  />
-                )}
-                {increasingTrendValue < 0 && (
-                  <ArrowDownwardSharpIcon
-                    sx={{ height: '16px', marginLeft: '-4px' }}
-                  />
-                )}
-                <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                  {increasingTrendValue}
-                </Typography>
-                <Box>{`)`}</Box>
-              </Stack>
-            )}
-          </Stack>
+              <Box>{`(`}</Box>
+              {increasingTrendValue >= 0 && (
+                <ArrowUpwardIcon sx={{ height: '16px', marginLeft: '-4px' }} />
+              )}
+              {increasingTrendValue < 0 && (
+                <ArrowDownwardSharpIcon
+                  sx={{ height: '16px', marginLeft: '-4px' }}
+                />
+              )}
+              <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                {increasingTrendValue}
+              </Typography>
+              <Box>{`)`}</Box>
+            </Stack>
+          )}
         </Stack>
-        <InputScore
-          value={scores[currentGameNumber - 1]}
-          onChange={handleScoreChange}
-        />
       </Stack>
-    </div>
+      <InputScore
+        value={scores[currentGameNumber - 1]}
+        onChange={handleScoreChange}
+      />
+    </Stack>
   )
 }
 
@@ -161,7 +202,6 @@ Player.propTypes = {
   scores: PropTypes.arrayOf(PropTypes.number),
   currentGameNumber: PropTypes.number,
   onScoreChange: PropTypes.func,
-  onDoubleClick: PropTypes.func,
 }
 
 const Players = ({
@@ -185,10 +225,6 @@ const Players = ({
     onScorePlayerChange(playerID, newValue)
   }
 
-  const handlePlayerDoubleClick = (playerID) => () => {
-    onScorePlayerChange(playerID, 999)
-  }
-
   useLayoutEffect(() => {
     window.scrollTo({
       top: 0,
@@ -197,7 +233,7 @@ const Players = ({
   }, [location.pathname])
 
   return (
-    <Stack pt='74px'>
+    <Stack pt='80px'>
       <Stack
         gap='1rem'
         sx={{
@@ -229,7 +265,6 @@ const Players = ({
             currentGameNumber={currentGameNumber}
             onRename={handleRenamePlayer(player)}
             onScoreChange={handleScorePlayerChange(player.id)}
-            onDoubleClick={handlePlayerDoubleClick(player.id)}
           />
         ))}
         <CreatingPlayerDialog

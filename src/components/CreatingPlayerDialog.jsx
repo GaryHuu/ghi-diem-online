@@ -1,4 +1,3 @@
-import ConfirmModal from '@/components/ConfirmModal'
 import { Button, TextField } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
@@ -21,7 +20,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 const CreatingPlayerDialog = forwardRef(
   ({ children, onSubmit = () => {} }, ref) => {
     const [mode, setMode] = useState(MODE.CREATE)
-    const confirmActionRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
     const editedPlayerRef = useRef(null)
     const [name, setName] = useState('')
@@ -123,7 +121,6 @@ const CreatingPlayerDialog = forwardRef(
             </Button>
           </DialogContent>
         </Dialog>
-        <ConfirmModal ref={confirmActionRef} />
       </>
     )
   }
