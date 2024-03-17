@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 const getValueOnBlurByText = (value = '') => {
-  console.log('getValueOnBlurByText of value', value)
   if (!value || value === '-' || value === '+') {
     return 0
   }
@@ -13,7 +12,12 @@ const getValueOnBlurByText = (value = '') => {
   return +value
 }
 
-function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
+function InputScore({
+  value = 0,
+  onChange = () => {},
+  gap = 1,
+  disabled = false,
+}) {
   const [currentValue, setCurrentValue] = useState(value)
 
   const handleInputChange = (e) => {
@@ -47,13 +51,14 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
 
   return (
     <Stack direction='row' alignItems='center'>
-      <IconButton onClick={handleDecrease}>
+      <IconButton onClick={handleDecrease} disabled={disabled}>
         <RemoveIcon />
       </IconButton>
       <TextField
         value={currentValue}
         onChange={handleInputChange}
         onBlur={handleInputBlur}
+        disabled={disabled}
         sx={{
           flex: 1,
           maxWidth: '100px',
@@ -61,11 +66,10 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
             textAlign: 'center',
           },
         }}
-        inputProps={{ inputMode: 'numeric' }}
-        type='text'
+        type='number'
         size='small'
       />
-      <IconButton onClick={handleIncrease}>
+      <IconButton onClick={handleIncrease} disabled={disabled}>
         <AddIcon />
       </IconButton>
     </Stack>
@@ -76,6 +80,7 @@ InputScore.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   gap: PropTypes.number,
+  disabled: PropTypes.bool,
 }
 
 export default InputScore
