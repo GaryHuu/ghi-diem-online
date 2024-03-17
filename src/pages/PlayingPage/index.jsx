@@ -116,7 +116,7 @@ const Player = ({
           >
             Điểm: {total}
           </Typography>
-          {currentGameNumber === 1 && (
+          {currentGameNumber !== 1 && (
             <Stack
               direction='row'
               alignItems='center'

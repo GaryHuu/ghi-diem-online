@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 
 function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
   const handleInputChange = (e) => {
+    console.log('e', e)
     const newValue = +e.target.value
 
     if (!isNaN(newValue)) {
@@ -35,7 +36,8 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
             textAlign: 'center',
           },
         }}
-        type='string'
+        inputMode='numeric'
+        type='text'
         size='small'
       />
       <IconButton onClick={handleIncrease}>
