@@ -2,15 +2,19 @@ import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { IconButton, Stack, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 
 function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
-  const handleInputChange = (e) => {
-    console.log('e', e)
-    const newValue = +e.target.value
+  const [currentValue, setCurrentValue] = useState(value)
 
-    if (!isNaN(newValue)) {
-      onChange(parseInt(newValue, 10))
-    }
+  const handleInputChange = (e) => {
+    const newValue = e.target.value
+
+    setCurrentValue(newValue)
+  }
+
+  const handleInputBlur = () => {
+    console.log('currentValue', currentValue)
   }
 
   const handleDecrease = () => {
@@ -21,14 +25,19 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
     onChange(value + gap)
   }
 
+  useEffect(() => {
+    setCurrentValue(value)
+  }, [value])
+
   return (
     <Stack direction='row' alignItems='center'>
       <IconButton onClick={handleDecrease}>
         <RemoveIcon />
       </IconButton>
       <TextField
-        value={value}
+        defaultValue={value}
         onChange={handleInputChange}
+        onBlur={handleInputBlur}
         sx={{
           flex: 1,
           maxWidth: '100px',
