@@ -31,7 +31,7 @@ const Header = ({ match, currentGameNumber }) => {
       justifyContent='space-between'
       direction='row'
       sx={{
-        padding: '1rem',
+        padding: '12px 1rem',
         borderBottom: '2px solid #CCC',
         position: 'fixed',
         top: 0,
@@ -133,7 +133,7 @@ const Player = ({
       direction='row'
       justifyContent='space-between'
       sx={{
-        padding: '1rem',
+        padding: '12px',
         border: `1.5px solid #1976d2`,
         borderRadius: '0.5rem',
       }}
@@ -233,7 +233,7 @@ const Players = ({
   }, [location.pathname])
 
   return (
-    <Stack pt='80px'>
+    <Stack pt='71.5px'>
       <Stack
         gap='1rem'
         sx={{
