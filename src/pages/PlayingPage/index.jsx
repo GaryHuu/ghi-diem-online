@@ -71,6 +71,7 @@ const Player = ({
   scores = [],
   currentGameNumber = 0,
   onScoreChange = () => {},
+  onDoubleClick = () => {},
 }) => {
   const handleScoreChange = (newValue) => {
     onScoreChange(newValue)
@@ -84,69 +85,73 @@ const Player = ({
   const increasingTrendValue = scores[currentGameNumber - 2] || 0
 
   return (
-    <Stack
-      direction='row'
-      justifyContent='space-between'
-      sx={{
-        padding: '1rem',
-        border: `1.5px solid #1976d2`,
-        borderRadius: '0.5rem',
-      }}
-    >
-      <Stack gap='0.5rem'>
-        <Typography
-          sx={{
-            whiteSpace: 'nowrap',
-            fontWeight: 'bold',
-            fontSize: '15px',
-            cursor: 'pointer',
-            userSelect: 'none',
-          }}
-          onClick={onRename}
-        >
-          {name}
-        </Typography>
-        <Stack direction='row' gap='0.25rem'>
+    <div onDoubleClick={onDoubleClick}>
+      <Stack
+        direction='row'
+        justifyContent='space-between'
+        sx={{
+          padding: '1rem',
+          border: `1.5px solid #1976d2`,
+          borderRadius: '0.5rem',
+        }}
+      >
+        <Stack gap='0.5rem'>
           <Typography
             sx={{
+              whiteSpace: 'nowrap',
               fontWeight: 'bold',
-              fontSize: '14px',
-              color: total > 0 ? '#008000' : '#D32F2F',
+              fontSize: '15px',
+              cursor: 'pointer',
+              userSelect: 'none',
             }}
+            onClick={onRename}
           >
-            Điểm: {total}
+            {name}
           </Typography>
-          {currentGameNumber !== 1 && (
-            <Stack
-              direction='row'
-              alignItems='center'
+          <Stack direction='row' gap='0.25rem'>
+            <Typography
               sx={{
-                color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
+                fontWeight: 'bold',
                 fontSize: '14px',
+                color: total >= 0 ? '#008000' : '#D32F2F',
               }}
             >
-              <Box>{`(`}</Box>
-              {increasingTrendValue >= 0 && (
-                <ArrowUpwardIcon sx={{ height: '16px', marginLeft: '-4px' }} />
-              )}
-              {increasingTrendValue < 0 && (
-                <ArrowDownwardSharpIcon
-                  sx={{ height: '16px', marginLeft: '-4px' }}
-                />
-              )}
-              <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-                {increasingTrendValue}
-              </Typography>
-              <Box>{`)`}</Box>
-            </Stack>
-          )}
+              Điểm: {total}
+            </Typography>
+            {currentGameNumber !== 1 && (
+              <Stack
+                direction='row'
+                alignItems='center'
+                sx={{
+                  color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
+                  fontSize: '14px',
+                }}
+              >
+                <Box>{`(`}</Box>
+                {increasingTrendValue >= 0 && (
+                  <ArrowUpwardIcon
+                    sx={{ height: '16px', marginLeft: '-4px' }}
+                  />
+                )}
+                {increasingTrendValue < 0 && (
+                  <ArrowDownwardSharpIcon
+                    sx={{ height: '16px', marginLeft: '-4px' }}
+                  />
+                )}
+                <Typography sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                  {increasingTrendValue}
+                </Typography>
+                <Box>{`)`}</Box>
+              </Stack>
+            )}
+          </Stack>
         </Stack>
+        <InputScore
+          value={scores[currentGameNumber - 1]}
+          onChange={handleScoreChange}
+        />
       </Stack>
-      <InputScore
-        value={scores[currentGameNumber - 1]}
-        onChange={handleScoreChange}
-      />
-    </Stack>
+    </div>
   )
 }
 
@@ -156,6 +161,7 @@ Player.propTypes = {
   scores: PropTypes.arrayOf(PropTypes.number),
   currentGameNumber: PropTypes.number,
   onScoreChange: PropTypes.func,
+  onDoubleClick: PropTypes.func,
 }
 
 const Players = ({
@@ -177,6 +183,10 @@ const Players = ({
 
   const handleScorePlayerChange = (playerID) => (newValue) => {
     onScorePlayerChange(playerID, newValue)
+  }
+
+  const handlePlayerDoubleClick = (playerID) => () => {
+    onScorePlayerChange(playerID, 999)
   }
 
   useLayoutEffect(() => {
@@ -219,14 +229,15 @@ const Players = ({
             currentGameNumber={currentGameNumber}
             onRename={handleRenamePlayer(player)}
             onScoreChange={handleScorePlayerChange(player.id)}
+            onDoubleClick={handlePlayerDoubleClick(player.id)}
           />
         ))}
         <CreatingPlayerDialog
           ref={creatingPlayerDialog}
           onSubmit={handleCreateNewPlayer}
         >
-          <Button variant='contained' size='small'>
-            <AddIcon />
+          <Button variant='contained' size='small' startIcon={<AddIcon />}>
+            Thêm người chơi
           </Button>
         </CreatingPlayerDialog>
       </Stack>
