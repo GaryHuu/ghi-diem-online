@@ -13,6 +13,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants'
+import ConfirmModal from '@/components/ConfirmModal'
 
 const Header = ({
   match,
@@ -126,6 +127,7 @@ const Player = ({
   scores = [],
   currentGameNumber = 0,
   onScoreChange = () => {},
+  onAutoFill = () => {},
 }) => {
   const handleScoreChange = (newValue) => {
     onScoreChange(newValue)
@@ -198,10 +200,25 @@ const Player = ({
           )}
         </Stack>
       </Stack>
-      <InputScore
-        value={scores[currentGameNumber - 1]}
-        onChange={handleScoreChange}
-      />
+      <Stack gap='0.25rem'>
+        <InputScore
+          value={scores[currentGameNumber - 1]}
+          onChange={handleScoreChange}
+        />
+        <Typography
+          onClick={onAutoFill}
+          sx={{
+            fontSize: '14px',
+            textAlign: 'center',
+            cursor: 'pointer',
+            '&:hover': {
+              textDecoration: 'underline',
+            },
+          }}
+        >
+          Tự đồng điền
+        </Typography>
+      </Stack>
     </Stack>
   )
 }
@@ -212,6 +229,7 @@ Player.propTypes = {
   scores: PropTypes.arrayOf(PropTypes.number),
   currentGameNumber: PropTypes.number,
   onScoreChange: PropTypes.func,
+  onAutoFill: PropTypes.func,
 }
 
 const Players = ({
@@ -233,6 +251,17 @@ const Players = ({
 
   const handleScorePlayerChange = (playerID) => (newValue) => {
     onScorePlayerChange(playerID, newValue)
+  }
+
+  const handleAutoFill = (playerID) => () => {
+    let total = 0
+    players.forEach((player) => {
+      if (player.id !== playerID) {
+        total = total + player.scores[currentGameNumber - 1]
+      }
+    })
+
+    onScorePlayerChange(playerID, -total)
   }
 
   useLayoutEffect(() => {
@@ -275,6 +304,7 @@ const Players = ({
             currentGameNumber={currentGameNumber}
             onRename={handleRenamePlayer(player)}
             onScoreChange={handleScorePlayerChange(player.id)}
+            onAutoFill={handleAutoFill(player.id)}
           />
         ))}
         <CreatingPlayerDialog
@@ -303,6 +333,7 @@ Players.propTypes = {
 }
 
 function PlayingPage() {
+  const confirmActionRef = useRef(null)
   const { id } = useParams()
   const [players, setPlayers] = useState(db.getPlayersOfMatch(id))
   const match = useMemo(() => db.getMatchByID(id), [id])
@@ -328,9 +359,11 @@ function PlayingPage() {
       return
     }
 
-    db.createANewGameNumber(match.id)
-    setPlayers(db.getPlayersOfMatch(match.id))
-    setCurrentGameNumber(db.getCurrentGameNumber(id))
+    confirmActionRef.current.confirm(() => {
+      db.createANewGameNumber(match.id)
+      setPlayers(db.getPlayersOfMatch(match.id))
+      setCurrentGameNumber(db.getCurrentGameNumber(id))
+    })
   }
 
   const handleCreateNewPlayer = (name, playerID) => {
@@ -385,6 +418,7 @@ function PlayingPage() {
         currentGameNumber={currentGameNumber}
         onScorePlayerChange={handleScorePlayerChange}
       />
+      <ConfirmModal ref={confirmActionRef} />
     </Box>
   )
 }
