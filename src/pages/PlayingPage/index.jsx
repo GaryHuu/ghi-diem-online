@@ -216,7 +216,7 @@ const Player = ({
             },
           }}
         >
-          Tự đồng điền
+          Tự động điền
         </Typography>
       </Stack>
     </Stack>
