@@ -65,6 +65,10 @@ const CreatingPlayerDialog = forwardRef(
       setName('')
       setMode(MODE.CREATE)
       editedPlayerRef.current = null
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
     }
 
     useImperativeHandle(ref, () => ({

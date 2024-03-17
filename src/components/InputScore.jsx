@@ -4,25 +4,41 @@ import { IconButton, Stack, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
+const getValueOnBlurByText = (value = '') => {
+  console.log('getValueOnBlurByText of value', value)
+  if (!value || value === '-' || value === '+') {
+    return 0
+  }
+
+  return +value
+}
+
 function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
   const [currentValue, setCurrentValue] = useState(value)
 
   const handleInputChange = (e) => {
     const newValue = e.target.value
 
-    setCurrentValue(newValue)
+    if (!isNaN(newValue) || newValue === '-') {
+      setCurrentValue(newValue)
+    }
   }
 
   const handleInputBlur = () => {
-    console.log('currentValue', currentValue)
+    const newValue = getValueOnBlurByText(currentValue)
+
+    onChange(newValue)
+    setCurrentValue(newValue)
   }
 
   const handleDecrease = () => {
-    onChange(value - gap)
+    const newValue = getValueOnBlurByText(currentValue)
+    onChange(newValue - gap)
   }
 
   const handleIncrease = () => {
-    onChange(value + gap)
+    const newValue = getValueOnBlurByText(currentValue)
+    onChange(newValue + gap)
   }
 
   useEffect(() => {
@@ -35,7 +51,7 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
         <RemoveIcon />
       </IconButton>
       <TextField
-        defaultValue={value}
+        value={currentValue}
         onChange={handleInputChange}
         onBlur={handleInputBlur}
         sx={{
@@ -45,7 +61,7 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1 }) {
             textAlign: 'center',
           },
         }}
-        inputMode='numeric'
+        inputProps={{ inputMode: 'numeric' }}
         type='text'
         size='small'
       />

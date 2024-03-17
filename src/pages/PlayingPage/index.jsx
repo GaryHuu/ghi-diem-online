@@ -169,10 +169,6 @@ const Players = ({
 
   const handleCreateNewPlayer = (name, playerID) => {
     onCreateNewPlayer(name, playerID)
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
   }
 
   const handleRenamePlayer = (player) => () => {
