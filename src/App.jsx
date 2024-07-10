@@ -1,10 +1,10 @@
-import router from '@/routes'
-import { CssBaseline } from '@mui/material'
-import { RouterProvider } from 'react-router-dom'
-
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import ScrollToTopOnPathChange from '@/components/ScrollToTopOnPathChange'
+import ScrollToTopOnPathChange from "@/components/ScrollToTopOnPathChange";
+import router from "@/routes";
+import { CssBaseline } from "@mui/material";
+import { Analytics } from "@vercel/analytics/react";
+import { RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <ScrollToTopOnPathChange />
       </RouterProvider>
       <ToastContainer
-        position='top-center'
+        position="top-center"
         autoClose={5000}
         hideProgressBar
         newestOnTop={false}
@@ -23,10 +23,11 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme='light'
+        theme="light"
       />
+      <Analytics />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
