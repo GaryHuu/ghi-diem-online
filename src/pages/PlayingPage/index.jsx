@@ -2,6 +2,7 @@ import ConfirmModal from '@/components/ConfirmModal'
 import CreatingPlayerDialog from '@/components/CreatingPlayerDialog'
 import InputScore from '@/components/InputScore'
 import db from '@/db'
+import { stringAvatar } from '@/helper'
 import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants'
 import AddIcon from '@mui/icons-material/Add'
 import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp'
@@ -9,9 +10,9 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import CloseIcon from '@mui/icons-material/Close'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import PaidIcon from '@mui/icons-material/Paid'
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
 import SportsScoreRoundedIcon from '@mui/icons-material/SportsScoreRounded'
-import { stringAvatar } from '@/helper'
 import {
   AppBar,
   Avatar,
@@ -28,6 +29,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
+import { MarkerType, ReactFlow } from '@xyflow/react'
+import '@xyflow/react/dist/style.css'
 import PropTypes from 'prop-types'
 import React, {
   useEffect,
@@ -38,13 +41,209 @@ import React, {
 } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import '@xyflow/react/dist/style.css'
+
+const Flow = ({ listLeader }) => {
+  const [debtors, creditors, transactions] = ((players) => {
+    const debtors = []
+    const creditors = []
+    const _debtors = []
+    const _creditors = []
+
+    players.forEach((player) => {
+      if (player.total < 0) {
+        debtors.push(player)
+        _debtors.push(player)
+      } else if (player.total > 0) {
+        creditors.push(player)
+        _creditors.push(player)
+      }
+    })
+
+    const transactions = []
+
+    let i = 0
+    let j = 0
+
+    while (i < debtors.length && j < creditors.length) {
+      const debt = Math.abs(debtors[i].total)
+      const credit = creditors[j].total
+      const total = Math.min(debt, credit)
+
+      transactions.push({
+        from: {
+          id: debtors[i].id,
+          name: debtors[i].name,
+        },
+        to: {
+          id: creditors[j].id,
+          name: creditors[j].name,
+        },
+        total,
+      })
+
+      debtors[i].total += total
+      creditors[j].total -= total
+
+      if (debtors[i].total === 0) {
+        i++
+      }
+
+      if (creditors[j].total === 0) {
+        j++
+      }
+    }
+
+    return [_debtors, _creditors, transactions]
+  })(listLeader)
+
+  const nodes = useMemo(() => {
+    const nodeHeight = 30
+    const nodeWidth = 100
+    const gapY = 70
+    const gapX = 150
+    const leftHeight = debtors.length * nodeHeight + (debtors.length - 1) * gapY
+    const rightHeight =
+      creditors.length * nodeHeight + (creditors.length - 1) * gapY
+
+    let leftY = leftHeight >= rightHeight ? 0 : (rightHeight - leftHeight) / 2
+    let rightY = rightHeight >= leftHeight ? 0 : (leftHeight - rightHeight) / 2
+
+    console.log('leftHeight', leftHeight)
+    console.log('rightHeight', rightHeight)
+
+    return listLeader.map((player) => {
+      const isCreditors = !!creditors.find((item) => item.id === player.id)
+      const isDebtors = !!debtors.find((item) => item.id === player.id)
+      const type = isCreditors ? 'output' : isDebtors ? 'input' : 'selectorNode'
+      const positionX = isCreditors ? gapX + nodeWidth : 0
+      let positionY
+
+      if (isCreditors) {
+        positionY = rightY
+        rightY = rightY + nodeHeight + gapY
+      }
+
+      if (isDebtors) {
+        positionY = leftY
+        leftY = leftY + nodeHeight + gapY
+      }
+
+      return {
+        id: player.id.toString(),
+        type,
+        hidden: !isDebtors && !isCreditors,
+        sourcePosition: 'right',
+        targetPosition: 'left',
+        width: 100,
+        height: nodeHeight,
+        position: {
+          x: positionX,
+          y: positionY,
+        },
+        data: {
+          label: player.name,
+        },
+      }
+    })
+  }, [listLeader, debtors, creditors])
+
+  const edges = useMemo(() => {
+    return transactions.map((transaction) => {
+      return {
+        id: `e${transaction.from.id}-${transaction.to.id}`,
+        source: transaction.from.id.toString(),
+        target: transaction.to.id.toString(),
+        label: `${transaction.total}.000đ`,
+        animated: true,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+        },
+        type: 'straight',
+      }
+    })
+  }, [transactions])
+
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <ReactFlow nodes={nodes} edges={edges} fitView />
+    </div>
+  )
+}
+
+Flow.propTypes = {
+  raw: PropTypes.arrayOf(
+    PropTypes.shape({
+      from: PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+      }),
+      to: PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+      }),
+      total: PropTypes.number,
+    })
+  ),
+  listLeader: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      total: PropTypes.number,
+    })
+  ),
+}
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
+const TransactionChart = ({ isOpen, onClose, listLeader }) => {
+  return (
+    <Dialog
+      onClose={onClose}
+      open={isOpen}
+      TransitionComponent={Transition}
+      scroll='paper'
+      fullScreen
+    >
+      <AppBar sx={{ position: 'fixed' }}>
+        <Toolbar>
+          <IconButton
+            edge='start'
+            color='inherit'
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
+            Biểu đồ thanh toán
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ pt: 'calc(56px + 1rem)' }}>
+        <Flow listLeader={listLeader} />
+      </Box>
+    </Dialog>
+  )
+}
+
+TransactionChart.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  listLeader: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      total: PropTypes.number,
+    })
+  ),
+}
+
 const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
-  const listLeader = useMemo(() => {
+  const [isOpenTransactionChart, setIsOpenTransactionChart] = useState(false)
+  const listLeader = (() => {
     const items = []
 
     players.forEach((player) => {
@@ -57,9 +256,16 @@ const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
         ),
       })
     })
-
     return items.sort((a, b) => -a.total + b.total)
-  }, [players])
+  })()
+
+  const handleCloseTransactionChart = () => {
+    setIsOpenTransactionChart(false)
+  }
+
+  const handleOpenTransactionChart = () => {
+    setIsOpenTransactionChart(true)
+  }
 
   return (
     <Dialog
@@ -82,6 +288,14 @@ const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
           <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
             Bảng xếp hạng
           </Typography>
+          <IconButton
+            edge='start'
+            color='inherit'
+            onClick={handleOpenTransactionChart}
+            aria-label='close'
+          >
+            <PaidIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <List sx={{ padding: '1rem', pt: 'calc(56px + 1rem)' }}>
@@ -115,6 +329,11 @@ const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
           </ListItem>
         ))}
       </List>
+      <TransactionChart
+        isOpen={isOpenTransactionChart}
+        onClose={handleCloseTransactionChart}
+        listLeader={listLeader}
+      />
     </Dialog>
   )
 }

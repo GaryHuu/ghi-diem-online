@@ -71,3 +71,12 @@
   display: flex;
   gap: 4px;
 }
+
+.react-flow__node {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
