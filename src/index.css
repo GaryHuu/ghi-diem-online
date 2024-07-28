@@ -77,6 +77,5 @@
   justify-content: center;
   align-items: center;
   white-space: nowrap;
-  overflow: hidden !important;
   text-overflow: ellipsis;
 }
