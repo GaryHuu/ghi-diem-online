@@ -11,7 +11,7 @@ import SettingDialog from './SettingDialog'
 import { useState } from 'react'
 
 function Layout() {
-  const [isOpenSettingDialog, setIsOpenSettingDialog] = useState(true)
+  const [isOpenSettingDialog, setIsOpenSettingDialog] = useState(false)
   const navigate = useNavigate()
 
   return (
