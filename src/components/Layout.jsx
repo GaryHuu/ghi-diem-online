@@ -28,9 +28,9 @@ function Layout() {
             <HomeIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <IconButton color='inherit'>
-            <SettingsIcon />
-          </IconButton>
+          {/* <IconButton color='inherit'> */}
+            {/* <SettingsIcon /> */}
+          {/* </IconButton> */}
         </Toolbar>
       </AppBar>
     </>
