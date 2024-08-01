@@ -6,9 +6,13 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useNavigate } from 'react-router-dom'
 import ListingMatchesDialog from '@/components/ListingMatchesDialog'
+import useAppProvider from '@/hooks/useAppProvider'
 
 function HomePage() {
   const navigate = useNavigate()
+  const v = useAppProvider()
+
+  console.log('v', v)
 
   const handleStartNewGameClick = () => {
     navigate(ROUTES.CREATE_NEW_MATCH)

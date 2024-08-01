@@ -7,8 +7,11 @@ import IconButton from '@mui/material/IconButton'
 import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
 import { Outlet, useNavigate } from 'react-router-dom'
+import SettingDialog from './SettingDialog'
+import { useState } from 'react'
 
 function Layout() {
+  const [isOpenSettingDialog, setIsOpenSettingDialog] = useState(true)
   const navigate = useNavigate()
 
   return (
@@ -28,11 +31,18 @@ function Layout() {
             <HomeIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {/* <IconButton color='inherit'> */}
-            {/* <SettingsIcon /> */}
-          {/* </IconButton> */}
+          <IconButton
+            color='inherit'
+            onClick={() => setIsOpenSettingDialog(true)}
+          >
+            <SettingsIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
+      <SettingDialog
+        isOpen={isOpenSettingDialog}
+        onClose={() => setIsOpenSettingDialog(false)}
+      />
     </>
   )
 }

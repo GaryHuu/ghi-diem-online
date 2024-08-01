@@ -1,6 +1,12 @@
 import dayjs from 'dayjs'
 
 const MY_IDS_OF_MATCHES = 'MY_IDS_OF_MATCHES'
+const SETTING = 'SETTING'
+
+export const defaultSettingValues = {
+  unit: 1000,
+  gap: 1,
+}
 
 const createNewMatch = (name = '') => {
   try {
@@ -252,6 +258,26 @@ const finishTheMatch = (matchID) => {
   }
 }
 
+const saveSetting = (value) => {
+  localStorage.setItem(SETTING, JSON.stringify(value))
+}
+
+const getSetting = () => {
+  try {
+    const localStorageValue = JSON.parse(localStorage.getItem(SETTING))
+
+    if (!localStorageValue) {
+      saveSetting(defaultSettingValues)
+      return defaultSettingValues
+    }
+
+    return localStorageValue
+  } catch (error) {
+    saveSetting(defaultSettingValues)
+    return defaultSettingValues
+  }
+}
+
 export default {
   createNewMatch,
   getAllMatches,
@@ -266,4 +292,6 @@ export default {
   createANewGameNumber,
   calculateTotalScoreValidToFinish,
   finishTheMatch,
+  saveSetting,
+  getSetting,
 }

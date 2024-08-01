@@ -42,8 +42,14 @@ import React, {
 import { useLocation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import '@xyflow/react/dist/style.css'
+import useAppProvider from '@/hooks/useAppProvider'
+
+function formatCurrency(value) {
+  return value.toLocaleString('vi-VN');
+}
 
 const Flow = ({ listLeader }) => {
+  const { value } = useAppProvider()
   const [debtors, creditors, transactions] = ((players) => {
     const debtors = []
     const creditors = []
@@ -154,7 +160,7 @@ const Flow = ({ listLeader }) => {
         id: `e${transaction.from.id}-${transaction.to.id}`,
         source: transaction.from.id.toString(),
         target: transaction.to.id.toString(),
-        label: `${transaction.total}.000đ`,
+        label: `${formatCurrency(transaction.total * value.unit)}đ`,
         animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -162,7 +168,7 @@ const Flow = ({ listLeader }) => {
         type: 'straight',
       }
     })
-  }, [transactions])
+  }, [transactions, value])
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -242,6 +248,8 @@ TransactionChart.propTypes = {
 }
 
 const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
+  const { value } = useAppProvider()
+
   const [isOpenTransactionChart, setIsOpenTransactionChart] = useState(false)
   const listLeader = (() => {
     const items = []
@@ -324,7 +332,7 @@ const LeaderBoard = ({ players, isOpen = false, onClose = () => {} }) => {
                 },
               }}
               primary={player.name}
-              secondary={`Tổng: ${player.total}`}
+              secondary={`Tổng: ${formatCurrency(player.total * value.unit)}đ`}
             />
           </ListItem>
         ))}
@@ -485,6 +493,8 @@ const Player = ({
   onAutoFill = () => {},
   isFinished = false,
 }) => {
+  const { value } = useAppProvider()
+
   const handleScoreChange = (newValue) => {
     onScoreChange(newValue)
   }
@@ -561,6 +571,7 @@ const Player = ({
           disabled={isFinished}
           value={scores[currentGameNumber - 1]}
           onChange={handleScoreChange}
+          gap={value.gap}
         />
         {!isFinished && (
           <Typography
