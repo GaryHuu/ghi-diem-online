@@ -1,297 +1,284 @@
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
-const MY_IDS_OF_MATCHES = 'MY_IDS_OF_MATCHES'
-const SETTING = 'SETTING'
+const MY_IDS_OF_MATCHES = 'MY_IDS_OF_MATCHES';
+const SETTING = 'SETTING';
 
 export const defaultSettingValues = {
-  unit: 1000,
-  gap: 1,
-}
+	unit: 1000,
+	gap: 1,
+};
 
 const createNewMatch = (name = '') => {
-  try {
-    const newId = dayjs().valueOf()
-    const newMatch = {
-      id: newId,
-      name,
-    }
+	try {
+		const newId = dayjs().valueOf();
+		const newMatch = {
+			id: newId,
+			name,
+		};
 
-    const myCurrentMatches =
-      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
+		const myCurrentMatches = JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || [];
 
-    localStorage.setItem(
-      MY_IDS_OF_MATCHES,
-      JSON.stringify([newMatch, ...myCurrentMatches])
-    )
+		localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify([newMatch, ...myCurrentMatches]));
 
-    // Set Default Players
-    localStorage.setItem(newId, JSON.stringify([]))
+		// Set Default Players
+		localStorage.setItem(newId, JSON.stringify([]));
 
-    return newMatch
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
+		return newMatch;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
 const getAllMatches = () => {
-  try {
-    const myCurrentMatches =
-      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
+	try {
+		const myCurrentMatches = JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || [];
 
-    return myCurrentMatches
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
+		return myCurrentMatches;
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
+};
 
 const getMatchByID = (id) => {
-  try {
-    const myCurrentMatches =
-      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
+	try {
+		const myCurrentMatches = JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || [];
 
-    return myCurrentMatches.find((item) => item.id === +id)
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
+		return myCurrentMatches.find((item) => item.id === +id);
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
+};
 
 const deleteTheMatch = (id) => {
-  try {
-    const myCurrentMatches =
-      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
-    const newMatches = myCurrentMatches.filter((match) => match.id !== id)
+	try {
+		const myCurrentMatches = JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || [];
+		const newMatches = myCurrentMatches.filter((match) => match.id !== id);
 
-    localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify(newMatches))
+		localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify(newMatches));
 
-    localStorage.removeItem(id)
+		localStorage.removeItem(id);
 
-    return newMatches
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
+		return newMatches;
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
+};
 
 const getPlayersOfMatch = (id) => {
-  try {
-    const players = JSON.parse(localStorage.getItem(id)) || []
-    return players
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
+	try {
+		const players = JSON.parse(localStorage.getItem(id)) || [];
+		return players;
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
+};
 
 const createNewPlayerOfMatch = (matchID, name = '') => {
-  try {
-    const newId = dayjs().valueOf()
-    const newPlayer = {
-      id: newId,
-      name,
-    }
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+	try {
+		const newId = dayjs().valueOf();
+		const newPlayer = {
+			id: newId,
+			name,
+		};
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
 
-    const existPlayerName = !!currentPlayers.find(
-      (player) => player.name === name
-    )
+		const existPlayerName = !!currentPlayers.find((player) => player.name === name);
 
-    if (existPlayerName) {
-      return null
-    }
+		if (existPlayerName) {
+			return null;
+		}
 
-    let numberGamesPlayed = 1
+		let numberGamesPlayed = 1;
 
-    if (currentPlayers?.length !== 0) {
-      numberGamesPlayed = currentPlayers?.[0]?.scores?.length
-    }
+		if (currentPlayers?.length !== 0) {
+			numberGamesPlayed = currentPlayers?.[0]?.scores?.length;
+		}
 
-    newPlayer.scores = new Array(numberGamesPlayed).fill(0)
+		newPlayer.scores = new Array(numberGamesPlayed).fill(0);
 
-    localStorage.setItem(
-      matchID,
-      JSON.stringify([...currentPlayers, newPlayer])
-    )
+		localStorage.setItem(matchID, JSON.stringify([...currentPlayers, newPlayer]));
 
-    return newPlayer
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
+		return newPlayer;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
 const renamePlayerOfMatch = (matchID, playerID, name = '') => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
-    const existPlayerName = !!currentPlayers.find(
-      (player) => player.name === name && player.id !== playerID
-    )
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
+		const existPlayerName = !!currentPlayers.find(
+			(player) => player.name === name && player.id !== playerID,
+		);
 
-    if (existPlayerName) {
-      return null
-    }
+		if (existPlayerName) {
+			return null;
+		}
 
-    const index = currentPlayers.findIndex((player) => player.id === playerID)
+		const index = currentPlayers.findIndex((player) => player.id === playerID);
 
-    currentPlayers[index].name = name
+		currentPlayers[index].name = name;
 
-    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
+		localStorage.setItem(matchID, JSON.stringify(currentPlayers));
 
-    return currentPlayers
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
+		return currentPlayers;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
 const getCurrentGameNumber = (matchID) => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
 
-    if (currentPlayers?.length !== 0) {
-      return currentPlayers?.[0]?.scores?.length
-    }
+		if (currentPlayers?.length !== 0) {
+			return currentPlayers?.[0]?.scores?.length;
+		}
 
-    return 1
-  } catch (error) {
-    console.error(error)
-    return 1
-  }
-}
+		return 1;
+	} catch (error) {
+		console.error(error);
+		return 1;
+	}
+};
 
 const changeScorePlayerOfMatch = (matchID, playerID, gameNumber, score) => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
 
-    const index = currentPlayers.findIndex((player) => player.id === playerID)
+		const index = currentPlayers.findIndex((player) => player.id === playerID);
 
-    currentPlayers[index].scores[gameNumber - 1] = score
+		currentPlayers[index].scores[gameNumber - 1] = score;
 
-    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
+		localStorage.setItem(matchID, JSON.stringify(currentPlayers));
 
-    return currentPlayers
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
+		return currentPlayers;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
 const calculateTotalScoreValid = (matchID, gameNumber) => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
-    const scores = []
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
+		const scores = [];
 
-    currentPlayers.forEach((player) => {
-      scores.push(player?.scores?.[gameNumber - 1])
-    })
+		currentPlayers.forEach((player) => {
+			scores.push(player?.scores?.[gameNumber - 1]);
+		});
 
-    const total = scores.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue
-    }, 0)
+		const total = scores.reduce((accumulator, currentValue) => {
+			return accumulator + currentValue;
+		}, 0);
 
-    return total === 0
-  } catch (error) {
-    return false
-  }
-}
+		return total === 0;
+	} catch (error) {
+		return false;
+	}
+};
 
 const createANewGameNumber = (matchID) => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
 
-    currentPlayers.forEach((player) => {
-      player.scores.push(0)
-    })
+		currentPlayers.forEach((player) => {
+			player.scores.push(0);
+		});
 
-    localStorage.setItem(matchID, JSON.stringify(currentPlayers))
-  } catch (error) {
-    return []
-  }
-}
+		localStorage.setItem(matchID, JSON.stringify(currentPlayers));
+	} catch (error) {
+		return [];
+	}
+};
 
 const calculateTotalScoreValidToFinish = (matchID) => {
-  try {
-    const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || []
-    const totalGameNumber = getCurrentGameNumber(matchID)
-    const gameNumbersInvalid = []
+	try {
+		const currentPlayers = JSON.parse(localStorage.getItem(matchID)) || [];
+		const totalGameNumber = getCurrentGameNumber(matchID);
+		const gameNumbersInvalid = [];
 
-    for (let gameNumber = 1; gameNumber <= totalGameNumber; gameNumber++) {
-      const scores = []
-      currentPlayers.forEach((player) => {
-        scores.push(player?.scores?.[gameNumber - 1])
-      })
-      const total = scores.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue
-      }, 0)
+		for (let gameNumber = 1; gameNumber <= totalGameNumber; gameNumber++) {
+			const scores = [];
+			currentPlayers.forEach((player) => {
+				scores.push(player?.scores?.[gameNumber - 1]);
+			});
+			const total = scores.reduce((accumulator, currentValue) => {
+				return accumulator + currentValue;
+			}, 0);
 
-      if (total !== 0) {
-        gameNumbersInvalid.push(gameNumber)
-      }
-    }
+			if (total !== 0) {
+				gameNumbersInvalid.push(gameNumber);
+			}
+		}
 
-    return {
-      isValid: gameNumbersInvalid.length === 0,
-      gameNumbersInvalid: gameNumbersInvalid,
-    }
-  } catch (error) {
-    return null
-  }
-}
+		return {
+			isValid: gameNumbersInvalid.length === 0,
+			gameNumbersInvalid: gameNumbersInvalid,
+		};
+	} catch (error) {
+		return null;
+	}
+};
 
 const finishTheMatch = (matchID) => {
-  try {
-    const myCurrentMatches =
-      JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || []
+	try {
+		const myCurrentMatches = JSON.parse(localStorage.getItem(MY_IDS_OF_MATCHES)) || [];
 
-    const index = myCurrentMatches.findIndex((m) => m.id === matchID)
+		const index = myCurrentMatches.findIndex((m) => m.id === matchID);
 
-    myCurrentMatches[index].isFinished = true
+		myCurrentMatches[index].isFinished = true;
 
-    localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify(myCurrentMatches))
+		localStorage.setItem(MY_IDS_OF_MATCHES, JSON.stringify(myCurrentMatches));
 
-    return true
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
+		return true;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 
 const saveSetting = (value) => {
-  localStorage.setItem(SETTING, JSON.stringify(value))
-}
+	localStorage.setItem(SETTING, JSON.stringify(value));
+};
 
 const getSetting = () => {
-  try {
-    const localStorageValue = JSON.parse(localStorage.getItem(SETTING))
+	try {
+		const localStorageValue = JSON.parse(localStorage.getItem(SETTING));
 
-    if (!localStorageValue) {
-      saveSetting(defaultSettingValues)
-      return defaultSettingValues
-    }
+		if (!localStorageValue) {
+			saveSetting(defaultSettingValues);
+			return defaultSettingValues;
+		}
 
-    return localStorageValue
-  } catch (error) {
-    saveSetting(defaultSettingValues)
-    return defaultSettingValues
-  }
-}
+		return localStorageValue;
+	} catch (error) {
+		saveSetting(defaultSettingValues);
+		return defaultSettingValues;
+	}
+};
 
 export default {
-  createNewMatch,
-  getAllMatches,
-  getMatchByID,
-  deleteTheMatch,
-  getPlayersOfMatch,
-  createNewPlayerOfMatch,
-  renamePlayerOfMatch,
-  getCurrentGameNumber,
-  changeScorePlayerOfMatch,
-  calculateTotalScoreValid,
-  createANewGameNumber,
-  calculateTotalScoreValidToFinish,
-  finishTheMatch,
-  saveSetting,
-  getSetting,
-}
+	createNewMatch,
+	getAllMatches,
+	getMatchByID,
+	deleteTheMatch,
+	getPlayersOfMatch,
+	createNewPlayerOfMatch,
+	renamePlayerOfMatch,
+	getCurrentGameNumber,
+	changeScorePlayerOfMatch,
+	calculateTotalScoreValid,
+	createANewGameNumber,
+	calculateTotalScoreValidToFinish,
+	finishTheMatch,
+	saveSetting,
+	getSetting,
+};

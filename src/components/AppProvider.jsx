@@ -1,31 +1,31 @@
-import db, { defaultSettingValues } from '@/db'
-import PropTypes from 'prop-types'
-import { createContext, useState } from 'react'
+import db, { defaultSettingValues } from '@/db';
+import PropTypes from 'prop-types';
+import { createContext, useState } from 'react';
 
-export const AppContext = createContext(defaultSettingValues)
+export const AppContext = createContext(defaultSettingValues);
 
 function AppProvider({ children }) {
-  const [settingValue, setSettingValue] = useState(db.getSetting())
+	const [settingValue, setSettingValue] = useState(db.getSetting());
 
-  const handleSettingChange = (newValue) => {
-    setSettingValue(newValue)
-    db.saveSetting(newValue)
-  }
+	const handleSettingChange = (newValue) => {
+		setSettingValue(newValue);
+		db.saveSetting(newValue);
+	};
 
-  return (
-    <AppContext.Provider
-      value={{
-        value: settingValue,
-        onChange: handleSettingChange,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  )
+	return (
+		<AppContext.Provider
+			value={{
+				value: settingValue,
+				onChange: handleSettingChange,
+			}}
+		>
+			{children}
+		</AppContext.Provider>
+	);
 }
 
 AppProvider.propTypes = {
-  children: PropTypes.node,
-}
+	children: PropTypes.node,
+};
 
-export default AppProvider
+export default AppProvider;

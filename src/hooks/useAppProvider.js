@@ -1,8 +1,8 @@
-import { AppContext } from '@/components/AppProvider'
-import { useContext } from 'react'
+import { AppContext } from '@/components/AppProvider';
+import { useContext } from 'react';
 
 function useAppProvider() {
-  return useContext(AppContext)
+	return useContext(AppContext);
 }
 
-export default useAppProvider
+export default useAppProvider;
