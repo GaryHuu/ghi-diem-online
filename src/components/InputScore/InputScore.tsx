@@ -1,42 +1,40 @@
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { IconButton, Stack, TextField } from '@mui/material';
-import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { getValueOnBlurByText } from './utils';
 
-const getValueOnBlurByText = (value = '') => {
-	if (!value || value === '-' || value === '+') {
-		return 0;
-	}
-
-	return +value;
+type Props = {
+	value: number;
+	onChange?: (value: number) => void;
+	gap?: number;
+	disabled?: boolean;
 };
 
-function InputScore({ value = 0, onChange = () => {}, gap = 1, disabled = false }) {
-	const [currentValue, setCurrentValue] = useState(value);
+function InputScore({ value = 0, onChange = () => {}, gap = 1, disabled = false }: Props) {
+	const [currentValue, setCurrentValue] = useState<number | string>(value);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value;
 
-		if (!isNaN(newValue) || newValue === '-') {
+		if (!isNaN(+newValue) || newValue === '-') {
 			setCurrentValue(newValue);
 		}
 	};
 
 	const handleInputBlur = () => {
-		const newValue = getValueOnBlurByText(currentValue);
-
+		const newValue = getValueOnBlurByText(currentValue.toString());
 		onChange(newValue);
 		setCurrentValue(newValue);
 	};
 
 	const handleDecrease = () => {
-		const newValue = getValueOnBlurByText(currentValue);
+		const newValue = getValueOnBlurByText(currentValue.toString());
 		onChange(newValue - gap);
 	};
 
 	const handleIncrease = () => {
-		const newValue = getValueOnBlurByText(currentValue);
+		const newValue = getValueOnBlurByText(currentValue.toString());
 		onChange(newValue + gap);
 	};
 
@@ -54,6 +52,8 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1, disabled = false 
 				onChange={handleInputChange}
 				onBlur={handleInputBlur}
 				disabled={disabled}
+				size="small"
+				type="number"
 				sx={{
 					flex: 1,
 					maxWidth: '100px',
@@ -61,8 +61,6 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1, disabled = false 
 						textAlign: 'center',
 					},
 				}}
-				type="number"
-				size="small"
 			/>
 			<IconButton onClick={handleIncrease} disabled={disabled}>
 				<AddIcon />
@@ -70,12 +68,5 @@ function InputScore({ value = 0, onChange = () => {}, gap = 1, disabled = false 
 		</Stack>
 	);
 }
-
-InputScore.propTypes = {
-	value: PropTypes.number.isRequired,
-	onChange: PropTypes.func,
-	gap: PropTypes.number,
-	disabled: PropTypes.bool,
-};
 
 export default InputScore;

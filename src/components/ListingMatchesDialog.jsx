@@ -1,4 +1,4 @@
-import ConfirmModal from '@/components/ConfirmModal';
+import { ConfirmModal } from '@/components';
 import db from '@/db';
 import { stringAvatar } from '@/helper';
 import { ROUTES } from '@/routes/constants';

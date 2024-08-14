@@ -1,8 +1,7 @@
-import ConfirmModal from '@/components/ConfirmModal';
-import CreatingPlayerDialog from '@/components/CreatingPlayerDialog';
-import InputScore from '@/components/InputScore';
+import { ConfirmModal, PlayerModifierDialog, InputScore } from '@/components';
 import db from '@/db';
 import { stringAvatar } from '@/helper';
+import useAppProvider from '@/hooks/useAppProvider';
 import { MIN_PLAYERS_OF_MATCH } from '@/routes/constants';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowDownwardSharpIcon from '@mui/icons-material/ArrowDownwardSharp';
@@ -35,8 +34,6 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import '@xyflow/react/dist/style.css';
-import useAppProvider from '@/hooks/useAppProvider';
 
 function formatCurrency(value) {
 	return value.toLocaleString('vi-VN');
@@ -573,7 +570,7 @@ const Players = ({
 	onScorePlayerChange = () => {},
 }) => {
 	const location = useLocation();
-	const creatingPlayerDialog = useRef(null);
+	const playerModifierDialogRef = useRef(null);
 
 	const handleCreateNewPlayer = (name, playerID) => {
 		onCreateNewPlayer(name, playerID);
@@ -582,7 +579,7 @@ const Players = ({
 	const handleRenamePlayer = (player) => () => {
 		if (match.isFinished) return;
 
-		creatingPlayerDialog.current?.editPlayerName(player);
+		playerModifierDialogRef.current?.editPlayerName(player);
 	};
 
 	const handleScorePlayerChange = (playerID) => (newValue) => {
@@ -644,11 +641,11 @@ const Players = ({
 					/>
 				))}
 				{!match.isFinished && (
-					<CreatingPlayerDialog ref={creatingPlayerDialog} onSubmit={handleCreateNewPlayer}>
+					<PlayerModifierDialog ref={playerModifierDialogRef} onSubmit={handleCreateNewPlayer}>
 						<Button variant="contained" size="small" startIcon={<AddIcon />}>
 							Thêm người chơi
 						</Button>
-					</CreatingPlayerDialog>
+					</PlayerModifierDialog>
 				)}
 			</Stack>
 		</Stack>

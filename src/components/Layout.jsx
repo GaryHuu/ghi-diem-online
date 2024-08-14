@@ -6,9 +6,10 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
-import { Outlet, useNavigate } from 'react-router-dom';
-import SettingDialog from './SettingDialog';
 import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import ScrollToTopOnPathChange from './ScrollToTopOnPathChange';
+import SettingDialog from './SettingDialog';
 
 function Layout() {
 	const [isOpenSettingDialog, setIsOpenSettingDialog] = useState(false);
@@ -16,6 +17,7 @@ function Layout() {
 
 	return (
 		<>
+			<ScrollToTopOnPathChange />
 			<Paper sx={{ pb: '64px', minHeight: '100vh', display: 'flex' }}>
 				<Box sx={{ flex: 1, overflowY: 'auto' }}>
 					<Outlet />
