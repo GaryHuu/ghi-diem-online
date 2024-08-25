@@ -1,80 +1,66 @@
+import { Dialog } from '@/components';
+import helpers from '@/utils/helpers';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import React, { forwardRef, useImperativeHandle, useRef, useState, ReactNode, Ref } from 'react';
-import { MAX_LENGTH, MIN_LENGTH } from './constants';
-import { Mode } from './enums';
-
-const Transition = forwardRef(function Transition(props: any, ref: Ref<unknown>) {
-	return <Slide direction="up" ref={ref} {...props} />;
-});
-
-type Player = {
-	id: string;
-	name: string;
-};
+import React, { forwardRef, ReactNode, Ref, useImperativeHandle, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { schema } from './schema';
+import styles from './styles';
+import { Mode, PlayerForm } from './types';
 
 type Props = {
 	children: ReactNode;
-	onSubmit?: (name: string, id?: string) => void;
+	onSubmit?: (name: string, id?: number) => void;
+};
+
+export type PlayerModifierDialogRefType = {
+	editPlayerName: (player: PlayerForm) => void;
 };
 
 const PlayerModifierDialog = forwardRef(
-	({ children, onSubmit = () => {} }: Props, ref: Ref<any>) => {
+	({ children, onSubmit = () => {} }: Props, ref: Ref<PlayerModifierDialogRefType>) => {
 		const [mode, setMode] = useState<Mode>(Mode.Create);
 		const [isOpen, setIsOpen] = useState(false);
-		const editedPlayerRef = useRef<Player | null>(null);
-		const [name, setName] = useState('');
-		const [isDirty, setIsDirty] = useState(false);
+		const editedPlayerRef = useRef<PlayerForm | null>(null);
 
-		const invalid = name.trim().length < MIN_LENGTH || name.trim().length > MAX_LENGTH;
+		const {
+			register,
+			handleSubmit,
+			reset,
+			setValue,
+			formState: { errors },
+		} = useForm({
+			resolver: yupResolver(schema),
+			defaultValues: {
+				name: '',
+			},
+		});
 
-		const isError = invalid && isDirty;
-
-		const helperText = isError ? `Vui lòng nhập từ ${MIN_LENGTH} đến ${MAX_LENGTH} kí tự` : '';
-
-		const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-			if (event.target.value.length <= MAX_LENGTH) {
-				setName(event.target.value);
-			}
+		const handleClose = () => {
+			setIsOpen(false);
+			reset();
+			setMode(Mode.Create);
+			editedPlayerRef.current = null;
+			helpers.scrollToTop();
 		};
 
-		const handleSubmit = () => {
-			if (invalid) {
-				setIsDirty(true);
-				return;
-			}
-
+		const onSubmitForm = (data: { name: string }) => {
 			if (mode === Mode.Create) {
-				onSubmit(name);
+				onSubmit(data.name);
 			}
 
 			if (mode === Mode.Edit) {
-				onSubmit(name, editedPlayerRef.current?.id);
+				onSubmit(data.name, editedPlayerRef.current?.id);
 			}
 
 			handleClose();
 		};
 
-		const handleClose = () => {
-			setIsOpen(false);
-			setIsDirty(false);
-			setName('');
-			setMode(Mode.Create);
-			editedPlayerRef.current = null;
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
-		};
-
 		useImperativeHandle(ref, () => ({
-			editPlayerName: (player: Player) => {
+			editPlayerName: (player: PlayerForm) => {
 				setIsOpen(true);
 				setMode(Mode.Edit);
-				setName(player.name);
+				setValue('name', player?.name ?? '');
 				editedPlayerRef.current = player;
 			},
 		}));
@@ -84,43 +70,31 @@ const PlayerModifierDialog = forwardRef(
 				{React.cloneElement(children as React.ReactElement, {
 					onClick: () => setIsOpen(true),
 				})}
-				<Dialog
-					onClose={handleClose}
-					open={isOpen}
-					TransitionComponent={Transition}
-					scroll="paper"
-					fullWidth
-				>
-					<DialogTitle>
-						{mode === Mode.Create ? 'Thêm người chơi' : 'Sửa tên người chơi'}
-					</DialogTitle>
-					<DialogContent
-						dividers
-						sx={{
-							padding: '1.5rem 1rem 1rem',
-						}}
-					>
-						<TextField
-							error={isError}
-							label="Tên người chơi"
-							id="name-of-player"
-							size="small"
-							value={name}
-							onChange={handleNameChange}
-							onBlur={() => setIsDirty(true)}
-							sx={{ width: '100%' }}
-							helperText={helperText}
-						/>
-						<Button
-							sx={{ mt: '1rem', width: '100%' }}
-							variant="contained"
-							size="small"
-							disabled={isError}
-							onClick={handleSubmit}
-						>
-							{mode === Mode.Create ? 'Tạo' : 'Sửa'}
-						</Button>
-					</DialogContent>
+				<Dialog isOpen={isOpen}>
+					<form onSubmit={handleSubmit(onSubmitForm)}>
+						<Dialog.DialogTitle>
+							{mode === Mode.Create ? 'Thêm thông tin người chơi' : 'Sửa thông tin người chơi'}
+						</Dialog.DialogTitle>
+						<Dialog.DialogContent sx={styles.dialogContent} dividers>
+							<TextField
+								{...register('name')}
+								error={!!errors.name}
+								label="Tên người chơi"
+								id="name-of-player"
+								size="small"
+								sx={styles.input}
+								helperText={errors.name?.message}
+							/>
+						</Dialog.DialogContent>
+						<Dialog.DialogActions>
+							<Button variant="text" color="inherit" size="small" onClick={handleClose}>
+								Hủy
+							</Button>
+							<Button variant="contained" size="small" type="submit" disabled={!!errors.name}>
+								{mode === Mode.Create ? 'Tạo' : 'Sửa'}
+							</Button>
+						</Dialog.DialogActions>
+					</form>
 				</Dialog>
 			</>
 		);
