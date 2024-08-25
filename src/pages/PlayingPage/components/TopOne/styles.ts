@@ -23,7 +23,7 @@ const styles = {
 		top: 0,
 		left: '60%',
 		transform: 'translateY(-50%) rotate(-8deg)',
-		WebkitTransform: 'translateY(-50%) rotate(-8deg)',
+		'-webkit-transform': 'translateY(-50%) rotate(-8deg)',
 		zIndex: 10,
 		width: '40px',
 	} as SxProps,
