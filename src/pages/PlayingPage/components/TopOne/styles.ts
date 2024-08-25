@@ -20,11 +20,10 @@ const styles = {
 		}) as SxProps,
 	iconCrown: {
 		position: 'absolute',
-		top: 0,
-		left: '60%',
-		transform: 'translateY(-50%) rotate(-8deg)',
-		'-webkit-transform': 'translateY(-50%) rotate(-8deg)',
-		zIndex: 10,
+		top: '0px',
+		left: '50%',
+		transform: 'translate(-50%, -60%)',
+		zIndex: '10',
 		width: '40px',
 	} as SxProps,
 	topNumber: {
