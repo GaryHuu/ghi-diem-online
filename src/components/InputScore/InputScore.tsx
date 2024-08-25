@@ -1,5 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 import { IconButton, Stack, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getValueOnBlurByText } from './utils';

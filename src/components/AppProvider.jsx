@@ -1,8 +1,9 @@
-import db, { defaultSettingValues } from '@/db';
+import { DEFAULT_SETTING_VALUES } from '@/utils/constants';
+import db from '@/db';
 import PropTypes from 'prop-types';
 import { createContext, useState } from 'react';
 
-export const AppContext = createContext(defaultSettingValues);
+export const AppContext = createContext(DEFAULT_SETTING_VALUES);
 
 function AppProvider({ children }) {
 	const [settingValue, setSettingValue] = useState(db.getSetting());

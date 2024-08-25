@@ -4,14 +4,9 @@ function ToastContainer() {
 	return (
 		<ToastContainerLib
 			position="top-center"
-			autoClose={5000}
-			hideProgressBar
-			newestOnTop={false}
+			autoClose={3000}
+			limit={3}
 			closeOnClick
-			rtl={false}
-			pauseOnFocusLoss
-			draggable
-			pauseOnHover
 			theme="light"
 		/>
 	);

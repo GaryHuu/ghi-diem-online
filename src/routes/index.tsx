@@ -1,7 +1,5 @@
-import Layout from '@/components/Layout';
-import CreatingPage from '@/pages/CreatingPage';
-import HomePage from '@/pages/HomePage';
-import PlayingPage from '@/pages/PlayingPage';
+import { Layout } from '@/components';
+import { CreatingPage, HomePage, PlayingPage } from '@/pages';
 import { createBrowserRouter } from 'react-router-dom';
 import { ROUTES } from './constants';
 
