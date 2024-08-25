@@ -31,8 +31,8 @@ function useTransactions() {
 
 	const transactions = useMemo(() => {
 		const _transactions = [];
-		const _debtors = structuredClone(debtors);
-		const _creditors = structuredClone(creditors);
+		const _debtors = JSON.parse(JSON.stringify(debtors));
+		const _creditors = JSON.parse(JSON.stringify(creditors));
 
 		let i = 0;
 		let j = 0;
