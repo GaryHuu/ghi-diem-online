@@ -12,7 +12,7 @@ const migrations = () => {
 					const value = localStorage.getItem(matchIdKey);
 					if (value) {
 						localStorage.removeItem(matchIdKey);
-						localStorage.setItem(DB_KEYS + matchIdKey, value);
+						localStorage.setItem(DB_KEYS.MATCH + matchIdKey, value);
 					}
 				} catch (innerError) {
 					console.error(`Error processing match with id ${match.id}:`, innerError);
