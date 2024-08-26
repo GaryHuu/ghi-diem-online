@@ -17,7 +17,7 @@ export const MATCH_NAME = {
 };
 
 export const PLAYER_NAME = {
-	MIN_LENGTH: 3,
+	MIN_LENGTH: 2,
 	MAX_LENGTH: 16,
 };
 
