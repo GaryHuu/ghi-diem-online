@@ -1,10 +1,10 @@
 import { Dialog } from '@/components';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { IconButton, Stack } from '@mui/material';
-import { Node as ReactFlowNode, ReactFlow } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+import { ReactFlow, Node as ReactFlowNode } from '@xyflow/react';
 import { useTransactions } from '../../hooks';
 import styles from './styles';
+import classes from './Transactions.module.scss';
 
 type Props = {
 	isOpen: boolean;
@@ -24,7 +24,12 @@ function Transactions({ isOpen, onClose }: Props) {
 				</Stack>
 			</Dialog.DialogTitle>
 			<Dialog.DialogContent dividers>
-				<ReactFlow nodes={nodes as ReactFlowNode[]} edges={edges} fitView nodeTypes={{}} />
+				<ReactFlow
+					className={classes.reactFlow}
+					nodes={nodes as ReactFlowNode[]}
+					edges={edges}
+					fitView
+				/>
 			</Dialog.DialogContent>
 		</Dialog>
 	);

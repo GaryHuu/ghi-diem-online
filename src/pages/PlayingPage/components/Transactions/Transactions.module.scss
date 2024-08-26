@@ -1,0 +1,15 @@
+.reactFlow {
+	:global {
+		.react-flow__node {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		.react-flow__panel.react-flow__attribution {
+			display: none;
+		}
+	}
+}
