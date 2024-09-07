@@ -21,7 +21,7 @@ function useDraggablePlayer() {
 
 			// TODO: dispatch action to redux store,  call to service to update db
 			const sourcePlayer = players.find(
-				(player, index) => player.id === Number.parseInt(result.draggableId),
+				(player) => player.id === Number.parseInt(result.draggableId),
 			);
 
 			const clonePlayers = [...players];
@@ -33,6 +33,7 @@ function useDraggablePlayer() {
 				// insert source to destination index
 				clonePlayers.splice(result.destination.index, 0, sourcePlayer!);
 			}
+
 			matchService.updatePositionOfPlayer(matchId, clonePlayers);
 			// Get match Id
 			const newMatch = matchService.get(matchId);
