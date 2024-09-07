@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
-import { DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import { DropResult, ResponderProvided, DraggableLocation } from 'react-beautiful-dnd';
 
 export type OnDragEndResponder = (result: DropResult, provided: ResponderProvided) => void;
 
@@ -11,11 +11,8 @@ function useDraggablePlayer() {
 	const matchId = match?.data.id as number;
 	const players = match?.data.players ?? [];
 
-	const onDragEnd = (result: {
-		source: { index: number };
-		draggableId: string;
-		destination: { index: number };
-	}) => {
+	const onDragEnd = (result: DropResult) => {
+		console.log('Trigger', result);
 		try {
 			if (!match) {
 				return;
@@ -31,8 +28,10 @@ function useDraggablePlayer() {
 			// remove source item outo list
 			clonePlayers.splice(result.source.index, 1);
 
-			// insert source to destination index
-			clonePlayers.splice(result.destination.index, 0, sourcePlayer!);
+			if (result.destination) {
+				// insert source to destination index
+				clonePlayers.splice(result.destination.index, 0, sourcePlayer!);
+			}
 
 			const newMatch = matchService.get(matchId);
 		} catch (e) {}

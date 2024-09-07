@@ -1,30 +1,47 @@
 import { Player as PlayerType } from '@/utils/types';
 
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import {
+	DragDropContext,
+	Draggable,
+	Droppable,
+	DroppableProvided,
+	DraggableProvided,
+} from 'react-beautiful-dnd';
 import { useDraggablePlayer, usePlaying } from '../../hooks';
 
-const DragDropPlayer = ({ children }: DragDropPlayerProps) => {
+interface DragDropPlayerProps {
+	children: ({ player }: { player: PlayerType }) => React.ReactNode;
+}
+
+const DragDropPlayer: React.FC<DragDropPlayerProps> = ({ children }) => {
 	const { players, onDragEnd } = useDraggablePlayer();
 
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<Droppable droppableId="droppable">
-				{(provider, snapshot) => {
+				{(provider: DroppableProvided, snapshot) => {
 					return (
-						<div {...provider.innerRef} ref={provider.innerRef}>
+						<div
+							ref={provider.innerRef}
+							{...provider.droppableProps}
+
+							// style={{ backgroundColor: snapshot.isDraggingOver ? 'white' : 'white' }}
+						>
 							{players.map((player, index) => (
 								<Draggable key={player.id} draggableId={player.id.toString()} index={index}>
-									{(provider, snapshot) => (
+									{(provider: DraggableProvided, snapshot) => (
 										<div
 											ref={provider.innerRef}
 											{...provider.draggableProps}
 											{...provider.dragHandleProps}
+											style={{ paddingTop: 20 }}
 										>
 											{children({ player })}
 										</div>
 									)}
 								</Draggable>
 							))}
+							{provider.placeholder}
 						</div>
 					);
 				}}
