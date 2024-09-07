@@ -86,6 +86,11 @@ const matchService = {
 
 		return updatedPlayer;
 	},
+	updatePositionOfPlayer: (matchId: number, players: Player[]) => {
+		if (!matchId) throw new Error('ID trận đấu không hợp lệ');
+		console.log({ matchId, players });
+		const updatePlayerPosition = matchDB.updatePlayersPositionOfMatch(matchId, players);
+	},
 	getCurrentGameNumber: (id: number): number => {
 		const match = matchDB.getMatch(id);
 

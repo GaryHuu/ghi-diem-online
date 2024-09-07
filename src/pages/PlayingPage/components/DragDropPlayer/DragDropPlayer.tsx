@@ -24,8 +24,7 @@ const DragDropPlayer: React.FC<DragDropPlayerProps> = ({ children }) => {
 						<div
 							ref={provider.innerRef}
 							{...provider.droppableProps}
-
-							// style={{ backgroundColor: snapshot.isDraggingOver ? 'white' : 'white' }}
+							style={{ rowGap: 20, display: 'flex', flexDirection: 'column' }}
 						>
 							{players.map((player, index) => (
 								<Draggable key={player.id} draggableId={player.id.toString()} index={index}>
@@ -34,7 +33,6 @@ const DragDropPlayer: React.FC<DragDropPlayerProps> = ({ children }) => {
 											ref={provider.innerRef}
 											{...provider.draggableProps}
 											{...provider.dragHandleProps}
-											style={{ paddingTop: 20 }}
 										>
 											{children({ player })}
 										</div>

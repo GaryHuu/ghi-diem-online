@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateMatchDetailData } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
 import { DropResult, ResponderProvided, DraggableLocation } from 'react-beautiful-dnd';
@@ -32,8 +33,12 @@ function useDraggablePlayer() {
 				// insert source to destination index
 				clonePlayers.splice(result.destination.index, 0, sourcePlayer!);
 			}
-
+			matchService.updatePositionOfPlayer(matchId, clonePlayers);
+			// Get match Id
 			const newMatch = matchService.get(matchId);
+
+			// Update match detail
+			dispatch(updateMatchDetailData(newMatch));
 		} catch (e) {}
 	};
 
