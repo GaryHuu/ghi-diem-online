@@ -8,6 +8,8 @@ const styles = {
 		padding: '12px',
 		border: `1.5px solid #1976d2`,
 		borderRadius: '0.5rem',
+		backgroundColor: '#FFF',
+		flex: 1,
 	} as SxProps,
 	titleWrapper: {
 		gap: '0.5rem',

@@ -21,7 +21,7 @@ function Hero() {
 		playerModifierDialogRef.current?.editPlayerName(player);
 	};
 
-	const isAllowedAddPlayer = !isFinished && match?.current === match?.total;
+	const isAllowedActionForPlayer = !isFinished && match?.current === match?.total;
 
 	return (
 		<>
@@ -29,12 +29,12 @@ function Hero() {
 			<Stack sx={styles.wrapper}>
 				<Stack sx={styles.content}>
 					{isEmptyPlayer && <EmptyPlayerMessage />}
-					<DragDropPlayer>
-						{({ player }) => <Player key={player.id} player={player} onRename={onRenamePlayer} />}
+					<DragDropPlayer isAllow={isAllowedActionForPlayer}>
+						{(player) => <Player key={player.id} player={player} onRename={onRenamePlayer} />}
 					</DragDropPlayer>
-					{isAllowedAddPlayer && (
+					{isAllowedActionForPlayer && (
 						<PlayerModifierDialog ref={playerModifierDialogRef} onSubmit={onAdjustPlayer}>
-							<Button variant="contained" size="large" startIcon={<AddIcon />} />
+							<Button variant="contained" size="small" startIcon={<AddIcon />} />
 						</PlayerModifierDialog>
 					)}
 				</Stack>
