@@ -13,7 +13,7 @@ function CreatingPage() {
 				id="name-of-the-match"
 				size="medium"
 				{...register('name')}
-				sx={{ width: '100%' }}
+				sx={styles.w100}
 				helperText={formState.errors.name ? formState.errors.name.message : ''}
 			/>
 			<Button variant="contained" size="large" type="submit" disabled={!formState.isDirty}>

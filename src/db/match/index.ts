@@ -125,6 +125,9 @@ const matchDB = {
 		helpers.setToLocalStorage(DB_KEYS.MY_IDS_OF_MATCHES, newMatchesBasicInfo);
 		helpers.removeFromLocalStorage(helpers.getKeyStoragePlayersOfMatch(id));
 	},
+	updatePlayersPositionOfMatch: (id: number, players: Player[]) => {
+		helpers.setToLocalStorage(helpers.getKeyStoragePlayersOfMatch(id), players);
+	},
 };
 
 export default matchDB;

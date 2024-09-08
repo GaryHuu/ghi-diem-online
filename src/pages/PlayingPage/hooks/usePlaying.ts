@@ -129,7 +129,6 @@ function usePlaying() {
 
 	return {
 		match,
-		players,
 		isEmptyPlayer,
 		isFinished,
 		isShowResult,

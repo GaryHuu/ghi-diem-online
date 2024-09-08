@@ -7,4 +7,7 @@ export const styles: { [key: string]: SxProps } = {
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	w100: {
+		width: '100%',
+	},
 };
