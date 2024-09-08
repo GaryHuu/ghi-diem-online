@@ -1,4 +1,4 @@
-import { ReduxProvider, ToastContainer } from '@/components';
+import { ReduxProvider, ThemeAppProvider, ToastContainer } from '@/components';
 import router from '@/routes';
 import { CssBaseline } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
@@ -10,10 +10,12 @@ migrations();
 function App() {
 	return (
 		<ReduxProvider>
-			<CssBaseline />
-			<RouterProvider router={router} />
-			<ToastContainer />
-			<Analytics />
+			<ThemeAppProvider>
+				<CssBaseline />
+				<RouterProvider router={router} />
+				<ToastContainer />
+				<Analytics />
+			</ThemeAppProvider>
 		</ReduxProvider>
 	);
 }

@@ -1,4 +1,5 @@
 export { default as ReduxProvider } from './ReduxProvider';
+export { default as ThemeAppProvider } from './ThemeAppProvider';
 export { default as ToastContainer } from './ToastContainer';
 export { default as InputScore } from './InputScore';
 export { default as ConfirmModal } from './ConfirmModal';
