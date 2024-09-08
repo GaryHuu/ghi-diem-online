@@ -28,11 +28,17 @@ function useListingMatchesDialog() {
 		});
 	};
 
+	const inProgressMatches = matches.filter((match) => !match.isFinished);
+
+	const finishedMatches = matches.filter((match) => match.isFinished);
+
 	return {
 		isOpen,
 		onOpen,
 		onClose,
 		matches,
+		finishedMatches,
+		inProgressMatches,
 		onItemClick,
 		onDeleteItem,
 		confirmActionRef,

@@ -9,6 +9,10 @@ const styles: { [key: string]: SxProps } = {
 		pt: 0,
 	},
 	empty: {
+		textAlign: 'center',
+		fontSize: '14px',
+		fontStyle: 'italic',
+		mb: '1rem',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',

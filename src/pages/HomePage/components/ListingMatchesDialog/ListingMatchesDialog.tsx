@@ -1,20 +1,21 @@
-import { ConfirmModal } from '@/components';
-import { Dialog } from '@/components';
+import { ConfirmModal, Dialog } from '@/components';
 import { DATE_FORMAT } from '@/utils/constants';
-import { Match } from '@/utils/types';
 import helpers from '@/utils/helpers';
+import { Match } from '@/utils/types';
 import {
 	Delete as DeleteIcon,
 	SentimentVeryDissatisfied as SentimentVeryDissatisfiedIcon,
 } from '@mui/icons-material';
 import {
 	Avatar,
+	Divider,
 	IconButton,
 	List,
 	ListItem,
 	ListItemAvatar,
 	ListItemButton,
 	ListItemText,
+	ListSubheader,
 	Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
@@ -27,8 +28,16 @@ type Props = {
 };
 
 function ListingMatchesDialog({ children }: Props) {
-	const { isOpen, onOpen, onClose, matches, onItemClick, onDeleteItem, confirmActionRef } =
-		useListingMatchesDialog();
+	const {
+		isOpen,
+		onOpen,
+		onClose,
+		inProgressMatches,
+		finishedMatches,
+		onItemClick,
+		onDeleteItem,
+		confirmActionRef,
+	} = useListingMatchesDialog();
 
 	return (
 		<>
@@ -39,11 +48,28 @@ function ListingMatchesDialog({ children }: Props) {
 				<Dialog.DialogTitle>Chọn trận đấu</Dialog.DialogTitle>
 				<Dialog.DialogContent sx={styles.dialogContent}>
 					<List sx={styles.list}>
-						{matches.map((match) => (
+						<ListSubheader>Đang diễn ra</ListSubheader>
+						{inProgressMatches.map((match) => (
 							<Item key={match.id} match={match} onClick={onItemClick} onDelete={onDeleteItem} />
 						))}
+						{inProgressMatches.length === 0 && (
+							<Typography sx={styles.empty}>
+								<SentimentVeryDissatisfiedIcon color="action" />
+								Không có bất kỳ trận đấu nào đang diễn ra
+							</Typography>
+						)}
+						<Divider variant="middle" />
+						<ListSubheader>Đã kết thúc</ListSubheader>
+						{finishedMatches.map((match) => (
+							<Item key={match.id} match={match} onClick={onItemClick} onDelete={onDeleteItem} />
+						))}
+						{finishedMatches.length === 0 && (
+							<Typography sx={styles.empty}>
+								<SentimentVeryDissatisfiedIcon color="action" />
+								Không có bất kỳ trận đấu nào đã kết thúc
+							</Typography>
+						)}
 					</List>
-					{matches.length === 0 && <Empty />}
 				</Dialog.DialogContent>
 			</Dialog>
 			<ConfirmModal ref={confirmActionRef} />
@@ -84,11 +110,4 @@ const Item = ({
 			<ListItemText primary={match.name} secondary={dayjs(match.id).format(DATE_FORMAT)} />
 		</ListItemButton>
 	</ListItem>
-);
-
-const Empty = () => (
-	<Typography textAlign="center" p={3} sx={styles.empty}>
-		<SentimentVeryDissatisfiedIcon />
-		Bạn chưa bắt đầu bất kỳ ván nào
-	</Typography>
 );
