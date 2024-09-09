@@ -84,6 +84,7 @@ const PlayerModifierDialog = forwardRef(
 								size="small"
 								sx={styles.input}
 								helperText={errors.name?.message}
+								autoFocus
 							/>
 						</Dialog.DialogContent>
 						<Dialog.DialogActions>

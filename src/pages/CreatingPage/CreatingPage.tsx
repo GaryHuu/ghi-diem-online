@@ -15,6 +15,7 @@ function CreatingPage() {
 				{...register('name')}
 				sx={styles.w100}
 				helperText={formState.errors.name ? formState.errors.name.message : ''}
+				autoFocus
 			/>
 			<Button variant="contained" size="large" type="submit" disabled={!formState.isDirty}>
 				Chơi
