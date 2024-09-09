@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { schema } from './schema';
 import styles from './styles';
 import { Mode, PlayerForm } from './types';
-import { useFocus } from '@/hooks';
 
 type Props = {
 	children: ReactNode;
@@ -57,8 +56,6 @@ const PlayerModifierDialog = forwardRef(
 			handleClose();
 		};
 
-		const [inputRef, setFocus] = useFocus<HTMLInputElement>();
-
 		useImperativeHandle(ref, () => ({
 			editPlayerName: (player: PlayerForm) => {
 				setIsOpen(true);
@@ -71,10 +68,7 @@ const PlayerModifierDialog = forwardRef(
 		return (
 			<>
 				{React.cloneElement(children as React.ReactElement, {
-					onClick: () => {
-						setIsOpen(true);
-						setFocus();
-					},
+					onClick: () => setIsOpen(true),
 				})}
 				<Dialog isOpen={isOpen}>
 					<form onSubmit={handleSubmit(onSubmitForm)}>
@@ -90,7 +84,7 @@ const PlayerModifierDialog = forwardRef(
 								size="small"
 								sx={styles.input}
 								helperText={errors.name?.message}
-								inputRef={inputRef}
+								autoFocus
 							/>
 						</Dialog.DialogContent>
 						<Dialog.DialogActions>
