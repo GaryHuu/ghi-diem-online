@@ -2,7 +2,10 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateMatchDetailData } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
-import { DropResult, ResponderProvided, DraggableLocation } from 'react-beautiful-dnd';
+import helpers from '@/utils/helpers';
+import { ErrorType } from '@/utils/types';
+import { DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import { toast } from 'react-toastify';
 
 export type OnDragEndResponder = (result: DropResult, provided: ResponderProvided) => void;
 
@@ -12,35 +15,34 @@ function useDraggablePlayer() {
 	const matchId = match?.data.id as number;
 	const players = match?.data.players ?? [];
 
-	const onDragEnd = (result: DropResult) => {
-		console.log('Trigger', result);
+	const onDragEnd: OnDragEndResponder = (result, provided) => {
 		try {
 			if (!match) {
+				throw new Error('Không tìm thấy trận đấu');
+			}
+
+			if (!result.destination || result.destination.index === result.source.index) {
 				return;
 			}
 
-			// TODO: dispatch action to redux store,  call to service to update db
-			const sourcePlayer = players.find(
-				(player) => player.id === Number.parseInt(result.draggableId),
-			);
+			const sourcePlayer = players.find((player) => player.id === +result.draggableId);
 
-			const clonePlayers = [...players];
-
-			// remove source item outo list
-			clonePlayers.splice(result.source.index, 1);
-
-			if (result.destination) {
-				// insert source to destination index
-				clonePlayers.splice(result.destination.index, 0, sourcePlayer!);
+			if (!sourcePlayer) {
+				return;
 			}
 
-			matchService.updatePositionOfPlayer(matchId, clonePlayers);
-			// Get match Id
-			const newMatch = matchService.get(matchId);
+			const clonePlayers = [...players];
+			clonePlayers.splice(result.source.index, 1);
+			clonePlayers.splice(result.destination.index, 0, sourcePlayer);
 
-			// Update match detail
+			matchService.updatePositionOfPlayer(matchId, clonePlayers);
+
+			const newMatch = matchService.get(matchId);
 			dispatch(updateMatchDetailData(newMatch));
-		} catch (e) {}
+			toast.success('Thay đổi vị trí thành công');
+		} catch (error) {
+			toast.error(helpers.getErrorMessage(error as ErrorType));
+		}
 	};
 
 	return { players, onDragEnd };
