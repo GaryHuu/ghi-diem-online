@@ -5,6 +5,7 @@ import {
 	updateIsShowResult,
 	updateMatchDetail,
 	updateMatchDetailData,
+	updateMatches,
 } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
@@ -74,6 +75,8 @@ function usePlaying() {
 			const newMatch = matchService.get(matchId);
 			dispatch(updateMatchDetailData(newMatch));
 			toggleShowResult();
+			const newMatches = matchService.getAll();
+			dispatch(updateMatches(newMatches));
 		} catch (error) {
 			toast.error(helpers.getErrorMessage(error as ErrorType));
 		} finally {
