@@ -6,6 +6,11 @@ const styles: { [key: string]: SxProps } = {
 	},
 	input: { width: '100%' },
 	actions: { mt: 1.5, flexDirection: 'row', gap: 1, justifyContent: 'flex-end' },
+	tip: {
+		mt: 1,
+		fontSize: '0.8rem',
+		fontStyle: 'italic',
+	},
 };
 
 export default styles;

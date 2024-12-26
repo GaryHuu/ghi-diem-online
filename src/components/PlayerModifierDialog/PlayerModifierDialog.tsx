@@ -1,7 +1,7 @@
 import { Dialog } from '@/components';
 import helpers from '@/utils/helpers';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import React, { forwardRef, ReactNode, Ref, useImperativeHandle, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { schema } from './schema';
@@ -45,12 +45,17 @@ const PlayerModifierDialog = forwardRef(
 		};
 
 		const onSubmitForm = (data: { name: string }) => {
+			const value = data.name.trim();
+
 			if (mode === Mode.Create) {
-				onSubmit(data.name);
+				const names = value.split(',');
+				names.forEach((name) => {
+					onSubmit(name.trim(), editedPlayerRef.current?.id);
+				});
 			}
 
 			if (mode === Mode.Edit) {
-				onSubmit(data.name, editedPlayerRef.current?.id);
+				onSubmit(value, editedPlayerRef.current?.id);
 			}
 
 			handleClose();
@@ -86,6 +91,11 @@ const PlayerModifierDialog = forwardRef(
 								helperText={errors.name?.message}
 								autoFocus
 							/>
+							{mode === Mode.Create && (
+								<Typography variant="body2" color="text.secondary" sx={styles.tip}>
+									*Mẹo: Thêm nhiều người chơi bằng cách thêm dấu phẩy (,) giữa các tên người chơi.
+								</Typography>
+							)}
 						</Dialog.DialogContent>
 						<Dialog.DialogActions>
 							<Button variant="text" color="inherit" size="small" onClick={handleClose}>
