@@ -41,7 +41,7 @@ const matchService = {
 
 		const player = matchDB.addPlayerToMatch(matchId, newPlayer);
 
-		if (!player) throw new Error('Tên người chơi đã tồn tại');
+		if (!player) throw new Error(`Tên người chơi ${name} đã tồn tại`);
 
 		return player;
 	},
