@@ -21,6 +21,7 @@ function Layout() {
 			<AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
 				<Toolbar>
 					<IconButton
+						id="back-home-btn"
 						color="inherit"
 						aria-label="open drawer"
 						onClick={() => navigate(ROUTES.HOME)}
@@ -28,7 +29,7 @@ function Layout() {
 						<HomeIcon />
 					</IconButton>
 					<Box sx={{ flexGrow: 1 }} />
-					<IconButton color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
+					<IconButton id="setting-btn" color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
 						<SettingsIcon />
 					</IconButton>
 				</Toolbar>

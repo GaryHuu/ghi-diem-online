@@ -5,6 +5,14 @@ const styles = {
 		fontWeight: 'bold',
 		mb: '4px',
 	} as SxProps,
+	headerTitle: {
+		display: 'flex',
+		alignItems: 'center',
+		columnGap: '12px',
+	},
+	helpIcon: {
+		cursor: 'pointer',
+	},
 	gapSlider: {
 		'& .MuiSlider-valueLabel': {
 			backgroundColor: '#1976d2de',
