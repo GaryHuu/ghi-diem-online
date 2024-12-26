@@ -22,6 +22,7 @@ function HomePage() {
 			</Stack>
 			<Stack spacing={1}>
 				<Button
+					id="start-btn"
 					size="large"
 					variant="contained"
 					startIcon={<AddIcon />}
@@ -30,7 +31,7 @@ function HomePage() {
 					Bắt Đầu
 				</Button>
 				<ListingMatchesDialog>
-					<Button size="large" variant="outlined" startIcon={<ArrowRightIcon />}>
+					<Button id="continue-btn" size="large" variant="outlined" startIcon={<ArrowRightIcon />}>
 						Tiếp tục
 					</Button>
 				</ListingMatchesDialog>
