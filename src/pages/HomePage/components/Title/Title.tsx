@@ -8,7 +8,7 @@ function Title() {
 				<span className={classNames(classes.titleWord, classes.titleWord1)}>Ghi</span>
 				<span className={classNames(classes.titleWord, classes.titleWord2)}>Điểm</span>
 				<span className={classNames(classes.titleWord, classes.titleWord3)}>Online</span>
-{/* 				<span className={classNames(classes.titleWord, classes.titleWord4)}></span> */}
+				{/* 				<span className={classNames(classes.titleWord, classes.titleWord4)}></span> */}
 			</h2>
 		</div>
 	);
