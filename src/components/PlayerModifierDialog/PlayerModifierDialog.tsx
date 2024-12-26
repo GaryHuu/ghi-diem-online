@@ -49,8 +49,10 @@ const PlayerModifierDialog = forwardRef(
 
 			if (mode === Mode.Create) {
 				const names = value.split(',');
-				names.forEach((name) => {
-					onSubmit(name.trim(), editedPlayerRef.current?.id);
+				names.forEach((name, index) => {
+					setTimeout(() => {
+						onSubmit(name.trim(), editedPlayerRef.current?.id);
+					}, index);
 				});
 			}
 
