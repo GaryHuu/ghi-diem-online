@@ -3,9 +3,10 @@ import router from '@/routes';
 import { CssBaseline } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
 
-import { RouterProvider } from 'react-router-dom';
-import { migrations } from './migration';
 import Guideline from '@/components/Guideline';
+import { RouterProvider } from 'react-router-dom';
+import { HOME_GUIDE_STEPS } from './components/Guideline/constants';
+import { migrations } from './migration';
 
 migrations();
 
@@ -13,7 +14,7 @@ function App() {
 	return (
 		<ReduxProvider>
 			<ThemeAppProvider>
-				<Guideline />
+				<Guideline steps={HOME_GUIDE_STEPS} />
 				<CssBaseline />
 				<RouterProvider router={router} />
 				<ToastContainer />

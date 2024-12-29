@@ -1,6 +1,6 @@
 import { Placement } from 'react-joyride';
 
-export const GUIDE_STEPS = [
+export const HOME_GUIDE_STEPS = [
 	{
 		content: <h2>Let's begin our journey!</h2>,
 		locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
@@ -15,21 +15,26 @@ export const GUIDE_STEPS = [
 		target: '#continue-btn',
 		content: 'Tiếp tục ván đấu còn dang dở ở đấy nhé!',
 	},
-	{
-		target: '#name-of-the-match',
-		content: 'Nhập tên ván đấu mà bạn thích nào!',
-	},
-	// {
-	// 	target: '#start-game-btn',
-	// 	content:
-	// 		'Sau khi nhập tên ván đấu thì nhấn vào "Chơi" để tận hưởng ván đấu của bạn ngay thôi nào!',
-	// },
-	// {
-	// 	target: '#continue-btn',
-	// 	content: 'This is Continue!',
-	// },
-	// {
-	// 	target: '#continue-btn',
-	// 	content: 'This is Continue!',
-	// },
 ];
+
+export const SETTING_GUIDE_STEPS = [
+	{
+		content: <h2>Thiết lập đơn vị và hệ số cho trận đấu tại đây</h2>,
+		locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+		placement: 'center' as Placement,
+		target: 'body',
+	},
+	{
+		target: '#setting-unit-id',
+		content: 'Tại đây bạn có thể cài đặt đơn vị cho trận đấu!',
+	},
+	{
+		target: '#setting-gap-id',
+		content: 'Tại đây bạn có thể xác định hệ sô cho trận đấu!',
+	},
+];
+
+export enum GuideType {
+	HOME = 'home',
+	SETTING = 'setting',
+}

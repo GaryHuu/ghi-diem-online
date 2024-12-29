@@ -1,36 +1,34 @@
-import React, { useEffect } from 'react';
 import { useMount, useSetState } from 'react-use';
 
-import { CallBackProps, STATUS, Step } from 'react-joyride';
-import { GUIDE_STEPS } from '../constants';
+import { Step, CallBackProps, STATUS } from 'react-joyride';
+import { GuideType, HOME_GUIDE_STEPS, SETTING_GUIDE_STEPS } from '../constants';
 
 interface State {
-	run: GuideType | null;
-	steps: Step[];
-}
-
-enum GuideType {
-	HOME,
-	SETTING,
+	run: boolean;
+	guideType: GuideType;
 }
 
 function useGuide() {
-	const [{ run, steps }, setState] = useSetState<State>({
-		run: null,
-		steps: GUIDE_STEPS,
+	const [{ run, guideType }, setState] = useSetState<State>({
+		run: false,
+		guideType: GuideType.HOME,
 	});
 
-	// Khi mount lần đầu tiên sẽ start guideline
-	useMount(() => {
-		console.log('Call');
-		setState({ run: GuideType.HOME });
-	});
-
-	const onStartGuide = (guideType: GuideType) => {
-		setState({ run: guideType });
+	const onStartGuide = () => {
+		setState({ run: true });
 	};
 
-	return { steps, run, guideType: GuideType.HOME, onStartGuide };
+	const handleJoyrideCallback = (data: CallBackProps) => {
+		const { status } = data;
+		const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
+
+		if (finishedStatuses.includes(status)) {
+			console.log({ status });
+			setState({ run: false });
+		}
+	};
+	console.log({ run });
+	return { run, guideType, onStartGuide, handleJoyrideCallback };
 }
 
 export { useGuide };

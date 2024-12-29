@@ -1,10 +1,28 @@
-import React, { ReactNode } from 'react';
-import Joyride from 'react-joyride';
+import Joyride, { Step } from 'react-joyride';
 import { useGuide } from './hooks';
 
-function Guideline() {
-	const { run, steps, guideType } = useGuide();
-	return <Joyride run={run === guideType} steps={steps} continuous showProgress showSkipButton />;
+interface Props {
+	steps: Step[];
+}
+
+function Guideline({ steps }: Props) {
+	const { run, handleJoyrideCallback } = useGuide();
+	console.log({ run });
+	return (
+		<Joyride
+			run={run}
+			steps={steps}
+			continuous
+			showProgress
+			showSkipButton
+			callback={handleJoyrideCallback}
+			styles={{
+				options: {
+					zIndex: 10000,
+				},
+			}}
+		/>
+	);
 }
 
 export default Guideline;
