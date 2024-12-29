@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 import { RouterProvider } from 'react-router-dom';
 import { migrations } from './migration';
+import Guideline from '@/components/Guideline';
 
 migrations();
 
@@ -12,6 +13,7 @@ function App() {
 	return (
 		<ReduxProvider>
 			<ThemeAppProvider>
+				<Guideline />
 				<CssBaseline />
 				<RouterProvider router={router} />
 				<ToastContainer />

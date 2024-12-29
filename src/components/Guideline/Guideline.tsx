@@ -3,8 +3,8 @@ import Joyride from 'react-joyride';
 import { useGuide } from './hooks';
 
 function Guideline() {
-	const { run, steps } = useGuide();
-	return <Joyride run={run} steps={steps} />;
+	const { run, steps, guideType } = useGuide();
+	return <Joyride run={run === guideType} steps={steps} continuous showProgress showSkipButton />;
 }
 
 export default Guideline;

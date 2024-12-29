@@ -5,22 +5,32 @@ import { CallBackProps, STATUS, Step } from 'react-joyride';
 import { GUIDE_STEPS } from '../constants';
 
 interface State {
-	run: boolean;
+	run: GuideType | null;
 	steps: Step[];
+}
+
+enum GuideType {
+	HOME,
+	SETTING,
 }
 
 function useGuide() {
 	const [{ run, steps }, setState] = useSetState<State>({
-		run: false,
+		run: null,
 		steps: GUIDE_STEPS,
 	});
 
+	// Khi mount lần đầu tiên sẽ start guideline
 	useMount(() => {
 		console.log('Call');
-		setState({ run: true });
+		setState({ run: GuideType.HOME });
 	});
 
-	return { steps, run };
+	const onStartGuide = (guideType: GuideType) => {
+		setState({ run: guideType });
+	};
+
+	return { steps, run, guideType: GuideType.HOME, onStartGuide };
 }
 
 export { useGuide };
