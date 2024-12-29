@@ -1,3 +1,4 @@
+import Guideline from '@/components/Guideline';
 import { ROUTES } from '@/routes/constants';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
@@ -16,6 +17,7 @@ function HomePage() {
 
 	return (
 		<Stack sx={styles.wrapper} spacing={4}>
+			<Guideline />
 			<Stack sx={styles.content} spacing={1}>
 				<Banner />
 				<Title />
