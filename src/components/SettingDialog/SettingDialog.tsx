@@ -24,9 +24,10 @@ function SettingDialog({ isOpen, onClose }: Props) {
 
 	return (
 		<Dialog isOpen={isOpen} onClose={onClose}>
-			<Dialog.DialogTitle>
+			<Dialog.DialogTitle sx={styles.headerTitle}>
 				Cài đặt{' '}
 				<HelpIcon
+					sx={styles.helpIcon}
 					onClick={() => {
 						onStartGuide(GuideType.SETTING);
 					}}

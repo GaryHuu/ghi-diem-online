@@ -13,6 +13,7 @@ function Guideline({ steps, type }: Props) {
 	const isRunned = guideType === type;
 	return (
 		<Joyride
+			disableOverlayClose
 			run={isRunned}
 			steps={steps}
 			continuous

@@ -3,22 +3,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Step } from 'react-joyride';
 
 interface GuideState {
-	guideType?: GuideType | null;
-	steps?: Step[];
-	stepIndex?: 0;
+	guideType: GuideType | null;
 }
 
 const initialState: GuideState = {
 	guideType: null,
-	steps: HOME_GUIDE_STEPS,
-	stepIndex: 0,
 };
+
+interface GuideAction {
+	guideType: GuideType | null;
+}
 
 const guideSlice = createSlice({
 	name: 'guide',
 	initialState,
 	reducers: {
-		updateGuide: (state, action: PayloadAction<GuideState>) => {
+		updateGuide: (state, action: PayloadAction<GuideAction>) => {
 			state.guideType = action.payload.guideType;
 		},
 	},
