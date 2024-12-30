@@ -1,7 +1,7 @@
 import { Dialog } from '@/components';
 import { Box, Slider, Stack, SxProps, Typography } from '@mui/material';
 import Guideline from '../Guideline';
-import { SETTING_GUIDE_STEPS } from '../Guideline/constants';
+import { GuideType, SETTING_GUIDE_STEPS } from '../Guideline/constants';
 import { SLIDER_MARKS, SLIDER_MAX_VALUE, SLIDER_MIN_VALUE, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
@@ -28,7 +28,7 @@ function SettingDialog({ isOpen, onClose }: Props) {
 				Cài đặt{' '}
 				<HelpIcon
 					onClick={() => {
-						onStartGuide();
+						onStartGuide(GuideType.SETTING);
 					}}
 				/>
 			</Dialog.DialogTitle>
@@ -39,7 +39,7 @@ function SettingDialog({ isOpen, onClose }: Props) {
 					<p style={{ fontSize: '14px', color: '#555' }}>© 2024 Gary Huu. All rights reserved.</p>
 				</Stack>
 			</Dialog.DialogContent>
-			<Guideline steps={SETTING_GUIDE_STEPS} />
+			<Guideline steps={SETTING_GUIDE_STEPS} type={GuideType.SETTING} />
 		</Dialog>
 	);
 }

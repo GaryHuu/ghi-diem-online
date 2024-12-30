@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Banner, ListingMatchesDialog, Title } from './components';
 import { styles } from './utils';
+import { GuideType } from '@/components/Guideline/constants';
 
 function HomePage() {
 	const navigate = useNavigate();
@@ -17,7 +18,7 @@ function HomePage() {
 
 	const { onStartGuide } = useGuide();
 	useEffect(() => {
-		onStartGuide();
+		onStartGuide(GuideType.HOME);
 	}, []);
 
 	return (

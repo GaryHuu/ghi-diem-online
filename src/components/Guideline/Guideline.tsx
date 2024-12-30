@@ -1,16 +1,19 @@
 import Joyride, { Step } from 'react-joyride';
 import { useGuide } from './hooks';
+import { GuideType } from './constants';
 
 interface Props {
 	steps: Step[];
+	type: GuideType;
 }
 
-function Guideline({ steps }: Props) {
-	const { run, handleJoyrideCallback } = useGuide();
-	console.log({ run });
+function Guideline({ steps, type }: Props) {
+	const { guideType, handleJoyrideCallback } = useGuide();
+
+	const isRunned = guideType === type;
 	return (
 		<Joyride
-			run={run}
+			run={isRunned}
 			steps={steps}
 			continuous
 			showProgress

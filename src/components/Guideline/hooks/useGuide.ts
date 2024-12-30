@@ -1,21 +1,15 @@
-import { useMount, useSetState } from 'react-use';
-
-import { Step, CallBackProps, STATUS } from 'react-joyride';
-import { GuideType, HOME_GUIDE_STEPS, SETTING_GUIDE_STEPS } from '../constants';
-
-interface State {
-	run: boolean;
-	guideType: GuideType;
-}
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateGuide } from '@/redux/slices/guideSlice';
+import { RootState } from '@/redux/store';
+import { CallBackProps, STATUS } from 'react-joyride';
+import { GuideType } from '../constants';
 
 function useGuide() {
-	const [{ run, guideType }, setState] = useSetState<State>({
-		run: false,
-		guideType: GuideType.HOME,
-	});
-
-	const onStartGuide = () => {
-		setState({ run: true });
+	const guide = useAppSelector((state: RootState) => state.guide);
+	const { guideType } = guide;
+	const dispatch = useAppDispatch();
+	const onStartGuide = (guideType: GuideType) => {
+		dispatch(updateGuide({ ...guide, guideType }));
 	};
 
 	const handleJoyrideCallback = (data: CallBackProps) => {
@@ -23,12 +17,11 @@ function useGuide() {
 		const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
 		if (finishedStatuses.includes(status)) {
-			console.log({ status });
-			setState({ run: false });
+			dispatch(updateGuide({ ...guide, guideType: null }));
 		}
 	};
-	console.log({ run });
-	return { run, guideType, onStartGuide, handleJoyrideCallback };
+
+	return { guideType, onStartGuide, handleJoyrideCallback };
 }
 
 export { useGuide };
