@@ -1,4 +1,4 @@
-import { Placement } from 'react-joyride';
+import { Placement, Step } from 'react-joyride';
 
 export const HOME_GUIDE_STEPS = [
 	{
@@ -34,7 +34,39 @@ export const SETTING_GUIDE_STEPS = [
 	},
 ];
 
+export const MATCH_GUIDE_STEPS = [
+	{
+		target: '#match-name-id',
+		content: 'Tại đây hiển thị tên trận đấu của bạn',
+	},
+
+	{
+		target: '#match-index-id',
+		content: 'Tại đây hiển thị',
+	},
+
+	{
+		target: '#next-btn-id',
+		content: 'Nhấn vào đây để tiếp tục ván mới!',
+	},
+	{
+		target: '#finish-btn-id',
+		content: 'Nhấn vào đây để kết thúc ván đấu!',
+	},
+	{
+		target: '#add-hero-id',
+		content: 'Nhấn vào đây để thêm các anh hùng vào ván đấu!',
+	},
+];
+
+[HOME_GUIDE_STEPS, SETTING_GUIDE_STEPS, MATCH_GUIDE_STEPS].forEach((item) => {
+	item.forEach((step: Step) => {
+		step['disableBeacon'] = true;
+	});
+});
+
 export enum GuideType {
 	HOME = 'home',
 	SETTING = 'setting',
+	MATCH = 'match',
 }
