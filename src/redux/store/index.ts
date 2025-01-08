@@ -1,12 +1,11 @@
-import guideReducer from '@/redux/slices/guideSlice';
+import { configureStore } from '@reduxjs/toolkit';
 import matchReducer from '@/redux/slices/matchSlice';
 import settingReducer from '@/redux/slices/settingSlice';
-import { configureStore } from '@reduxjs/toolkit';
+
 const store = configureStore({
 	reducer: {
 		match: matchReducer,
 		setting: settingReducer,
-		guide: guideReducer,
 	},
 });
 

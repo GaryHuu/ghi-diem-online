@@ -17,13 +17,7 @@ function CreatingPage() {
 				helperText={formState.errors.name ? formState.errors.name.message : ''}
 				autoFocus
 			/>
-			<Button
-				id="start-game-btn"
-				variant="contained"
-				size="large"
-				type="submit"
-				disabled={!formState.isDirty}
-			>
+			<Button variant="contained" size="large" type="submit" disabled={!formState.isDirty}>
 				Chơi
 			</Button>
 		</Stack>
