@@ -35,9 +35,6 @@ const styles: { [key: string]: SxProps } = {
 		fontWeight: 'bold',
 		cursor: 'pointer',
 	},
-	helpIcon: {
-		cursor: 'pointer',
-	},
 };
 
 export default styles;

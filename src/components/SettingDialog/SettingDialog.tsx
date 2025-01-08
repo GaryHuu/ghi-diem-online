@@ -1,12 +1,8 @@
 import { Dialog } from '@/components';
 import { Box, Slider, Stack, SxProps, Typography } from '@mui/material';
-import Guideline from '../Guideline';
-import { GuideType, SETTING_GUIDE_STEPS } from '../Guideline/constants';
 import { SLIDER_MARKS, SLIDER_MAX_VALUE, SLIDER_MIN_VALUE, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
-import HelpIcon from '@mui/icons-material/Help';
-import { useGuide } from '../Guideline/hooks';
 
 type Props = {
 	isOpen: boolean;
@@ -20,19 +16,9 @@ function SettingDialog({ isOpen, onClose }: Props) {
 		onGapChange,
 	} = useSettingDialog();
 
-	const { onStartGuide } = useGuide();
-
 	return (
 		<Dialog isOpen={isOpen} onClose={onClose}>
-			<Dialog.DialogTitle sx={styles.headerTitle}>
-				Cài đặt{' '}
-				<HelpIcon
-					sx={styles.helpIcon}
-					onClick={() => {
-						onStartGuide(GuideType.SETTING);
-					}}
-				/>
-			</Dialog.DialogTitle>
+			<Dialog.DialogTitle>Cài đặt</Dialog.DialogTitle>
 			<Dialog.DialogContent>
 				<Stack gap="1rem">
 					<UnitSelection value={unit} onChange={onUnitChange} />
@@ -40,7 +26,6 @@ function SettingDialog({ isOpen, onClose }: Props) {
 					<p style={{ fontSize: '14px', color: '#555' }}>© 2024 Gary Huu. All rights reserved.</p>
 				</Stack>
 			</Dialog.DialogContent>
-			<Guideline steps={SETTING_GUIDE_STEPS} type={GuideType.SETTING} />
 		</Dialog>
 	);
 }
@@ -67,7 +52,7 @@ type UnitSelectionProps = {
 };
 
 const UnitSelection = ({ value, onChange }: UnitSelectionProps) => (
-	<Stack id="setting-unit-id">
+	<Stack>
 		<Typography sx={styles.title}>Đơn vị</Typography>
 		<Stack direction="row" gap="0.5rem">
 			{UNIT_OPTIONS.map((option) => (
@@ -88,7 +73,7 @@ type GapSelectionProps = {
 };
 
 const GapSelection = ({ value, onChange }: GapSelectionProps) => (
-	<Stack id="setting-gap-id">
+	<Stack>
 		<Typography sx={styles.title}>Giá trị tăng/giảm</Typography>
 		<Box px="8px">
 			<Slider
