@@ -16,9 +16,12 @@ function HomePage() {
 		navigate(ROUTES.CREATE_NEW_MATCH);
 	};
 
-	const { onStartGuide } = useGuide();
+	const { onStartGuide, settingGuide } = useGuide();
+
 	useEffect(() => {
-		onStartGuide(GuideType.HOME);
+		if (!settingGuide.includes(GuideType.HOME)) {
+			onStartGuide(GuideType.HOME);
+		}
 	}, []);
 
 	return (

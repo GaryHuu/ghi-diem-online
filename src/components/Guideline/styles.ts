@@ -9,6 +9,7 @@ const styles: { [key: string]: SxProps } = {
 	},
 	content: {
 		marginBottom: '24px',
+		textAlign: 'center',
 	},
 };
 

@@ -2,8 +2,8 @@ import { Placement, Step } from 'react-joyride';
 
 export const HOME_GUIDE_STEPS = [
 	{
-		content: <h2>Let's begin our journey!</h2>,
-		locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+		content: <h2>Chào mừng bạn đến với bình nguyên vô tận!</h2>,
+
 		placement: 'center' as Placement,
 		target: 'body',
 	},
