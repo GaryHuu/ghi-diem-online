@@ -1,4 +1,4 @@
-# Ghi Điểm Online 
+# Ghi Điểm Online
 
 [![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://www.ghidiem.online/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
