@@ -3,21 +3,22 @@ import { useAppDispatch } from '@/redux/hooks';
 import { updateIsShowResult, updateMatchDetail } from '@/redux/slices/matchSlice';
 import { ROUTES } from '@/routes/constants';
 import { matchService } from '@/services';
-import helpers from '@/utils/helpers';
-import { ErrorType } from '@/utils/types';
+import { translateError } from '@/utils/helpers';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 function usePlayingFetcher() {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { params } = useAddQueryParams();
+	const { t } = useTranslation();
 
 	const fetchMatch = useCallback(() => {
 		try {
-			if (!id) throw new Error('Không tìm thấy trận đấu');
+			if (!id) throw new Error('errors.match.notFound');
 
 			const newMatch = matchService.get(+id);
 			const totalGameNumber = matchService.getCurrentGameNumber(+id);
@@ -31,12 +32,12 @@ function usePlayingFetcher() {
 			dispatch(updateMatchDetail(payload));
 			newMatch.isFinished && dispatch(updateIsShowResult(true));
 		} catch (error) {
-			toast.error(helpers.getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 			navigate(ROUTES.HOME);
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	}, [id, t]);
 
 	useEffect(() => {
 		fetchMatch();

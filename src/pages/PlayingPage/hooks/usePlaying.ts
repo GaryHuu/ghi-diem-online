@@ -9,10 +9,11 @@ import {
 } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
-import { getErrorMessage, scrollToTop } from '@/utils/helpers';
-import { ErrorType, PlayerLeaderBoard } from '@/utils/types';
+import { translateError, scrollToTop } from '@/utils/helpers';
+import { PlayerLeaderBoard } from '@/utils/types';
 import { toast } from 'react-toastify';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Custom hook for managing playing page state and operations
@@ -24,6 +25,7 @@ function usePlaying() {
 	const isFinished = match?.data.isFinished ?? false;
 	const isShowResult = match?.isShowResult ?? false;
 	const { updateQueryParams } = useAddQueryParams();
+	const { t } = useTranslation();
 
 	/**
 	 * Memoize players to ensure stable reference and prevent unnecessary recalculations
@@ -55,7 +57,7 @@ function usePlaying() {
 			const updatedMatch = matchService.get(matchId);
 			dispatch(updateMatchDetailData(updatedMatch));
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 
@@ -82,7 +84,7 @@ function usePlaying() {
 			dispatch(updateCurrentGame(gameNumber));
 			updateQueryParams({ gN: gameNumber.toString() });
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 
@@ -101,7 +103,7 @@ function usePlaying() {
 			dispatch(updateMatchDetail(payload));
 			updateQueryParams({ gN: nextGameNumber.toString() });
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		} finally {
 			scrollToTop();
 		}
@@ -120,7 +122,7 @@ function usePlaying() {
 			const allMatches = matchService.getAll();
 			dispatch(updateMatches(allMatches));
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		} finally {
 			scrollToTop();
 		}
@@ -143,7 +145,7 @@ function usePlaying() {
 
 			refreshMatchData();
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 
@@ -158,7 +160,7 @@ function usePlaying() {
 			matchService.updateScoreOfPlayer(matchId, playerId, gameNumber, score);
 			refreshMatchData();
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 
@@ -178,7 +180,7 @@ function usePlaying() {
 			matchService.updateScoreOfPlayer(matchId, playerId, gameNumber, -score);
 			refreshMatchData();
 		} catch (error) {
-			toast.error(getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 

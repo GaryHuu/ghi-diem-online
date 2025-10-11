@@ -2,17 +2,18 @@ import { useAppDispatch } from '@/redux/hooks';
 import { updateMatches } from '@/redux/slices/matchSlice';
 import { ROUTES } from '@/routes/constants';
 import { matchService } from '@/services';
-import helpers from '@/utils/helpers';
-import { ErrorType } from '@/utils/types';
+import { translateError } from '@/utils/helpers';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import { CreatingPageForm, schema } from '../utils';
 
 function useCreatingPage() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const { t } = useTranslation();
 
 	const { register, handleSubmit, formState } = useForm<CreatingPageForm>({
 		resolver: yupResolver(schema),
@@ -28,7 +29,7 @@ function useCreatingPage() {
 			const path = generatePath(ROUTES.MATCH, { id: newMatch.id });
 			navigate(path);
 		} catch (error) {
-			toast.error(helpers.getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 
