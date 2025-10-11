@@ -2,12 +2,36 @@ import { DB_KEYS } from '@/utils/constants';
 import { ErrorType } from '../types';
 
 /**
- * Formats a number as Vietnamese currency
+ * Formats a number according to the specified locale
  * @param value - The number to format
+ * @param locale - The locale to use for formatting (e.g., 'vi-VN', 'en-US')
  * @returns Formatted string
  */
-export const formatCurrency = (value: number): string => {
-	return value.toLocaleString('vi-VN');
+export const formatCurrency = (value: number, locale: string = 'vi-VN'): string => {
+	return value.toLocaleString(locale);
+};
+
+/**
+ * Formats a currency value with symbol based on language and unit
+ * @param value - The base value to format
+ * @param unit - The unit multiplier (e.g., 1 or 1000)
+ * @param language - The language code ('vi' or 'en')
+ * @param t - Translation function from i18next
+ * @returns Formatted currency string with symbol
+ */
+export const formatCurrencyWithSymbol = (
+	value: number,
+	unit: number,
+	language: string,
+	t: (key: string) => string,
+): string => {
+	const calculatedValue = value * unit;
+	const locale = language === 'vi' ? 'vi-VN' : 'en-US';
+	const formattedNumber = formatCurrency(calculatedValue, locale);
+	const currencyKey = unit === 1 ? 'common.currency.1' : 'common.currency.1000';
+	const currencySymbol = t(currencyKey).replace(/^[\d,.]+/, '');
+
+	return formattedNumber + currencySymbol;
 };
 
 /**
@@ -118,6 +142,7 @@ export { translateError } from './errorTranslator';
 // Default export for backward compatibility
 const helpers = {
 	formatCurrency,
+	formatCurrencyWithSymbol,
 	stringToColor,
 	getShortName,
 	getFromLocalStorage,
