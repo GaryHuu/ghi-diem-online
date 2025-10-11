@@ -18,7 +18,7 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 - 🔄 **Drag & Drop** - Reorder players easily during gameplay
 - 💾 **Offline-First** - All data persisted in browser localStorage
 - 📱 **Responsive Design** - Works seamlessly on mobile and desktop
-- 🌐 **Vietnamese Language** - Localized UI for Vietnamese users
+- 🌐 **Internationalization (i18n)** - Support for English and Vietnamese with automatic language detection
 
 ## Tech Stack
 
@@ -44,6 +44,12 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 
 - **React Hook Form** - Performant form handling
 - **Yup** - Schema validation
+
+### Internationalization
+
+- **i18next** - i18n framework
+- **react-i18next** - React bindings for i18next
+- **i18next-browser-languagedetector** - Automatic language detection
 
 ### DevOps & Quality
 
@@ -101,6 +107,9 @@ src/
 ├── db/                 # localStorage database layer
 │   ├── match/         # Match and player CRUD operations
 │   └── setting/       # User settings persistence
+├── i18n/              # Internationalization
+│   ├── locales/       # Translation files (en.json, vi.json)
+│   └── index.ts       # i18n configuration
 ├── services/          # Business logic layer
 │   ├── match/        # Match validation and operations
 │   └── setting/      # Settings service
@@ -146,9 +155,22 @@ Validation occurs in:
 All data is stored in browser **localStorage** with the following keys:
 
 - `GHIDIEM_ONLINE_KEY` - Match data
-- `GHIDIEM_ONLINE_SETTING_KEY` - User settings
+- `GHIDIEM_ONLINE_SETTING_KEY` - User settings (unit, gap, language preference)
+- `i18nextLng` - Cached language preference for i18next
 
 The app includes automatic data migration (`src/migration.js`) to handle schema changes between versions.
+
+### Internationalization
+
+The app supports **English** and **Vietnamese** languages with:
+
+- **Automatic Detection**: Language is detected from:
+  1. Saved user preference in settings
+  2. Browser language
+  3. Falls back to Vietnamese
+- **Language Switching**: Users can change language via Settings dialog
+- **Translation Files**: Located in `src/i18n/locales/` (en.json, vi.json)
+- **Dynamic Content**: All UI strings, validation messages, and error messages are translated
 
 ## Browser Support
 

@@ -16,6 +16,7 @@ This is "Ghi Điểm Online" (https://www.ghidiem.online/) - a Vietnamese score-
 - **Form Handling**: React Hook Form with Yup validation
 - **Drag & Drop**: react-beautiful-dnd
 - **Styling**: SASS modules + MUI styled components
+- **Internationalization**: i18next, react-i18next, i18next-browser-languagedetector
 - **Analytics**: Vercel Analytics
 
 ## Development Commands
@@ -50,7 +51,7 @@ Redux slices located in `src/redux/slices/`:
   - `matches[]` - List of all matches
   - `matchDetail` - Currently active match with `current` game number, `total` games, and match `data`
   - `isShowResult` - Controls result visibility
-- `settingSlice.ts` - Manages user settings (unit and gap for scoring)
+- `settingSlice.ts` - Manages user settings (unit, gap, and language preference)
 
 ### Routing Structure
 
@@ -79,17 +80,34 @@ Three main routes defined in `src/routes/index.tsx`:
 5. Hook dispatches Redux action to update global state
 6. Components re-render from Redux store via `useAppSelector`
 
+## Internationalization (i18n)
+
+The app supports **English** and **Vietnamese** languages:
+
+- **Configuration**: `src/i18n/index.ts` - i18next setup with automatic language detection
+- **Translation Files**:
+  - `src/i18n/locales/en.json` - English translations
+  - `src/i18n/locales/vi.json` - Vietnamese translations
+- **Language Detection Priority**:
+  1. Saved user preference in settings (localStorage `GHIDIEM_ONLINE_SETTING_KEY`)
+  2. Browser language (`navigator.language`)
+  3. Fallback to Vietnamese
+- **Usage**: Components use `useTranslation()` hook from `react-i18next` to access translations via `t('key')`
+- **Error Translation**: Custom error translator in `src/utils/helpers/errorTranslator.ts` handles error message translation
+- **Validation Messages**: Yup schemas use i18n with interpolation support for dynamic error messages
+
 ## Data Migration
 
-`src/migration.js` runs on app initialization (called in App.tsx) to migrate localStorage keys from older versions. This ensures backward compatibility with existing user data.
+`src/migration.js` runs on app initialization (called in App.tsx) to migrate localStorage keys from older versions. This ensures backward compatibility with existing user data, including migrating settings to include language preference.
 
 ## Important Patterns
 
-- **Error Handling**: Services throw errors with Vietnamese messages, caught in hooks and displayed via `react-toastify`
+- **Error Handling**: Services throw errors with translated messages (English/Vietnamese based on selected language), caught in hooks and displayed via `react-toastify`
 - **Player Management**: Players are identified by timestamp-based IDs (`dayjs().valueOf()`)
 - **Score Tracking**: Each player has a `scores[]` array where index represents game number (0-indexed)
 - **Drag & Drop**: Player order can be rearranged using react-beautiful-dnd in PlayingPage
-- **Form Validation**: Uses Yup schemas (e.g., `src/pages/CreatingPage/utils/schemas.ts`)
+- **Form Validation**: Uses Yup schemas with i18n support (e.g., `src/pages/CreatingPage/utils/schemas.ts`)
+- **Language Switching**: Users can change language via Settings dialog, which updates localStorage and triggers re-render of all translated content
 
 ## Testing Notes
 
