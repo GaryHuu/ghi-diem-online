@@ -7,8 +7,36 @@ const settingDB = {
 		const data = helpers.getFromLocalStorage<Setting | null>(DB_KEYS.SETTING, null);
 
 		if (!data) {
-			helpers.setToLocalStorage(DB_KEYS.SETTING, DEFAULT_SETTING_VALUES);
-			return DEFAULT_SETTING_VALUES;
+			// Detect browser language for first-time users
+			const browserLanguage = navigator.language.split('-')[0];
+			const supportedLanguages = ['en', 'vi'];
+			const detectedLanguage = supportedLanguages.includes(browserLanguage)
+				? browserLanguage
+				: 'vi';
+
+			const initialSettings: Setting = {
+				...DEFAULT_SETTING_VALUES,
+				language: detectedLanguage as 'en' | 'vi',
+			};
+
+			helpers.setToLocalStorage(DB_KEYS.SETTING, initialSettings);
+			return initialSettings;
+		}
+
+		// Handle old settings without language field
+		if (!data.language) {
+			const browserLanguage = navigator.language.split('-')[0];
+			const supportedLanguages = ['en', 'vi'];
+			const detectedLanguage = supportedLanguages.includes(browserLanguage)
+				? browserLanguage
+				: 'vi';
+
+			const updatedData: Setting = {
+				...data,
+				language: detectedLanguage as 'en' | 'vi',
+			};
+			helpers.setToLocalStorage(DB_KEYS.SETTING, updatedData);
+			return updatedData;
 		}
 
 		return data;

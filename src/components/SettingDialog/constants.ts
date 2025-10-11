@@ -25,10 +25,22 @@ export const SLIDER_MARKS = [
 export const UNIT_OPTIONS = [
 	{
 		value: 1,
-		label: '1đ',
+		labelKey: 'common.currency.1',
 	},
 	{
 		value: 1000,
-		label: '1.000đ',
+		labelKey: 'common.currency.1000',
+	},
+];
+export const LANGUAGE_OPTIONS = [
+	{
+		value: 'vi' as const,
+		label: 'Tiếng Việt',
+		flagCode: 'vn',
+	},
+	{
+		value: 'en' as const,
+		label: 'English',
+		flagCode: 'us',
 	},
 ];

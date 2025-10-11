@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
 import React, { forwardRef, ReactNode, Ref, useImperativeHandle, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { schema } from './schema';
 import styles from './styles';
 import { Mode, PlayerForm } from './types';
@@ -19,6 +20,7 @@ export type PlayerModifierDialogRefType = {
 
 const PlayerModifierDialog = forwardRef(
 	({ children, onSubmit = () => {} }: Props, ref: Ref<PlayerModifierDialogRefType>) => {
+		const { t } = useTranslation();
 		const [mode, setMode] = useState<Mode>(Mode.Create);
 		const [isOpen, setIsOpen] = useState(false);
 		const editedPlayerRef = useRef<PlayerForm | null>(null);
@@ -80,13 +82,15 @@ const PlayerModifierDialog = forwardRef(
 				<Dialog isOpen={isOpen}>
 					<form onSubmit={handleSubmit(onSubmitForm)}>
 						<Dialog.DialogTitle>
-							{mode === Mode.Create ? 'Thêm thông tin người chơi' : 'Sửa thông tin người chơi'}
+							{mode === Mode.Create
+								? t('components.playerModifier.titleCreate')
+								: t('components.playerModifier.titleEdit')}
 						</Dialog.DialogTitle>
 						<Dialog.DialogContent sx={styles.dialogContent} dividers>
 							<TextField
 								{...register('name')}
 								error={!!errors.name}
-								label="Tên người chơi"
+								label={t('components.playerModifier.playerNameLabel')}
 								id="name-of-player"
 								size="small"
 								sx={styles.input}
@@ -95,16 +99,16 @@ const PlayerModifierDialog = forwardRef(
 							/>
 							{mode === Mode.Create && (
 								<Typography variant="body2" color="text.secondary" sx={styles.tip}>
-									*Mẹo: Thêm nhiều người chơi bằng cách thêm dấu phẩy (,) giữa các tên người chơi.
+									{t('components.playerModifier.tip')}
 								</Typography>
 							)}
 						</Dialog.DialogContent>
 						<Dialog.DialogActions>
 							<Button variant="text" color="inherit" size="small" onClick={handleClose}>
-								Hủy
+								{t('common.buttons.cancel')}
 							</Button>
 							<Button variant="contained" size="small" type="submit" disabled={!!errors.name}>
-								{mode === Mode.Create ? 'Tạo' : 'Sửa'}
+								{mode === Mode.Create ? t('common.buttons.create') : t('common.buttons.edit')}
 							</Button>
 						</Dialog.DialogActions>
 					</form>

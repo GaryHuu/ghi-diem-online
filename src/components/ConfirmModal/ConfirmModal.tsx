@@ -1,9 +1,10 @@
 import { Dialog } from '@/components';
 import { Button } from '@mui/material';
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { TEXT_CONFIG } from './constants';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmModal = React.forwardRef((_props, ref) => {
+	const { t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const confirmCallback = useRef<() => void>();
 
@@ -26,16 +27,16 @@ const ConfirmModal = React.forwardRef((_props, ref) => {
 
 	return (
 		<Dialog isOpen={isOpen}>
-			<Dialog.DialogTitle>{TEXT_CONFIG.TITLE}</Dialog.DialogTitle>
+			<Dialog.DialogTitle>{t('components.confirmModal.title')}</Dialog.DialogTitle>
 			<Dialog.DialogContent dividers sx={{ borderBottom: 'none' }}>
-				<Dialog.DialogContentText>{TEXT_CONFIG.CONTENT}</Dialog.DialogContentText>
+				<Dialog.DialogContentText>{t('components.confirmModal.content')}</Dialog.DialogContentText>
 			</Dialog.DialogContent>
 			<Dialog.DialogActions>
 				<Button onClick={handleCancel} color="inherit">
-					{TEXT_CONFIG.CANCEL}
+					{t('components.confirmModal.cancel')}
 				</Button>
 				<Button onClick={handleConfirm} autoFocus>
-					{TEXT_CONFIG.CONFIRM}
+					{t('components.confirmModal.confirm')}
 				</Button>
 			</Dialog.DialogActions>
 		</Dialog>

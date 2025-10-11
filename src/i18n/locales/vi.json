@@ -1,0 +1,114 @@
+{
+	"app": {
+		"title": "Ghi Điểm Application",
+		"description": "Hỗ trợ bạn ghi điểm của cuộc chơi nhanh gọn lẹ"
+	},
+	"common": {
+		"buttons": {
+			"start": "Bắt Đầu",
+			"continue": "Tiếp tục",
+			"play": "Chơi",
+			"end": "Kết thúc",
+			"create": "Tạo",
+			"edit": "Sửa",
+			"cancel": "Hủy",
+			"confirm": "Có",
+			"decline": "Không",
+			"autoFill": "Tự động điền"
+		},
+		"labels": {
+			"score": "Điểm",
+			"match": "Trận",
+			"unit": "Đơn vị",
+			"language": "Ngôn ngữ"
+		},
+		"currency": {
+			"1": "1đ",
+			"1000": "1.000đ"
+		}
+	},
+	"pages": {
+		"home": {
+			"title": "Điểm",
+			"titlePrefix": "Ghi",
+			"titleSuffix": "Online"
+		},
+		"creating": {
+			"matchName": "Tên trận đấu"
+		},
+		"playing": {
+			"leaderboard": "Bảng xếp hạng",
+			"continuePlay": "Chơi tiếp",
+			"paymentChart": "Biểu đồ thanh toán",
+			"scoreLabel": "Điểm: {{total}}",
+			"matchLabel": "Trận: {{name}}"
+		}
+	},
+	"components": {
+		"confirmModal": {
+			"title": "Xác nhận",
+			"content": "Bạn có muốn thực hiện hành động này không?",
+			"confirm": "Có",
+			"cancel": "Không"
+		},
+		"settingDialog": {
+			"title": "Cài đặt",
+			"unit": "Đơn vị",
+			"gapValue": "Giá trị tăng/giảm",
+			"language": "Ngôn ngữ",
+			"copyright": "© 2024 Gary Huu. Đã đăng ký bản quyền."
+		},
+		"playerModifier": {
+			"titleCreate": "Thêm thông tin người chơi",
+			"titleEdit": "Sửa thông tin người chơi",
+			"playerNameLabel": "Tên người chơi",
+			"tip": "*Mẹo: Thêm nhiều người chơi bằng cách thêm dấu phẩy (,) giữa các tên người chơi."
+		},
+		"listingMatches": {
+			"title": "Chọn trận đấu",
+			"inProgress": "Đang diễn ra",
+			"finished": "Đã kết thúc",
+			"noInProgress": "Không có bất kỳ trận đấu nào đang diễn ra",
+			"noFinished": "Không có bất kỳ trận đấu nào đã kết thúc"
+		},
+		"emptyPlayer": {
+			"message": "Bạn chưa có bất kỳ người chơi nào.",
+			"instruction": "Vui lòng tạo bằng cách ấn nút bên dưới"
+		}
+	},
+	"errors": {
+		"match": {
+			"nameRequired": "Vui lòng nhập tên trận đấu",
+			"notFound": "Không tìm thấy trận đấu",
+			"invalidId": "ID trận đấu không hợp lệ",
+			"minPlayers": "Trận đấu cần ít nhất 2 người chơi"
+		},
+		"player": {
+			"nameRequired": "Vui lòng nhập tên người chơi",
+			"notFound": "Không tìm thấy người chơi",
+			"invalidId": "ID người chơi không hợp lệ",
+			"nameExistsWithName": "Tên người chơi {{name}} đã tồn tại",
+			"nameExists": "Tên người chơi đã tồn tại"
+		},
+		"game": {
+			"invalidNumber": "Ván đấu không hợp lệ",
+			"invalidScore": "Điểm số không hợp lệ",
+			"scoreNotZeroWithNumber": "Tổng số điểm của ván đấu {{gameNumber}} không bằng 0",
+			"scoreNotZero": "Tổng số điểm của ván đấu hiện tại không bằng 0"
+		}
+	},
+	"validation": {
+		"matchName": {
+			"minLength": "Vui lòng nhập ít nhất {{min}} kí tự",
+			"maxLength": "Vui lòng nhập không quá {{max}} kí tự",
+			"required": "Tên trận đấu là bắt buộc"
+		},
+		"playerName": {
+			"length": "Vui lòng nhập từ {{min}} đến {{max}} kí tự",
+			"required": "Tên người chơi là bắt buộc"
+		}
+	},
+	"toast": {
+		"positionChanged": "Thay đổi vị trí thành công"
+	}
+}
