@@ -2,14 +2,15 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateMatchDetailData } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { matchService } from '@/services';
-import helpers from '@/utils/helpers';
-import { ErrorType } from '@/utils/types';
+import { translateError } from '@/utils/helpers';
 import { DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 export type OnDragEndResponder = (result: DropResult, provided: ResponderProvided) => void;
 
 function useDraggablePlayer() {
+	const { t } = useTranslation();
 	const match = useAppSelector((state: RootState) => state.match.matchDetail);
 	const dispatch = useAppDispatch();
 	const matchId = match?.data.id as number;
@@ -18,7 +19,7 @@ function useDraggablePlayer() {
 	const onDragEnd: OnDragEndResponder = (result, provided) => {
 		try {
 			if (!match) {
-				throw new Error('Không tìm thấy trận đấu');
+				throw new Error(t('errors.match.notFound'));
 			}
 
 			if (!result.destination || result.destination.index === result.source.index) {
@@ -39,9 +40,9 @@ function useDraggablePlayer() {
 
 			const newMatch = matchService.get(matchId);
 			dispatch(updateMatchDetailData(newMatch));
-			toast.success('Thay đổi vị trí thành công');
+			toast.success(t('toast.positionChanged'));
 		} catch (error) {
-			toast.error(helpers.getErrorMessage(error as ErrorType));
+			toast.error(translateError(error, t));
 		}
 	};
 

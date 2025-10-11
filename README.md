@@ -23,25 +23,30 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 ## Tech Stack
 
 ### Core
+
 - **React 18** - UI framework with TypeScript
 - **Vite** - Lightning-fast build tool and dev server
 - **TypeScript 5.5** - Type-safe development
 
 ### State & Routing
+
 - **Redux Toolkit** - Predictable state management
 - **React Router v6** - Client-side routing
 
 ### UI & Styling
+
 - **Material-UI (MUI) v5** - Component library
 - **Emotion** - CSS-in-JS styling
 - **SASS Modules** - Modular stylesheets
 - **react-beautiful-dnd** - Drag and drop functionality
 
 ### Forms & Validation
+
 - **React Hook Form** - Performant form handling
 - **Yup** - Schema validation
 
 ### DevOps & Quality
+
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **Husky** - Git hooks
@@ -57,17 +62,20 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/ghi-diem-online.git
 cd ghi-diem-online
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Start development server
+
 ```bash
 npm run dev
 ```
@@ -128,6 +136,7 @@ The application uses a **localStorage-based database** instead of a traditional 
 The core constraint of the app is that **all player scores for each game must sum to zero**. This enforces traditional Vietnamese card game rules where points are transferred between players.
 
 Validation occurs in:
+
 - `matchService.validateGameNumber` (src/services/match/index.ts:79)
 - `matchService.nextGame` (src/services/match/index.ts:152)
 - `matchService.endGame` (src/services/match/index.ts:212)

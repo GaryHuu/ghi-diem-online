@@ -112,6 +112,9 @@ export const scrollToTop = (): void => {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+// Export error translator
+export { translateError } from './errorTranslator';
+
 // Default export for backward compatibility
 const helpers = {
 	formatCurrency,

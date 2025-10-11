@@ -1,0 +1,114 @@
+{
+	"app": {
+		"title": "Score Tracker Application",
+		"description": "Help you track game scores quickly and easily"
+	},
+	"common": {
+		"buttons": {
+			"start": "Start",
+			"continue": "Continue",
+			"play": "Play",
+			"end": "End",
+			"create": "Create",
+			"edit": "Edit",
+			"cancel": "Cancel",
+			"confirm": "Yes",
+			"decline": "No",
+			"autoFill": "Auto Fill"
+		},
+		"labels": {
+			"score": "Score",
+			"match": "Match",
+			"unit": "Unit",
+			"language": "Language"
+		},
+		"currency": {
+			"1": "1pt",
+			"1000": "1,000pt"
+		}
+	},
+	"pages": {
+		"home": {
+			"title": "Score",
+			"titlePrefix": "Track",
+			"titleSuffix": "Online"
+		},
+		"creating": {
+			"matchName": "Match Name"
+		},
+		"playing": {
+			"leaderboard": "Leaderboard",
+			"continuePlay": "Continue Playing",
+			"paymentChart": "Payment Chart",
+			"scoreLabel": "Score: {{total}}",
+			"matchLabel": "Match: {{name}}"
+		}
+	},
+	"components": {
+		"confirmModal": {
+			"title": "Confirm",
+			"content": "Do you want to perform this action?",
+			"confirm": "Yes",
+			"cancel": "No"
+		},
+		"settingDialog": {
+			"title": "Settings",
+			"unit": "Unit",
+			"gapValue": "Increment/Decrement Value",
+			"language": "Language",
+			"copyright": "© 2024 Gary Huu. All rights reserved."
+		},
+		"playerModifier": {
+			"titleCreate": "Add Player Information",
+			"titleEdit": "Edit Player Information",
+			"playerNameLabel": "Player Name",
+			"tip": "*Tip: Add multiple players by adding a comma (,) between player names."
+		},
+		"listingMatches": {
+			"title": "Select Match",
+			"inProgress": "In Progress",
+			"finished": "Finished",
+			"noInProgress": "No matches in progress",
+			"noFinished": "No finished matches"
+		},
+		"emptyPlayer": {
+			"message": "You don't have any players yet.",
+			"instruction": "Please create one by clicking the button below"
+		}
+	},
+	"errors": {
+		"match": {
+			"nameRequired": "Please enter match name",
+			"notFound": "Match not found",
+			"invalidId": "Invalid match ID",
+			"minPlayers": "Match requires at least 2 players"
+		},
+		"player": {
+			"nameRequired": "Please enter player name",
+			"notFound": "Player not found",
+			"invalidId": "Invalid player ID",
+			"nameExistsWithName": "Player name {{name}} already exists",
+			"nameExists": "Player name already exists"
+		},
+		"game": {
+			"invalidNumber": "Invalid game number",
+			"invalidScore": "Invalid score",
+			"scoreNotZeroWithNumber": "Total score of game {{gameNumber}} does not equal 0",
+			"scoreNotZero": "Total score of current game does not equal 0"
+		}
+	},
+	"validation": {
+		"matchName": {
+			"minLength": "Please enter at least {{min}} characters",
+			"maxLength": "Please enter no more than {{max}} characters",
+			"required": "Match name is required"
+		},
+		"playerName": {
+			"length": "Please enter between {{min}} and {{max}} characters",
+			"required": "Player name is required"
+		}
+	},
+	"toast": {
+		"positionChanged": "Position changed successfully"
+	}
+}

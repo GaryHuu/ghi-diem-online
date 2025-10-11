@@ -3,12 +3,14 @@ import { useBoolean, useFormatCurrency } from '@/hooks';
 import helpers from '@/utils/helpers';
 import { ArrowBack as ArrowBackIcon, Paid as PaidIcon } from '@mui/icons-material';
 import { Avatar, Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { usePlaying } from '../../hooks';
 import TopOne from '../TopOne';
 import Transactions from '../Transactions';
 import styles from './styles';
 
 function LeaderBoard() {
+	const { t } = useTranslation();
 	const { isShowResult, leaderBoardPlayers, toggleShowResult } = usePlaying();
 	const {
 		value: isOpenTransactions,
@@ -35,7 +37,7 @@ function LeaderBoard() {
 						<IconButton sx={styles.p0} onClick={toggleShowResult}>
 							<ArrowBackIcon />
 						</IconButton>
-						Bảng xếp hạng
+						{t('pages.playing.leaderboard')}
 						<Button variant="outlined" onClick={handleShowTransactions}>
 							<PaidIcon />
 						</Button>

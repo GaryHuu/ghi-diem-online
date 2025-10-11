@@ -1,14 +1,17 @@
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import styles from './styles';
 
 function EmptyPlayerMessage() {
+	const { t } = useTranslation();
+
 	return (
 		<Typography sx={styles.wrapper}>
 			<SentimentVeryDissatisfiedIcon />
-			Bạn chưa bất kỳ người chơi nào.
+			{t('components.emptyPlayer.message')}
 			<br />
-			Vui lòng tạo bằng cách ấn nút bên dưới
+			{t('components.emptyPlayer.instruction')}
 		</Typography>
 	);
 }

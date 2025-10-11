@@ -18,9 +18,12 @@ export type Unit = number;
 
 export type Gap = number;
 
+export type Language = 'vi' | 'en';
+
 export interface Setting {
 	unit: Unit;
 	gap: Gap;
+	language: Language;
 }
 
 export interface ErrorType {

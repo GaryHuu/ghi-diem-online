@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './styles';
 import useListingMatchesDialog from './useListingMatchesDialog';
 
@@ -28,6 +29,7 @@ type Props = {
 };
 
 function ListingMatchesDialog({ children }: Props) {
+	const { t } = useTranslation();
 	const {
 		isOpen,
 		onOpen,
@@ -45,28 +47,28 @@ function ListingMatchesDialog({ children }: Props) {
 				onClick: onOpen,
 			})}
 			<Dialog onClose={onClose} isOpen={isOpen}>
-				<Dialog.DialogTitle>Chọn trận đấu</Dialog.DialogTitle>
+				<Dialog.DialogTitle>{t('components.listingMatches.title')}</Dialog.DialogTitle>
 				<Dialog.DialogContent sx={styles.dialogContent}>
 					<List sx={styles.list}>
-						<ListSubheader>Đang diễn ra</ListSubheader>
+						<ListSubheader>{t('components.listingMatches.inProgress')}</ListSubheader>
 						{inProgressMatches.map((match) => (
 							<Item key={match.id} match={match} onClick={onItemClick} onDelete={onDeleteItem} />
 						))}
 						{inProgressMatches.length === 0 && (
 							<Typography sx={styles.empty}>
 								<SentimentVeryDissatisfiedIcon color="action" />
-								Không có bất kỳ trận đấu nào đang diễn ra
+								{t('components.listingMatches.noInProgress')}
 							</Typography>
 						)}
 						<Divider variant="middle" />
-						<ListSubheader>Đã kết thúc</ListSubheader>
+						<ListSubheader>{t('components.listingMatches.finished')}</ListSubheader>
 						{finishedMatches.map((match) => (
 							<Item key={match.id} match={match} onClick={onItemClick} onDelete={onDeleteItem} />
 						))}
 						{finishedMatches.length === 0 && (
 							<Typography sx={styles.empty}>
 								<SentimentVeryDissatisfiedIcon color="action" />
-								Không có bất kỳ trận đấu nào đã kết thúc
+								{t('components.listingMatches.noFinished')}
 							</Typography>
 						)}
 					</List>

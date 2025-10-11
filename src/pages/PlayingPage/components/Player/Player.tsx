@@ -7,6 +7,7 @@ import {
 	ArrowUpward as ArrowUpwardIcon,
 } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { usePlaying } from '../../hooks';
 import styles from './styles';
 
@@ -16,6 +17,7 @@ type Props = {
 };
 
 function Player({ player, onRename }: Props) {
+	const { t } = useTranslation();
 	const setting = useAppSelector((state: RootState) => state.setting);
 	const { match, onScorePlayerChange, onAutoFillScore } = usePlaying();
 	const currentGameNumber = match?.current ?? 1;
@@ -39,7 +41,9 @@ function Player({ player, onRename }: Props) {
 					{player.name}
 				</Typography>
 				<Stack sx={styles.scoreWrapper}>
-					<Typography sx={styles.score(total)}>Điểm: {total}</Typography>
+					<Typography sx={styles.score(total)}>
+						{t('pages.playing.scoreLabel', { total })}
+					</Typography>
 					{currentGameNumber !== 1 && !isFinished && (
 						<Stack sx={styles.trendWrapper(increasingTrendValue)}>
 							<Box>{`(`}</Box>
@@ -60,7 +64,7 @@ function Player({ player, onRename }: Props) {
 				/>
 				{!isFinished && (
 					<Typography sx={styles.autoFill} onClick={handleAutoFill}>
-						Tự động điền
+						{t('common.buttons.autoFill')}
 					</Typography>
 				)}
 			</Stack>

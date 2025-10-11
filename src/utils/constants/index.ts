@@ -7,6 +7,7 @@ export const DB_KEYS = {
 export const DEFAULT_SETTING_VALUES = {
 	unit: 1000,
 	gap: 1,
+	language: 'vi' as const,
 };
 
 export const DATE_FORMAT = 'HH:mm DD/MM/YYYY';
