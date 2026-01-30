@@ -14,14 +14,11 @@ const resources = {
 	},
 };
 
-// Get language from settings in localStorage or browser
+// Get language from settings in localStorage
 const savedSettings = settingService.get();
-const browserLanguage = navigator.language.split('-')[0]; // Get 'en' from 'en-US', 'vi' from 'vi-VN'
-const supportedLanguages = ['en', 'vi'];
 
-// Priority: saved setting > browser language > fallback to Vietnamese
-const initialLanguage =
-	savedSettings.language || (supportedLanguages.includes(browserLanguage) ? browserLanguage : 'vi');
+// Priority: saved setting > default to Vietnamese
+const initialLanguage = savedSettings.language || 'vi';
 
 i18n
 	.use(LanguageDetector)
