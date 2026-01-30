@@ -6,19 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is "Ghi Điểm Online" (https://www.ghidiem.online/) - a Vietnamese score-tracking web application for multi-player card games. The app allows users to create matches, add players, track scores across multiple games, and view leaderboards. All data is persisted in browser localStorage.
 
-## Tech Stack
-
-- **Frontend Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Routing**: React Router v6
-- **State Management**: Redux Toolkit (@reduxjs/toolkit + react-redux)
-- **UI Framework**: Material-UI (MUI) v5 with Emotion
-- **Form Handling**: React Hook Form with Yup validation
-- **Drag & Drop**: react-beautiful-dnd
-- **Styling**: SASS modules + MUI styled components
-- **Internationalization**: i18next, react-i18next, i18next-browser-languagedetector
-- **Analytics**: Vercel Analytics
-
 ## Development Commands
 
 ```bash
@@ -98,22 +85,12 @@ The app supports **English** and **Vietnamese** languages:
 
 ## Data Migration
 
-`src/migration.js` runs on app initialization (called in App.tsx) to migrate localStorage keys from older versions. This ensures backward compatibility with existing user data, including migrating settings to include language preference.
+`src/migration.js` runs on app initialization (called in App.tsx) to migrate localStorage keys from older versions. This ensures backward compatibility with existing user data.
 
 ## Important Patterns
 
-- **Error Handling**: Services throw errors with translated messages (English/Vietnamese based on selected language), caught in hooks and displayed via `react-toastify`
+- **Error Handling**: Services throw errors with translated messages, caught in hooks and displayed via `react-toastify`
 - **Player Management**: Players are identified by timestamp-based IDs (`dayjs().valueOf()`)
 - **Score Tracking**: Each player has a `scores[]` array where index represents game number (0-indexed)
 - **Drag & Drop**: Player order can be rearranged using react-beautiful-dnd in PlayingPage
 - **Form Validation**: Uses Yup schemas with i18n support (e.g., `src/pages/CreatingPage/utils/schemas.ts`)
-- **Language Switching**: Users can change language via Settings dialog, which updates localStorage and triggers re-render of all translated content
-
-## Testing Notes
-
-- No test suite currently configured
-- Manual testing should verify:
-  - Zero-sum validation across all game numbers
-  - localStorage persistence after page reload
-  - Player name uniqueness within matches (case-insensitive)
-  - Score input validation and auto-fill feature
