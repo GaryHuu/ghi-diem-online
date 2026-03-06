@@ -7,7 +7,15 @@ import {
 	ArrowUpward as ArrowUpwardIcon,
 	Speed as SpeedIcon,
 } from '@mui/icons-material';
-import { Box, Checkbox, FormControlLabel, Popover, Stack, TextField, Typography } from '@mui/material';
+import {
+	Box,
+	Checkbox,
+	FormControlLabel,
+	Popover,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePlaying } from '../../hooks';
@@ -23,7 +31,7 @@ function Player({ player, onRename }: Props) {
 	const setting = useAppSelector((state: RootState) => state.setting);
 	const { match, onScorePlayerChange, onToggleAutoFill, onUpdatePlayerGap } = usePlaying();
 	const currentGameNumber = match?.current ?? 1;
-	const total = player.scores.slice(0, currentGameNumber).reduce((acc, score) => acc + score, 0);
+	const total = player.scores.slice(0, currentGameNumber - 1).reduce((acc, score) => acc + score, 0);
 	const increasingTrendValue = player.scores[currentGameNumber - 2] || 0;
 	const isFinished = match?.data.isFinished ?? false;
 	const currentValue = player.scores[currentGameNumber - 1] || 0;
@@ -101,9 +109,7 @@ function Player({ player, onRename }: Props) {
 								/>
 							}
 							label={
-								<Typography sx={{ fontSize: '14px' }}>
-									{t('common.buttons.autoFill')}
-								</Typography>
+								<Typography sx={{ fontSize: '14px' }}>{t('common.buttons.autoFill')}</Typography>
 							}
 							sx={{ m: 0 }}
 						/>
@@ -114,9 +120,7 @@ function Player({ player, onRename }: Props) {
 							sx={styles.gapBadge(hasCustomGap)}
 						>
 							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
-								{effectiveGap}
-							</Typography>
+							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
 						</Stack>
 						<Popover
 							open={Boolean(gapAnchorEl)}
@@ -139,10 +143,7 @@ function Player({ player, onRename }: Props) {
 									autoFocus
 								/>
 								{hasCustomGap && (
-									<Typography
-										onClick={handleResetGap}
-										sx={styles.resetGap}
-									>
+									<Typography onClick={handleResetGap} sx={styles.resetGap}>
 										{t('pages.playing.resetToGlobal')}
 									</Typography>
 								)}
