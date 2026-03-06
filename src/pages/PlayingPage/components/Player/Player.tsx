@@ -23,7 +23,7 @@ function Player({ player, onRename }: Props) {
 	const setting = useAppSelector((state: RootState) => state.setting);
 	const { match, onScorePlayerChange, onToggleAutoFill, onUpdatePlayerGap } = usePlaying();
 	const currentGameNumber = match?.current ?? 1;
-	const total = player.scores.slice(0, currentGameNumber).reduce((acc, score) => acc + score, 0);
+	const total = player.scores.slice(0, currentGameNumber - 1).reduce((acc, score) => acc + score, 0);
 	const increasingTrendValue = player.scores[currentGameNumber - 2] || 0;
 	const isFinished = match?.data.isFinished ?? false;
 	const currentValue = player.scores[currentGameNumber - 1] || 0;
