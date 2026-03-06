@@ -165,19 +165,27 @@ function usePlaying() {
 	};
 
 	/**
-	 * Auto-fills a player's score to make the game sum to zero
-	 * @param playerId - Player ID to auto-fill
-	 * @param gameNumber - Game number (1-indexed)
+	 * Toggles autoFill for a player (only one at a time)
+	 * @param playerId - Player ID
 	 */
-	const onAutoFillScore = (playerId: number, gameNumber: number): void => {
+	const onToggleAutoFill = (playerId: number): void => {
 		try {
-			let score = 0;
-			match?.data.players.forEach((p) => {
-				if (p.id !== playerId) {
-					score = score + p.scores[gameNumber - 1];
-				}
-			});
-			matchService.updateScoreOfPlayer(matchId, playerId, gameNumber, -score);
+			const currentGameNumber = match?.current ?? 1;
+			const updatedMatch = matchService.togglePlayerAutoFill(matchId, playerId, currentGameNumber);
+			dispatch(updateMatchDetailData(updatedMatch));
+		} catch (error) {
+			toast.error(translateError(error, t));
+		}
+	};
+
+	/**
+	 * Updates a player's individual gap value
+	 * @param playerId - Player ID
+	 * @param gap - New gap value (undefined to reset to global)
+	 */
+	const onUpdatePlayerGap = (playerId: number, gap?: number): void => {
+		try {
+			matchService.updatePlayerGap(matchId, playerId, gap);
 			refreshMatchData();
 		} catch (error) {
 			toast.error(translateError(error, t));
@@ -200,7 +208,8 @@ function usePlaying() {
 		toggleShowResult,
 		onAdjustPlayer,
 		onScorePlayerChange,
-		onAutoFillScore,
+		onToggleAutoFill,
+		onUpdatePlayerGap,
 		moveToEnd,
 		onShowGameNumber,
 		onPlayContinue,

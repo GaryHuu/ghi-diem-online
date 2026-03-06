@@ -1,12 +1,7 @@
 import { Dialog } from '@/components';
-import { Box, Slider, Stack, SxProps, Typography } from '@mui/material';
-import {
-	LANGUAGE_OPTIONS,
-	SLIDER_MARKS,
-	SLIDER_MAX_VALUE,
-	SLIDER_MIN_VALUE,
-	UNIT_OPTIONS,
-} from './constants';
+import { Box, Stack, SxProps, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { LANGUAGE_OPTIONS, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
 import { useTranslation } from 'react-i18next';
@@ -89,21 +84,34 @@ type GapSelectionProps = {
 
 const GapSelection = ({ value, onChange }: GapSelectionProps) => {
 	const { t } = useTranslation();
+	const [displayValue, setDisplayValue] = useState<string>(value.toString());
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value;
+		setDisplayValue(raw);
+		const num = +raw;
+		if (num >= 1) onChange(num);
+	};
+
+	const handleBlur = () => {
+		const num = +displayValue;
+		if (num < 1 || isNaN(num)) {
+			setDisplayValue(value.toString());
+		}
+	};
+
 	return (
 		<Stack>
 			<Typography sx={styles.title}>{t('components.settingDialog.gapValue')}</Typography>
-			<Box px="8px">
-				<Slider
-					min={SLIDER_MIN_VALUE}
-					max={SLIDER_MAX_VALUE}
-					marks={SLIDER_MARKS}
-					value={value}
-					onChange={(_e, gap) => onChange(+gap)}
-					sx={styles.gapSlider}
-					valueLabelDisplay="on"
-					aria-label="Always visible"
-				/>
-			</Box>
+			<TextField
+				type="number"
+				value={displayValue}
+				onChange={handleChange}
+				onBlur={handleBlur}
+				size="small"
+				inputProps={{ min: 1 }}
+				sx={{ maxWidth: '120px' }}
+			/>
 		</Stack>
 	);
 };

@@ -158,6 +158,8 @@ const updateScoreOfPlayer = (
 		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
 	}
 
+	recalculateAutoFillPlayer(matchId, gameNumber);
+
 	return updatedPlayer;
 };
 
@@ -259,6 +261,99 @@ const endGame = (id: number): Match => {
 	return match;
 };
 
+/**
+ * Recalculates the autoFill player's score for a given game
+ * @param matchId - The match ID
+ * @param gameNumber - The game number (1-indexed)
+ */
+const recalculateAutoFillPlayer = (matchId: number, gameNumber: number): void => {
+	const match = matchDB.getMatch(matchId);
+	if (!match) return;
+
+	const autoFillPlayer = match.players.find((p) => p.autoFill);
+	if (!autoFillPlayer) return;
+
+	const otherPlayersSum = match.players
+		.filter((p) => p.id !== autoFillPlayer.id)
+		.reduce((sum, p) => sum + (p.scores[gameNumber - 1] || 0), 0);
+
+	autoFillPlayer.scores[gameNumber - 1] = -otherPlayersSum;
+	matchDB.updatePlayerOfMatch(matchId, autoFillPlayer);
+};
+
+/**
+ * Toggles autoFill for a player. Only one player can have autoFill at a time.
+ * @param matchId - The match ID
+ * @param playerId - The player ID
+ * @param gameNumber - The current game number (1-indexed)
+ * @returns The updated match
+ */
+const togglePlayerAutoFill = (matchId: number, playerId: number, gameNumber: number): Match => {
+	validateMatchId(matchId);
+	validatePlayerId(playerId);
+
+	const match = matchDB.getMatch(matchId);
+	if (!match) {
+		throw new Error(ERROR_MESSAGES.MATCH_NOT_FOUND);
+	}
+
+	const targetPlayer = match.players.find((p) => p.id === playerId);
+	if (!targetPlayer) {
+		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
+	}
+
+	const isEnabling = !targetPlayer.autoFill;
+
+	// Clear autoFill from all players first
+	match.players.forEach((p) => {
+		if (p.autoFill) {
+			p.autoFill = undefined;
+			matchDB.updatePlayerOfMatch(matchId, p);
+		}
+	});
+
+	if (isEnabling) {
+		targetPlayer.autoFill = true;
+
+		// Calculate score immediately
+		const otherPlayersSum = match.players
+			.filter((p) => p.id !== playerId)
+			.reduce((sum, p) => sum + (p.scores[gameNumber - 1] || 0), 0);
+		targetPlayer.scores[gameNumber - 1] = -otherPlayersSum;
+
+		matchDB.updatePlayerOfMatch(matchId, targetPlayer);
+	}
+
+	return get(matchId);
+};
+
+/**
+ * Updates a player's individual gap value
+ * @param matchId - The match ID
+ * @param playerId - The player ID
+ * @param gap - The new gap value (undefined to use global setting)
+ * @returns The updated player
+ * @throws Error if IDs are invalid or player not found
+ */
+const updatePlayerGap = (matchId: number, playerId: number, gap?: number): Player => {
+	validateMatchId(matchId);
+	validatePlayerId(playerId);
+
+	const currentPlayer = matchDB.getPlayerOfMatch(matchId, playerId);
+	if (!currentPlayer) {
+		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
+	}
+
+	currentPlayer.gap = gap;
+	const updatedPlayer = matchDB.updatePlayerOfMatch(matchId, currentPlayer);
+
+	if (!updatedPlayer) {
+		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
+	}
+
+	return updatedPlayer;
+};
+
 const matchService = {
 	create,
 	get,
@@ -268,6 +363,8 @@ const matchService = {
 	updatePlayerName,
 	updateScoreOfPlayer,
 	updatePositionOfPlayer,
+	updatePlayerGap,
+	togglePlayerAutoFill,
 	getCurrentGameNumber,
 	validateGameNumber: validateGameNumberScores,
 	nextGame,

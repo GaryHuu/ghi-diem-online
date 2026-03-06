@@ -5,16 +5,6 @@ const styles = {
 		fontWeight: 'bold',
 		mb: '4px',
 	} as SxProps,
-	gapSlider: {
-		'& .MuiSlider-valueLabel': {
-			backgroundColor: '#1976d2de',
-			color: '#FFF',
-
-			'&:before': {
-				backgroundColor: '#1976d2de',
-			},
-		},
-	} as SxProps,
 	unitItem: (active: boolean) =>
 		({
 			cursor: 'pointer',
