@@ -46,10 +46,23 @@ const styles = {
 		fontWeight: 'bold',
 		fontSize: '14px',
 	} as SxProps,
-	autoFill: {
-		fontSize: '14px',
-		textAlign: 'center',
+	gapBadge: (hasCustomGap: boolean) =>
+		({
+			cursor: 'pointer',
+			gap: '2px',
+			padding: '1px 6px',
+			borderRadius: '12px',
+			border: `1px solid ${hasCustomGap ? PRIMARY_COLOR : '#bbb'}`,
+			backgroundColor: hasCustomGap ? '#e3f2fd' : 'transparent',
+			color: hasCustomGap ? PRIMARY_COLOR : '#888',
+			userSelect: 'none',
+		}) as SxProps,
+	resetGap: {
+		fontSize: '12px',
+		color: '#D32F2F',
 		cursor: 'pointer',
+		textAlign: 'center',
+		mt: '4px',
 	} as SxProps,
 };
 

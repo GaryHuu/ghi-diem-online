@@ -2,6 +2,8 @@ export interface Player {
 	id: number;
 	name: string;
 	scores: number[];
+	gap?: number;
+	autoFill?: boolean;
 }
 
 export interface MatchWithoutPlayers {

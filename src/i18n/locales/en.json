@@ -41,7 +41,9 @@
 			"continuePlay": "Continue Playing",
 			"paymentChart": "Payment Chart",
 			"scoreLabel": "Score: {{total}}",
-			"matchLabel": "Match: {{name}}"
+			"matchLabel": "Match: {{name}}",
+			"individualGap": "Individual increment/decrement",
+			"resetToGlobal": "Reset to default"
 		}
 	},
 	"components": {

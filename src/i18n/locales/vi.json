@@ -41,7 +41,9 @@
 			"continuePlay": "Chơi tiếp",
 			"paymentChart": "Biểu đồ thanh toán",
 			"scoreLabel": "Điểm: {{total}}",
-			"matchLabel": "Trận: {{name}}"
+			"matchLabel": "Trận: {{name}}",
+			"individualGap": "Giá trị tăng/giảm riêng",
+			"resetToGlobal": "Đặt lại về mặc định"
 		}
 	},
 	"components": {
