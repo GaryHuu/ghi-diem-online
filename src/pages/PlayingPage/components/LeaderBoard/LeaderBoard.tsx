@@ -38,7 +38,18 @@ function LeaderBoard() {
 							<ArrowBackIcon />
 						</IconButton>
 						{t('pages.playing.leaderboard')}
-						<Button variant="outlined" onClick={handleShowTransactions}>
+						<Button
+							variant="outlined"
+							onClick={handleShowTransactions}
+							sx={{
+								animation: 'pulse 2s infinite',
+								'@keyframes pulse': {
+									'0%': { boxShadow: '0 0 0 0 rgba(25, 118, 210, 0.4)' },
+									'70%': { boxShadow: '0 0 0 10px rgba(25, 118, 210, 0)' },
+									'100%': { boxShadow: '0 0 0 0 rgba(25, 118, 210, 0)' },
+								},
+							}}
+						>
 							<PaidIcon />
 						</Button>
 					</Stack>
@@ -62,16 +73,17 @@ type PlayerProps = {
 	top: number;
 	name: string;
 	score: number;
+	avatar?: string;
 };
 
-const Player = ({ top, name, score }: PlayerProps) => {
+const Player = ({ top, name, score, avatar }: PlayerProps) => {
 	const { formatCurrency } = useFormatCurrency();
 
 	return (
 		<Box sx={styles.player}>
 			<Box sx={styles.playerLeftInfo}>
 				<Typography sx={styles.top}>{top}</Typography>
-				<Avatar sx={styles.playerAvatar(name)}>{helpers.getShortName(name)}</Avatar>
+				<Avatar src={avatar} sx={styles.playerAvatar(name)}>{helpers.getShortName(name)}</Avatar>
 				<Typography sx={styles.playerName}>{name}</Typography>
 			</Box>
 			<Typography sx={styles.score}>{formatCurrency(score)}</Typography>

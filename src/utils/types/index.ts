@@ -4,6 +4,7 @@ export interface Player {
 	scores: number[];
 	gap?: number;
 	autoFill?: boolean;
+	avatar?: string;
 }
 
 export interface MatchWithoutPlayers {
@@ -36,4 +37,5 @@ export interface PlayerLeaderBoard {
 	id: number;
 	name: string;
 	score: number;
+	avatar?: string;
 }

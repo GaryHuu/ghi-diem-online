@@ -1,24 +1,32 @@
 import { PRIMARY_COLOR } from '@/utils/constants';
+import helpers from '@/utils/helpers';
 import { SxProps } from '@mui/material';
 
 const styles = {
 	wrapper: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		padding: '12px',
-		border: `1.5px solid #1976d2`,
+		padding: '8px 12px',
+		gap: '4px',
+		border: `1px solid #1976d2`,
 		borderRadius: '0.5rem',
 		backgroundColor: '#FFF',
 		flex: 1,
 	} as SxProps,
-	titleWrapper: {
-		gap: '0.5rem',
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	} as SxProps,
+	playerAvatar: (name: string) =>
+		({
+			width: 28,
+			height: 28,
+			fontSize: '0.75rem',
+			bgcolor: helpers.stringToColor(name),
+		}) as SxProps,
 	title: {
 		whiteSpace: 'nowrap',
 		fontWeight: 'bold',
 		fontSize: '15px',
-		cursor: 'pointer',
 		userSelect: 'none',
 	} as SxProps,
 	scoreWrapper: {

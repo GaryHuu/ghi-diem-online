@@ -8,9 +8,10 @@ import styles from './styles';
 type Props = {
 	name: string;
 	score: number;
+	avatar?: string;
 };
 
-function TopOne({ name, score }: Props) {
+function TopOne({ name, score, avatar }: Props) {
 	const { formatCurrency } = useFormatCurrency();
 
 	return (
@@ -18,7 +19,7 @@ function TopOne({ name, score }: Props) {
 			<Box sx={styles.wrapper}>
 				<Box sx={styles.avatarWrapper}>
 					<img src={Crown} alt="Crown" style={styles.iconCrown as CSSProperties} />
-					<Avatar sx={styles.avatar(name)}>{helpers.getShortName(name)}</Avatar>
+					<Avatar src={avatar} sx={styles.avatar(name)}>{helpers.getShortName(name)}</Avatar>
 					<div style={styles.topNumber as CSSProperties}>1</div>
 				</Box>
 			</Box>
