@@ -18,9 +18,9 @@ const styles = {
 	} as SxProps,
 	playerAvatar: (name: string) =>
 		({
-			width: 28,
-			height: 28,
-			fontSize: '0.75rem',
+			width: 36,
+			height: 36,
+			fontSize: '0.85rem',
 			bgcolor: helpers.stringToColor(name),
 		}) as SxProps,
 	title: {
