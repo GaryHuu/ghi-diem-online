@@ -120,7 +120,7 @@ function useTransactions() {
 				sourcePosition: 'right',
 				targetPosition: 'left',
 				style: {
-					width: 120,
+					width: 140,
 					height: nodeHeight,
 					background: helpers.stringToColor(player.name),
 					color: 'white',
@@ -131,6 +131,7 @@ function useTransactions() {
 				},
 				data: {
 					label: player.name,
+					avatar: player.avatar,
 				},
 			};
 		});
