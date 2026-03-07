@@ -33,7 +33,11 @@ function Hero() {
 						{(player) => <Player key={player.id} player={player} onRename={onRenamePlayer} />}
 					</DragDropPlayer>
 					{isAllowedActionForPlayer && (
-						<PlayerModifierDialog ref={playerModifierDialogRef} onSubmit={onAdjustPlayer} onAvatarChange={onUpdatePlayerAvatar}>
+						<PlayerModifierDialog
+							ref={playerModifierDialogRef}
+							onSubmit={onAdjustPlayer}
+							onAvatarChange={onUpdatePlayerAvatar}
+						>
 							<Button variant="contained" size="small" startIcon={<AddIcon />} />
 						</PlayerModifierDialog>
 					)}
