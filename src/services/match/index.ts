@@ -354,6 +354,32 @@ const updatePlayerGap = (matchId: number, playerId: number, gap?: number): Playe
 	return updatedPlayer;
 };
 
+/**
+ * Updates a player's avatar
+ * @param matchId - The match ID
+ * @param playerId - The player ID
+ * @param avatar - Base64 image string (undefined to remove)
+ * @returns The updated player
+ */
+const updatePlayerAvatar = (matchId: number, playerId: number, avatar?: string): Player => {
+	validateMatchId(matchId);
+	validatePlayerId(playerId);
+
+	const currentPlayer = matchDB.getPlayerOfMatch(matchId, playerId);
+	if (!currentPlayer) {
+		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
+	}
+
+	currentPlayer.avatar = avatar;
+	const updatedPlayer = matchDB.updatePlayerOfMatch(matchId, currentPlayer);
+
+	if (!updatedPlayer) {
+		throw new Error(ERROR_MESSAGES.PLAYER_NOT_FOUND);
+	}
+
+	return updatedPlayer;
+};
+
 const matchService = {
 	create,
 	get,
@@ -364,6 +390,7 @@ const matchService = {
 	updateScoreOfPlayer,
 	updatePositionOfPlayer,
 	updatePlayerGap,
+	updatePlayerAvatar,
 	togglePlayerAutoFill,
 	getCurrentGameNumber,
 	validateGameNumber: validateGameNumberScores,

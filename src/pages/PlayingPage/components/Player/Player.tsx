@@ -1,6 +1,7 @@
 import { InputScore } from '@/components';
 import { useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
+import helpers from '@/utils/helpers';
 import { Player as PlayerType } from '@/utils/types';
 import {
 	ArrowDownwardSharp as ArrowDownwardSharpIcon,
@@ -8,6 +9,7 @@ import {
 	Speed as SpeedIcon,
 } from '@mui/icons-material';
 import {
+	Avatar,
 	Box,
 	Checkbox,
 	FormControlLabel,
@@ -73,10 +75,26 @@ function Player({ player, onRename }: Props) {
 
 	return (
 		<Stack sx={styles.wrapper}>
-			<Stack sx={styles.titleWrapper}>
-				<Typography sx={styles.title} onClick={() => onRename(player)}>
-					{player.name}
-				</Typography>
+			<Stack sx={styles.row}>
+				<Stack direction="row" alignItems="center" gap="6px" onClick={() => onRename(player)} sx={{ cursor: 'pointer' }}>
+					<Avatar
+						src={player.avatar}
+						sx={styles.playerAvatar(player.name)}
+					>
+						{helpers.getShortName(player.name)}
+					</Avatar>
+					<Typography sx={styles.title}>
+						{player.name}
+					</Typography>
+				</Stack>
+				<InputScore
+					disabled={isFinished || !!player.autoFill}
+					value={currentValue}
+					onChange={handleScoreChange}
+					gap={effectiveGap}
+				/>
+			</Stack>
+			<Stack sx={styles.row}>
 				<Stack sx={styles.scoreWrapper}>
 					<Typography sx={styles.score(total)}>
 						{t('pages.playing.scoreLabel', { total })}
@@ -85,22 +103,16 @@ function Player({ player, onRename }: Props) {
 						<Stack sx={styles.trendWrapper(increasingTrendValue)}>
 							<Box>{`(`}</Box>
 							{increasingTrendValue >= 0 && <ArrowUpwardIcon sx={styles.trendIndicator} />}
-							{increasingTrendValue < 0 && <ArrowDownwardSharpIcon sx={styles.trendIndicator} />}
+							{increasingTrendValue < 0 && (
+								<ArrowDownwardSharpIcon sx={styles.trendIndicator} />
+							)}
 							<Typography sx={styles.trendMetric}>{increasingTrendValue}</Typography>
 							<Box>{`)`}</Box>
 						</Stack>
 					)}
 				</Stack>
-			</Stack>
-			<Stack gap="0.25rem">
-				<InputScore
-					disabled={isFinished || !!player.autoFill}
-					value={currentValue}
-					onChange={handleScoreChange}
-					gap={effectiveGap}
-				/>
 				{!isFinished && (
-					<Stack direction="row" alignItems="center" justifyContent="center" gap="0.5rem">
+					<Stack direction="row" alignItems="center" gap="0.5rem">
 						<FormControlLabel
 							control={
 								<Checkbox
@@ -111,7 +123,7 @@ function Player({ player, onRename }: Props) {
 								/>
 							}
 							label={
-								<Typography sx={{ fontSize: '14px' }}>{t('common.buttons.autoFill')}</Typography>
+								<Typography sx={{ fontSize: '13px' }}>{t('common.buttons.autoFill')}</Typography>
 							}
 							sx={{ m: 0 }}
 						/>
@@ -122,7 +134,9 @@ function Player({ player, onRename }: Props) {
 							sx={styles.gapBadge(hasCustomGap)}
 						>
 							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
+							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+								{effectiveGap}
+							</Typography>
 						</Stack>
 						<Popover
 							open={Boolean(gapAnchorEl)}

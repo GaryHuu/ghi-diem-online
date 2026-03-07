@@ -44,6 +44,7 @@ function usePlaying() {
 					id: p.id,
 					name: p.name,
 					score: p.scores.reduce((total, current) => total + current, 0),
+					avatar: p.avatar,
 				}))
 				.sort((a, b) => b.score - a.score),
 		[players],
@@ -193,6 +194,20 @@ function usePlaying() {
 	};
 
 	/**
+	 * Updates a player's avatar
+	 * @param playerId - Player ID
+	 * @param avatar - Base64 image string (undefined to remove)
+	 */
+	const onUpdatePlayerAvatar = (playerId: number, avatar?: string): void => {
+		try {
+			matchService.updatePlayerAvatar(matchId, playerId, avatar);
+			refreshMatchData();
+		} catch (error) {
+			toast.error(translateError(error, t));
+		}
+	};
+
+	/**
 	 * Toggles the visibility of the result modal
 	 */
 	const toggleShowResult = (): void => {
@@ -210,6 +225,7 @@ function usePlaying() {
 		onScorePlayerChange,
 		onToggleAutoFill,
 		onUpdatePlayerGap,
+		onUpdatePlayerAvatar,
 		moveToEnd,
 		onShowGameNumber,
 		onPlayContinue,
