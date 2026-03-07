@@ -76,16 +76,17 @@ function Player({ player, onRename }: Props) {
 	return (
 		<Stack sx={styles.wrapper}>
 			<Stack sx={styles.row}>
-				<Stack direction="row" alignItems="center" gap="6px" onClick={() => onRename(player)} sx={{ cursor: 'pointer' }}>
-					<Avatar
-						src={player.avatar}
-						sx={styles.playerAvatar(player.name)}
-					>
+				<Stack
+					direction="row"
+					alignItems="center"
+					gap="6px"
+					onClick={() => onRename(player)}
+					sx={{ cursor: 'pointer' }}
+				>
+					<Avatar src={player.avatar} sx={styles.playerAvatar(player.name)}>
 						{helpers.getShortName(player.name)}
 					</Avatar>
-					<Typography sx={styles.title}>
-						{player.name}
-					</Typography>
+					<Typography sx={styles.title}>{player.name}</Typography>
 				</Stack>
 				<InputScore
 					disabled={isFinished || !!player.autoFill}
@@ -103,9 +104,7 @@ function Player({ player, onRename }: Props) {
 						<Stack sx={styles.trendWrapper(increasingTrendValue)}>
 							<Box>{`(`}</Box>
 							{increasingTrendValue >= 0 && <ArrowUpwardIcon sx={styles.trendIndicator} />}
-							{increasingTrendValue < 0 && (
-								<ArrowDownwardSharpIcon sx={styles.trendIndicator} />
-							)}
+							{increasingTrendValue < 0 && <ArrowDownwardSharpIcon sx={styles.trendIndicator} />}
 							<Typography sx={styles.trendMetric}>{increasingTrendValue}</Typography>
 							<Box>{`)`}</Box>
 						</Stack>
@@ -134,9 +133,7 @@ function Player({ player, onRename }: Props) {
 							sx={styles.gapBadge(hasCustomGap)}
 						>
 							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
-								{effectiveGap}
-							</Typography>
+							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
 						</Stack>
 						<Popover
 							open={Boolean(gapAnchorEl)}

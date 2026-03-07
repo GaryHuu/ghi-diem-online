@@ -19,7 +19,9 @@ function TopOne({ name, score, avatar }: Props) {
 			<Box sx={styles.wrapper}>
 				<Box sx={styles.avatarWrapper}>
 					<img src={Crown} alt="Crown" style={styles.iconCrown as CSSProperties} />
-					<Avatar src={avatar} sx={styles.avatar(name)}>{helpers.getShortName(name)}</Avatar>
+					<Avatar src={avatar} sx={styles.avatar(name)}>
+						{helpers.getShortName(name)}
+					</Avatar>
 					<div style={styles.topNumber as CSSProperties}>1</div>
 				</Box>
 			</Box>

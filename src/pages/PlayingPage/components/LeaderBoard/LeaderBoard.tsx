@@ -83,7 +83,9 @@ const Player = ({ top, name, score, avatar }: PlayerProps) => {
 		<Box sx={styles.player}>
 			<Box sx={styles.playerLeftInfo}>
 				<Typography sx={styles.top}>{top}</Typography>
-				<Avatar src={avatar} sx={styles.playerAvatar(name)}>{helpers.getShortName(name)}</Avatar>
+				<Avatar src={avatar} sx={styles.playerAvatar(name)}>
+					{helpers.getShortName(name)}
+				</Avatar>
 				<Typography sx={styles.playerName}>{name}</Typography>
 			</Box>
 			<Typography sx={styles.score}>{formatCurrency(score)}</Typography>
