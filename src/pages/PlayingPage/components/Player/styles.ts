@@ -3,14 +3,15 @@ import helpers from '@/utils/helpers';
 import { SxProps } from '@mui/material';
 
 const styles = {
-	wrapper: {
-		padding: '8px 12px',
-		gap: '4px',
-		border: `1px solid #1976d2`,
-		borderRadius: '0.5rem',
-		backgroundColor: '#FFF',
-		flex: 1,
-	} as SxProps,
+	wrapper: (autoFill?: boolean) =>
+		({
+			padding: '8px 12px',
+			gap: '4px',
+			border: `1px solid ${PRIMARY_COLOR}`,
+			borderRadius: '0.5rem',
+			backgroundColor: autoFill ? '#e3f2fd' : '#FFF',
+			flex: 1,
+		}) as SxProps,
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
@@ -43,7 +44,7 @@ const styles = {
 		({
 			flexDirection: 'row',
 			alignItems: 'center',
-			color: increasingTrendValue >= 0 ? '#008000' : '#D32F2F',
+			color: increasingTrendValue > 0 ? '#008000' : increasingTrendValue < 0 ? '#D32F2F' : '#888',
 			fontSize: '14px',
 		}) as SxProps,
 	trendIndicator: {
