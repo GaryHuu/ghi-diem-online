@@ -1,7 +1,8 @@
 import { Dialog } from '@/components';
 import { Box, Stack, SxProps, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { LANGUAGE_OPTIONS, UNIT_OPTIONS } from './constants';
+import { UIMode } from '@/utils/types';
+import { LANGUAGE_OPTIONS, UI_MODE_OPTIONS, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +15,11 @@ type Props = {
 function SettingDialog({ isOpen, onClose }: Props) {
 	const { t } = useTranslation();
 	const {
-		settingValue: { unit, gap, language },
+		settingValue: { unit, gap, language, uiMode },
 		onUnitChange,
 		onGapChange,
-		onLanguageChange,
+		// onLanguageChange,
+		onUIModeChange,
 	} = useSettingDialog();
 
 	return (
@@ -27,6 +29,7 @@ function SettingDialog({ isOpen, onClose }: Props) {
 				<Stack gap="1rem">
 					<UnitSelection value={unit} onChange={onUnitChange} />
 					<GapSelection value={gap} onChange={onGapChange} />
+					<UIModeSelection value={uiMode} onChange={onUIModeChange} />
 					{/* TODO: temporarily disabled English, re-enable later */}
 					{/* <LanguageSelection value={language} onChange={onLanguageChange} /> */}
 					<p style={{ fontSize: '14px', color: '#555' }}>
@@ -120,6 +123,31 @@ const GapSelection = ({ value, onChange }: GapSelectionProps) => {
 type LanguageSelectionProps = {
 	value: string;
 	onChange: (newValue: string) => void;
+};
+
+type UIModeSelectionProps = {
+	value: UIMode;
+	onChange: (newValue: UIMode) => void;
+};
+
+const UIModeSelection = ({ value, onChange }: UIModeSelectionProps) => {
+	const { t } = useTranslation();
+	return (
+		<Stack>
+			<Typography sx={styles.title}>{t('components.settingDialog.uiMode')}</Typography>
+			<Stack direction="row" gap="0.5rem">
+				{UI_MODE_OPTIONS.map((option) => (
+					<Box
+						key={option.value}
+						onClick={() => option.value !== value && onChange(option.value)}
+						sx={styles.unitItem(value === option.value) as SxProps}
+					>
+						{t(option.labelKey)}
+					</Box>
+				))}
+			</Stack>
+		</Stack>
+	);
 };
 
 const LanguageSelection = ({ value, onChange }: LanguageSelectionProps) => {

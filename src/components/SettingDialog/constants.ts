@@ -1,3 +1,5 @@
+import { UIMode } from '@/utils/types';
+
 export const UNIT_OPTIONS = [
 	{
 		value: 1,
@@ -6,6 +8,17 @@ export const UNIT_OPTIONS = [
 	{
 		value: 1000,
 		labelKey: 'common.currency.1000',
+	},
+];
+
+export const UI_MODE_OPTIONS: { value: UIMode; labelKey: string }[] = [
+	{
+		value: 'compact',
+		labelKey: 'components.settingDialog.uiModeCompact',
+	},
+	{
+		value: 'full',
+		labelKey: 'components.settingDialog.uiModeFull',
 	},
 ];
 export const LANGUAGE_OPTIONS = [

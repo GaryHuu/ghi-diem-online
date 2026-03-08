@@ -6,6 +6,7 @@ import { Player as PlayerType } from '@/utils/types';
 import {
 	ArrowDownwardSharp as ArrowDownwardSharpIcon,
 	ArrowUpward as ArrowUpwardIcon,
+	DragIndicator as DragIndicatorIcon,
 	Speed as SpeedIcon,
 } from '@mui/icons-material';
 import {
@@ -19,6 +20,7 @@ import {
 	Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 import { usePlaying } from '../../hooks';
 import styles from './styles';
@@ -26,9 +28,11 @@ import styles from './styles';
 type Props = {
 	player: PlayerType;
 	onRename: (player: PlayerType) => void;
+	dragHandleProps?: DraggableProvidedDragHandleProps;
+	isDragEnabled?: boolean;
 };
 
-function Player({ player, onRename }: Props) {
+function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 	const { t } = useTranslation();
 	const setting = useAppSelector((state: RootState) => state.setting);
 	const { match, onScorePlayerChange, onToggleAutoFill, onUpdatePlayerGap } = usePlaying();
@@ -41,6 +45,7 @@ function Player({ player, onRename }: Props) {
 	const currentValue = player.scores[currentGameNumber - 1] || 0;
 	const effectiveGap = player.gap ?? setting.gap;
 	const hasCustomGap = player.gap !== undefined;
+	const showDragHandle = isDragEnabled && setting.uiMode === 'full';
 
 	const [gapAnchorEl, setGapAnchorEl] = useState<HTMLElement | null>(null);
 	const [gapDisplayValue, setGapDisplayValue] = useState<string>(effectiveGap.toString());
@@ -74,96 +79,105 @@ function Player({ player, onRename }: Props) {
 	};
 
 	return (
-		<Stack sx={styles.wrapper}>
-			<Stack sx={styles.row}>
-				<Stack
-					direction="row"
-					alignItems="center"
-					gap="6px"
-					onClick={() => onRename(player)}
-					sx={{ cursor: 'pointer' }}
-				>
-					<Avatar src={player.avatar} sx={styles.playerAvatar(player.name)}>
-						{helpers.getShortName(player.name)}
-					</Avatar>
-					<Typography sx={styles.title}>{player.name}</Typography>
+		<Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
+			{showDragHandle && (
+				<Box {...dragHandleProps} sx={styles.dragHandle}>
+					<DragIndicatorIcon sx={styles.dragIcon} />
+				</Box>
+			)}
+			<Stack sx={styles.wrapper}>
+				<Stack sx={styles.row}>
+					<Stack
+						direction="row"
+						alignItems="center"
+						gap="6px"
+						onClick={() => onRename(player)}
+						sx={{ cursor: 'pointer' }}
+					>
+						<Avatar src={player.avatar} sx={styles.playerAvatar(player.name)}>
+							{helpers.getShortName(player.name)}
+						</Avatar>
+						<Typography sx={styles.title}>{player.name}</Typography>
+					</Stack>
+					<InputScore
+						disabled={isFinished || !!player.autoFill}
+						value={currentValue}
+						onChange={handleScoreChange}
+						gap={effectiveGap}
+					/>
 				</Stack>
-				<InputScore
-					disabled={isFinished || !!player.autoFill}
-					value={currentValue}
-					onChange={handleScoreChange}
-					gap={effectiveGap}
-				/>
-			</Stack>
-			<Stack sx={styles.row}>
-				<Stack sx={styles.scoreWrapper}>
-					<Typography sx={styles.score(total)}>
-						{t('pages.playing.scoreLabel', { total })}
-					</Typography>
-					{currentGameNumber !== 1 && !isFinished && (
-						<Stack sx={styles.trendWrapper(increasingTrendValue)}>
-							<Box>{`(`}</Box>
-							{increasingTrendValue >= 0 && <ArrowUpwardIcon sx={styles.trendIndicator} />}
-							{increasingTrendValue < 0 && <ArrowDownwardSharpIcon sx={styles.trendIndicator} />}
-							<Typography sx={styles.trendMetric}>{increasingTrendValue}</Typography>
-							<Box>{`)`}</Box>
+				<Stack sx={styles.row}>
+					<Stack sx={styles.scoreWrapper}>
+						<Typography sx={styles.score(total)}>
+							{t('pages.playing.scoreLabel', { total })}
+						</Typography>
+						{currentGameNumber !== 1 && !isFinished && (
+							<Stack sx={styles.trendWrapper(increasingTrendValue)}>
+								<Box>{`(`}</Box>
+								{increasingTrendValue >= 0 && <ArrowUpwardIcon sx={styles.trendIndicator} />}
+								{increasingTrendValue < 0 && <ArrowDownwardSharpIcon sx={styles.trendIndicator} />}
+								<Typography sx={styles.trendMetric}>{increasingTrendValue}</Typography>
+								<Box>{`)`}</Box>
+							</Stack>
+						)}
+					</Stack>
+					{!isFinished && (
+						<Stack direction="row" alignItems="center" gap="0.5rem">
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={!!player.autoFill}
+										onChange={() => onToggleAutoFill(player.id)}
+										size="small"
+										sx={{ p: '2px' }}
+									/>
+								}
+								label={
+									<Typography sx={{ fontSize: '13px' }}>{t('common.buttons.autoFill')}</Typography>
+								}
+								sx={{ m: 0 }}
+							/>
+							<Stack
+								direction="row"
+								alignItems="center"
+								onClick={handleOpenGapPopover}
+								sx={styles.gapBadge(hasCustomGap)}
+							>
+								<SpeedIcon sx={{ fontSize: '14px' }} />
+								<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+									{effectiveGap}
+								</Typography>
+							</Stack>
+							<Popover
+								open={Boolean(gapAnchorEl)}
+								anchorEl={gapAnchorEl}
+								onClose={() => setGapAnchorEl(null)}
+								anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+								transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+							>
+								<Stack sx={{ p: '12px 16px', width: '180px' }}>
+									<Typography sx={{ fontSize: '13px', fontWeight: 'bold', mb: '8px' }}>
+										{t('pages.playing.individualGap')}
+									</Typography>
+									<TextField
+										type="number"
+										value={gapDisplayValue}
+										onChange={handleGapChange}
+										onBlur={handleGapBlur}
+										size="small"
+										inputProps={{ min: 1 }}
+										autoFocus
+									/>
+									{hasCustomGap && (
+										<Typography onClick={handleResetGap} sx={styles.resetGap}>
+											{t('pages.playing.resetToGlobal')}
+										</Typography>
+									)}
+								</Stack>
+							</Popover>
 						</Stack>
 					)}
 				</Stack>
-				{!isFinished && (
-					<Stack direction="row" alignItems="center" gap="0.5rem">
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={!!player.autoFill}
-									onChange={() => onToggleAutoFill(player.id)}
-									size="small"
-									sx={{ p: '2px' }}
-								/>
-							}
-							label={
-								<Typography sx={{ fontSize: '13px' }}>{t('common.buttons.autoFill')}</Typography>
-							}
-							sx={{ m: 0 }}
-						/>
-						<Stack
-							direction="row"
-							alignItems="center"
-							onClick={handleOpenGapPopover}
-							sx={styles.gapBadge(hasCustomGap)}
-						>
-							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
-						</Stack>
-						<Popover
-							open={Boolean(gapAnchorEl)}
-							anchorEl={gapAnchorEl}
-							onClose={() => setGapAnchorEl(null)}
-							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-							transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-						>
-							<Stack sx={{ p: '12px 16px', width: '180px' }}>
-								<Typography sx={{ fontSize: '13px', fontWeight: 'bold', mb: '8px' }}>
-									{t('pages.playing.individualGap')}
-								</Typography>
-								<TextField
-									type="number"
-									value={gapDisplayValue}
-									onChange={handleGapChange}
-									onBlur={handleGapBlur}
-									size="small"
-									inputProps={{ min: 1 }}
-									autoFocus
-								/>
-								{hasCustomGap && (
-									<Typography onClick={handleResetGap} sx={styles.resetGap}>
-										{t('pages.playing.resetToGlobal')}
-									</Typography>
-								)}
-							</Stack>
-						</Popover>
-					</Stack>
-				)}
 			</Stack>
 		</Stack>
 	);

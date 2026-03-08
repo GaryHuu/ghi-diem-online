@@ -1,4 +1,4 @@
-import { Gap, Language, Setting, Unit } from '@/utils/types';
+import { Gap, Language, Setting, UIMode, Unit } from '@/utils/types';
 import { settingService } from '@/services';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -17,9 +17,12 @@ const settingSlice = createSlice({
 		updateLanguage: (state, action: PayloadAction<Language>) => {
 			state.language = action.payload;
 		},
+		updateUIMode: (state, action: PayloadAction<UIMode>) => {
+			state.uiMode = action.payload;
+		},
 	},
 });
 
-export const { updateUnit, updateGap, updateLanguage } = settingSlice.actions;
+export const { updateUnit, updateGap, updateLanguage, updateUIMode } = settingSlice.actions;
 
 export default settingSlice.reducer;

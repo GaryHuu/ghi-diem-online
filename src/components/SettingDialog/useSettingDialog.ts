@@ -1,6 +1,6 @@
-import { Language, Setting } from '@/utils/types';
+import { Language, Setting, UIMode } from '@/utils/types';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateGap, updateLanguage, updateUnit } from '@/redux/slices/settingSlice';
+import { updateGap, updateLanguage, updateUIMode, updateUnit } from '@/redux/slices/settingSlice';
 import { RootState } from '@/redux/store';
 import { settingService } from '@/services';
 import { useTranslation } from 'react-i18next';
@@ -30,11 +30,18 @@ function useSettingDialog() {
 		i18n.changeLanguage(language);
 	};
 
+	const onUIModeChange = (newValue: UIMode) => {
+		dispatch(updateUIMode(newValue));
+		const newSetting: Setting = { ...settingValue, uiMode: newValue };
+		settingService.update(newSetting);
+	};
+
 	return {
 		settingValue,
 		onUnitChange,
 		onGapChange,
 		onLanguageChange,
+		onUIModeChange,
 	};
 }
 

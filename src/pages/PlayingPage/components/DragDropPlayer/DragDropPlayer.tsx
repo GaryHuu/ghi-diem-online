@@ -5,6 +5,7 @@ import {
 	DragDropContext,
 	Draggable,
 	DraggableProvided,
+	DraggableProvidedDragHandleProps,
 	Droppable,
 	DroppableProvided,
 } from 'react-beautiful-dnd';
@@ -12,7 +13,11 @@ import { useDraggablePlayer } from '../../hooks';
 import styles from './styles';
 
 type DragDropPlayerProps = {
-	children: (player: PlayerType) => ReactNode;
+	children: (
+		player: PlayerType,
+		dragHandleProps: DraggableProvidedDragHandleProps | undefined,
+		isAllow: boolean,
+	) => ReactNode;
 	isAllow: boolean;
 };
 
@@ -40,10 +45,9 @@ function DragDropPlayer({ children, isAllow }: DragDropPlayerProps) {
 									<div
 										ref={provider.innerRef}
 										{...provider.draggableProps}
-										{...provider.dragHandleProps}
 										style={getDragItemStyle(provider.draggableProps.style as CSSProperties)}
 									>
-										{children(player)}
+										{children(player, provider.dragHandleProps, isAllow)}
 									</div>
 								)}
 							</Draggable>

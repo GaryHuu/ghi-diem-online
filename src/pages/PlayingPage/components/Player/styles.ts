@@ -72,6 +72,19 @@ const styles = {
 		textAlign: 'center',
 		mt: '4px',
 	} as SxProps,
+	dragHandle: {
+		display: 'flex',
+		alignItems: 'center',
+		cursor: 'grab',
+		color: '#999',
+		touchAction: 'none',
+		'&:active': {
+			cursor: 'grabbing',
+		},
+	} as SxProps,
+	dragIcon: {
+		fontSize: '20px',
+	} as SxProps,
 };
 
 export default styles;

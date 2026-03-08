@@ -30,7 +30,15 @@ function Hero() {
 				<Stack sx={styles.content}>
 					{isEmptyPlayer && <EmptyPlayerMessage />}
 					<DragDropPlayer isAllow={isAllowedActionForPlayer}>
-						{(player) => <Player key={player.id} player={player} onRename={onRenamePlayer} />}
+						{(player, dragHandleProps, isDragEnabled) => (
+							<Player
+								key={player.id}
+								player={player}
+								onRename={onRenamePlayer}
+								dragHandleProps={dragHandleProps}
+								isDragEnabled={isDragEnabled}
+							/>
+						)}
 					</DragDropPlayer>
 					{isAllowedActionForPlayer && (
 						<PlayerModifierDialog

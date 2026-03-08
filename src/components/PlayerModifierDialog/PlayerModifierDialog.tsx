@@ -1,4 +1,5 @@
 import { Dialog } from '@/components';
+import { PLAYER_NAME } from '@/utils/constants';
 import helpers from '@/utils/helpers';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CameraAlt as CameraAltIcon, Delete as DeleteIcon } from '@mui/icons-material';
@@ -69,6 +70,7 @@ const PlayerModifierDialog = forwardRef(
 			handleSubmit,
 			reset,
 			setValue,
+			setError,
 			formState: { errors },
 		} = useForm({
 			resolver: yupResolver(schema),
@@ -90,10 +92,27 @@ const PlayerModifierDialog = forwardRef(
 			const value = data.name.trim();
 
 			if (mode === Mode.Create) {
-				const names = value.split(',');
+				const names = value
+					.split(',')
+					.map((n) => n.trim())
+					.filter(Boolean);
+
+				const invalidName = names.find(
+					(n) => n.length < PLAYER_NAME.MIN_LENGTH || n.length > PLAYER_NAME.MAX_LENGTH,
+				);
+				if (invalidName) {
+					const message = t('validation.playerName.lengthWithName', {
+						name: invalidName,
+						min: PLAYER_NAME.MIN_LENGTH,
+						max: PLAYER_NAME.MAX_LENGTH,
+					});
+					setError('name', { message });
+					return;
+				}
+
 				names.forEach((name, index) => {
 					setTimeout(() => {
-						onSubmit(name.trim(), editedPlayerRef.current?.id);
+						onSubmit(name, editedPlayerRef.current?.id);
 					}, index);
 				});
 			}
