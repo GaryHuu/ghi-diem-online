@@ -81,11 +81,6 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 
 	return (
 		<Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
-			{showDragHandle && (
-				<Box {...dragHandleProps} sx={styles.dragHandle}>
-					<DragIndicatorIcon sx={styles.dragIcon} />
-				</Box>
-			)}
 			<Stack sx={styles.wrapper(player.autoFill)}>
 				<Stack sx={styles.row}>
 					<Stack
@@ -181,6 +176,11 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 					)}
 				</Stack>
 			</Stack>
+			{showDragHandle && (
+				<Box {...dragHandleProps} sx={styles.dragHandle}>
+					<DragIndicatorIcon sx={styles.dragIcon} />
+				</Box>
+			)}
 		</Stack>
 	);
 }
