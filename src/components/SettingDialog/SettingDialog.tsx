@@ -27,7 +27,8 @@ function SettingDialog({ isOpen, onClose }: Props) {
 				<Stack gap="1rem">
 					<UnitSelection value={unit} onChange={onUnitChange} />
 					<GapSelection value={gap} onChange={onGapChange} />
-					<LanguageSelection value={language} onChange={onLanguageChange} />
+					{/* TODO: temporarily disabled English, re-enable later */}
+					{/* <LanguageSelection value={language} onChange={onLanguageChange} /> */}
 					<p style={{ fontSize: '14px', color: '#555' }}>
 						{t('components.settingDialog.copyright')}
 					</p>

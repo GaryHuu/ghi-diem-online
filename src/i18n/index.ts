@@ -18,7 +18,8 @@ const resources = {
 const savedSettings = settingService.get();
 
 // Priority: saved setting > default to Vietnamese
-const initialLanguage = savedSettings.language || 'vi';
+// TODO: temporarily force Vietnamese, re-enable English later
+const initialLanguage = 'vi';
 
 i18n
 	.use(LanguageDetector)
