@@ -45,7 +45,7 @@ const styles = {
 	playerAvatar: (name: string) =>
 		({
 			bgcolor: helpers.stringToColor(name),
-			border: `1px dashed ${PRIMARY_COLOR}`,
+			border: `1px solid ${PRIMARY_COLOR}`,
 		}) as SxProps,
 	playerName: {
 		fontWeight: '500',
