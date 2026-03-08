@@ -29,6 +29,9 @@ const styles = {
 		fontWeight: 'bold',
 		fontSize: '15px',
 		userSelect: 'none',
+		textDecoration: 'underline dotted',
+		textDecorationColor: '#bbb',
+		textUnderlineOffset: '3px',
 	} as SxProps,
 	scoreWrapper: {
 		flexDirection: 'row',
