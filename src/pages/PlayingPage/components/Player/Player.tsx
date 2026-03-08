@@ -4,10 +4,11 @@ import { RootState } from '@/redux/store';
 import helpers from '@/utils/helpers';
 import { Player as PlayerType } from '@/utils/types';
 import {
-	ArrowDownwardSharp as ArrowDownwardSharpIcon,
-	ArrowUpward as ArrowUpwardIcon,
 	DragIndicator as DragIndicatorIcon,
+	Remove as RemoveIcon,
 	Speed as SpeedIcon,
+	TrendingDown as TrendingDownIcon,
+	TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
 import {
 	Avatar,
@@ -85,7 +86,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 					<DragIndicatorIcon sx={styles.dragIcon} />
 				</Box>
 			)}
-			<Stack sx={styles.wrapper}>
+			<Stack sx={styles.wrapper(player.autoFill)}>
 				<Stack sx={styles.row}>
 					<Stack
 						direction="row"
@@ -114,8 +115,9 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 						{currentGameNumber !== 1 && !isFinished && (
 							<Stack sx={styles.trendWrapper(increasingTrendValue)}>
 								<Box>{`(`}</Box>
-								{increasingTrendValue >= 0 && <ArrowUpwardIcon sx={styles.trendIndicator} />}
-								{increasingTrendValue < 0 && <ArrowDownwardSharpIcon sx={styles.trendIndicator} />}
+								{increasingTrendValue > 0 && <TrendingUpIcon sx={styles.trendIndicator} />}
+								{increasingTrendValue === 0 && <RemoveIcon sx={styles.trendIndicator} />}
+								{increasingTrendValue < 0 && <TrendingDownIcon sx={styles.trendIndicator} />}
 								<Typography sx={styles.trendMetric}>{increasingTrendValue}</Typography>
 								<Box>{`)`}</Box>
 							</Stack>
