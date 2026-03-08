@@ -12,13 +12,19 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 ## Features
 
 - ✅ **Match Management** - Create and manage multiple game matches
-- 👥 **Player Tracking** - Add unlimited players with unique names
+- 👥 **Player Tracking** - Add unlimited players with unique names and avatars
 - 🎯 **Zero-Sum Validation** - Enforces score balance (all scores must sum to zero)
 - 📊 **Real-time Leaderboard** - Live rankings and statistics
+- 💸 **Transaction Visualization** - Interactive payment flow chart between players using React Flow
 - 🔄 **Drag & Drop** - Reorder players easily during gameplay
+- 📈 **Trend Indicators** - Shows score trends from previous games with color-coded arrows
+- 🤖 **AutoFill Players** - Mark players for automatic score filling
+- 🎛️ **Per-Player Gap Setting** - Override global gap setting for individual players
+- 🖼️ **Player Avatars** - Upload and display player profile images
+- 📐 **UI Modes** - Switch between compact and full interface layouts
 - 💾 **Offline-First** - All data persisted in browser localStorage
 - 📱 **Responsive Design** - Works seamlessly on mobile and desktop
-- 🌐 **Internationalization (i18n)** - Support for English and Vietnamese with automatic language detection
+- 🌐 **Internationalization (i18n)** - Vietnamese (English temporarily disabled)
 
 ## Tech Stack
 
@@ -39,6 +45,7 @@ A Vietnamese score-tracking web application for multi-player card games. Create 
 - **Emotion** - CSS-in-JS styling
 - **SASS Modules** - Modular stylesheets
 - **react-beautiful-dnd** - Drag and drop functionality
+- **@xyflow/react** - Transaction flow visualization
 
 ### Forms & Validation
 
@@ -104,9 +111,17 @@ npm run pre-commit   # Lint + format (used by Husky)
 ```
 src/
 ├── components/          # Reusable UI components
+│   ├── PlayerModifierDialog/  # Player create/edit dialog with avatar upload
+│   ├── SettingDialog/         # Settings (unit, gap, UI mode)
+│   └── ToastContainer/       # Toast notification wrapper
 ├── db/                 # localStorage database layer
 │   ├── match/         # Match and player CRUD operations
 │   └── setting/       # User settings persistence
+├── hooks/             # Shared custom hooks
+│   ├── useBoolean.ts
+│   ├── useFormatCurrency.ts
+│   ├── useScrollToTop.ts
+│   └── useAddQueryParams.ts
 ├── i18n/              # Internationalization
 │   ├── locales/       # Translation files (en.json, vi.json)
 │   └── index.ts       # i18n configuration
@@ -119,6 +134,16 @@ src/
 │   ├── HomePage/     # Landing page with match listing
 │   ├── CreatingPage/ # New match setup form
 │   └── PlayingPage/  # Active match scoring interface
+│       ├── components/
+│       │   ├── Player/        # Player card with score input, trend, autofill
+│       │   ├── Transactions/  # Payment flow visualization (React Flow)
+│       │   ├── TopOne/        # Winner display with crown
+│       │   └── LeaderBoard/   # Rankings table
+│       └── hooks/
+│           ├── usePlaying.ts          # Main match orchestration hook
+│           ├── usePlayingFetcher.ts   # Data fetching logic
+│           ├── useDraggablePlayer.ts  # Drag and drop logic
+│           └── useTransactions.ts     # Payment flow calculation
 ├── routes/           # React Router configuration
 ├── utils/            # Shared utilities and types
 └── migration.js      # Data migration for backward compatibility
@@ -144,31 +169,31 @@ The application uses a **localStorage-based database** instead of a traditional 
 
 The core constraint of the app is that **all player scores for each game must sum to zero**. This enforces traditional Vietnamese card game rules where points are transferred between players.
 
-Validation occurs in:
+### Player Data Model
 
-- `matchService.validateGameNumber` (src/services/match/index.ts:79)
-- `matchService.nextGame` (src/services/match/index.ts:152)
-- `matchService.endGame` (src/services/match/index.ts:212)
+Each player has the following structure:
+
+- `id` - Timestamp-based unique identifier
+- `name` - Display name
+- `scores[]` - Array of scores indexed by game number
+- `gap?` - Optional per-player gap override
+- `autoFill?` - Flag for automatic score filling
+- `avatar?` - Base64-encoded profile image
 
 ## Data Persistence
 
 All data is stored in browser **localStorage** with the following keys:
 
 - `GHIDIEM_ONLINE_KEY` - Match data
-- `GHIDIEM_ONLINE_SETTING_KEY` - User settings (unit, gap, language preference)
+- `GHIDIEM_ONLINE_SETTING_KEY` - User settings (unit, gap, UI mode)
 - `i18nextLng` - Cached language preference for i18next
 
-The app includes automatic data migration (`src/migration.js`) to handle schema changes between versions.
+The app includes automatic data migration (`src/migration.js`) to handle schema changes between versions, including migration for new fields like `uiMode`.
 
 ### Internationalization
 
-The app supports **English** and **Vietnamese** languages with:
+The app currently supports **Vietnamese** (English is temporarily disabled):
 
-- **Automatic Detection**: Language is detected from:
-  1. Saved user preference in settings
-  2. Browser language
-  3. Falls back to Vietnamese
-- **Language Switching**: Users can change language via Settings dialog
 - **Translation Files**: Located in `src/i18n/locales/` (en.json, vi.json)
 - **Dynamic Content**: All UI strings, validation messages, and error messages are translated
 
