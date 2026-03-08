@@ -23,20 +23,26 @@ const settingDB = {
 			return initialSettings;
 		}
 
+		let needsUpdate = false;
+
 		// Handle old settings without language field
 		if (!data.language) {
 			const browserLanguage = navigator.language.split('-')[0];
 			const supportedLanguages = ['en', 'vi'];
-			const detectedLanguage = supportedLanguages.includes(browserLanguage)
-				? browserLanguage
-				: 'vi';
+			data.language = (supportedLanguages.includes(browserLanguage) ? browserLanguage : 'vi') as
+				| 'en'
+				| 'vi';
+			needsUpdate = true;
+		}
 
-			const updatedData: Setting = {
-				...data,
-				language: detectedLanguage as 'en' | 'vi',
-			};
-			helpers.setToLocalStorage(DB_KEYS.SETTING, updatedData);
-			return updatedData;
+		// Handle old settings without uiMode field
+		if (!data.uiMode) {
+			data.uiMode = DEFAULT_SETTING_VALUES.uiMode;
+			needsUpdate = true;
+		}
+
+		if (needsUpdate) {
+			helpers.setToLocalStorage(DB_KEYS.SETTING, data);
 		}
 
 		return data;

@@ -23,10 +23,13 @@ export type Gap = number;
 
 export type Language = 'vi' | 'en';
 
+export type UIMode = 'compact' | 'full';
+
 export interface Setting {
 	unit: Unit;
 	gap: Gap;
 	language: Language;
+	uiMode: UIMode;
 }
 
 export interface ErrorType {

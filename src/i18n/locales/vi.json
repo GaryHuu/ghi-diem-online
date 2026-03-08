@@ -58,6 +58,9 @@
 			"unit": "Đơn vị",
 			"gapValue": "Giá trị tăng/giảm",
 			"language": "Ngôn ngữ",
+			"uiMode": "Giao diện",
+			"uiModeCompact": "Thu gọn",
+			"uiModeFull": "Đầy đủ",
 			"copyright": "© 2024 Gary Huu. Đã đăng ký bản quyền."
 		},
 		"playerModifier": {
@@ -107,6 +110,7 @@
 		},
 		"playerName": {
 			"length": "Vui lòng nhập từ {{min}} đến {{max}} kí tự",
+			"lengthWithName": "Tên \"{{name}}\" phải từ {{min}} đến {{max}} kí tự",
 			"required": "Tên người chơi là bắt buộc"
 		}
 	},

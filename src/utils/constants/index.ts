@@ -8,6 +8,7 @@ export const DEFAULT_SETTING_VALUES = {
 	unit: 1000,
 	gap: 1,
 	language: 'vi' as const,
+	uiMode: 'full' as const,
 };
 
 export const DATE_FORMAT = 'HH:mm DD/MM/YYYY';
@@ -19,7 +20,7 @@ export const MATCH_NAME = {
 
 export const PLAYER_NAME = {
 	MIN_LENGTH: 2,
-	MAX_LENGTH: 99,
+	MAX_LENGTH: 10,
 };
 
 export const PRIMARY_COLOR = '#1976D2';

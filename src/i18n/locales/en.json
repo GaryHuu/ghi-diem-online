@@ -58,6 +58,9 @@
 			"unit": "Unit",
 			"gapValue": "Increment/Decrement Value",
 			"language": "Language",
+			"uiMode": "Display",
+			"uiModeCompact": "Compact",
+			"uiModeFull": "Full",
 			"copyright": "© 2024 Gary Huu. All rights reserved."
 		},
 		"playerModifier": {
@@ -107,6 +110,7 @@
 		},
 		"playerName": {
 			"length": "Please enter between {{min}} and {{max}} characters",
+			"lengthWithName": "Name \"{{name}}\" must be between {{min}} and {{max}} characters",
 			"required": "Player name is required"
 		}
 	},
