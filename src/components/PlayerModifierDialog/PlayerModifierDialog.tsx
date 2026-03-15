@@ -118,6 +118,14 @@ const PlayerModifierDialog = forwardRef(
 			}
 
 			if (mode === Mode.Edit) {
+				if (value.length < PLAYER_NAME.MIN_LENGTH || value.length > PLAYER_NAME.MAX_LENGTH) {
+					const message = t('validation.playerName.length', {
+						min: PLAYER_NAME.MIN_LENGTH,
+						max: PLAYER_NAME.MAX_LENGTH,
+					});
+					setError('name', { message });
+					return;
+				}
 				onSubmit(value, editedPlayerRef.current?.id);
 			}
 

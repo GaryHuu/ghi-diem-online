@@ -13,12 +13,5 @@ export const schema = yup.object().shape({
 				max: PLAYER_NAME.MAX_LENGTH,
 			}),
 		)
-		.max(
-			PLAYER_NAME.MAX_LENGTH,
-			i18n.t('validation.playerName.length', {
-				min: PLAYER_NAME.MIN_LENGTH,
-				max: PLAYER_NAME.MAX_LENGTH,
-			}),
-		)
 		.required(i18n.t('validation.playerName.required')),
 });
