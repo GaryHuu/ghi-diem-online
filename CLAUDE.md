@@ -34,12 +34,12 @@ npm run pre-commit   # Lint + format (used by Husky)
 
 ```typescript
 interface Player {
-  id: number;        // Timestamp-based ID (dayjs().valueOf())
-  name: string;
-  scores: number[];  // Index = game number (0-indexed)
-  gap?: number;      // Per-player gap override
-  autoFill?: boolean; // Auto-fill flag (highlighted, disabled from scoring)
-  avatar?: string;   // Base64-encoded profile image
+	id: number; // Timestamp-based ID (dayjs().valueOf())
+	name: string;
+	scores: number[]; // Index = game number (0-indexed)
+	gap?: number; // Per-player gap override
+	autoFill?: boolean; // Auto-fill flag (highlighted, disabled from scoring)
+	avatar?: string; // Base64-encoded profile image
 }
 ```
 
