@@ -20,7 +20,7 @@ export const MATCH_NAME = {
 
 export const PLAYER_NAME = {
 	MIN_LENGTH: 2,
-	MAX_LENGTH: 10,
+	MAX_LENGTH: 15,
 };
 
 export const PRIMARY_COLOR = '#1976D2';
