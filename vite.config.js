@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-			'@': '/src', // Đặt baseUrl của bạn tại đây
+			'@': '/src', // Set your baseUrl here
 		},
 	},
 });
