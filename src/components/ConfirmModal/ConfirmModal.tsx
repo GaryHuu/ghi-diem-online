@@ -1,15 +1,27 @@
 import { Dialog } from '@/components';
 import { Button } from '@mui/material';
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
-const ConfirmModal = React.forwardRef((_props, ref) => {
+export type ConfirmOptions = {
+	titleKey?: string;
+	bodyKey?: string;
+	bodyParams?: Record<string, unknown>;
+};
+
+export type ConfirmModalRef = {
+	confirm: (callback: () => void, options?: ConfirmOptions) => void;
+};
+
+const ConfirmModal = React.forwardRef<ConfirmModalRef>((_props, ref) => {
 	const { t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
+	const [options, setOptions] = useState<ConfirmOptions>({});
 	const confirmCallback = useRef<() => void>();
 
 	useImperativeHandle(ref, () => ({
-		confirm: (callback: () => void) => {
+		confirm: (callback, nextOptions) => {
+			setOptions(nextOptions ?? {});
 			setIsOpen(true);
 			confirmCallback.current = callback;
 		},
@@ -25,11 +37,16 @@ const ConfirmModal = React.forwardRef((_props, ref) => {
 		confirmCallback.current = undefined;
 	};
 
+	const titleKey = options.titleKey ?? 'components.confirmModal.title';
+	const bodyKey = options.bodyKey ?? 'components.confirmModal.content';
+
 	return (
 		<Dialog isOpen={isOpen}>
-			<Dialog.DialogTitle>{t('components.confirmModal.title')}</Dialog.DialogTitle>
+			<Dialog.DialogTitle>{t(titleKey)}</Dialog.DialogTitle>
 			<Dialog.DialogContent dividers sx={{ borderBottom: 'none' }}>
-				<Dialog.DialogContentText>{t('components.confirmModal.content')}</Dialog.DialogContentText>
+				<Dialog.DialogContentText>
+					<Trans i18nKey={bodyKey} values={options.bodyParams} components={{ br: <br /> }} />
+				</Dialog.DialogContentText>
 			</Dialog.DialogContent>
 			<Dialog.DialogActions>
 				<Button onClick={handleCancel} color="inherit">

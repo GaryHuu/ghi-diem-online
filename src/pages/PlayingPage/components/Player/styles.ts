@@ -3,8 +3,8 @@ import { alpha, SxProps, Theme } from '@mui/material';
 
 const styles = {
 	wrapper: (autoFill?: boolean) => (theme: Theme) => ({
-		padding: '8px 12px',
-		gap: '4px',
+		padding: '10px 12px',
+		gap: '8px',
 		border: `1px solid ${theme.palette.primary.main}`,
 		borderRadius: '0.5rem',
 		backgroundColor: autoFill
@@ -12,11 +12,6 @@ const styles = {
 			: theme.palette.background.paper,
 		flex: 1,
 	}),
-	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-	} as SxProps,
 	playerAvatar: (name: string) =>
 		({
 			width: 36,
@@ -33,22 +28,43 @@ const styles = {
 		textDecorationColor: theme.palette.action.disabled,
 		textUnderlineOffset: '3px',
 	}),
-	scoreWrapper: {
-		flexDirection: 'row',
-		gap: '0.25rem',
+	nameRow: (nameIsDragHandle: boolean) => ({
+		cursor: nameIsDragHandle ? ('grab' as const) : ('pointer' as const),
+		touchAction: nameIsDragHandle ? ('none' as const) : ('auto' as const),
+		userSelect: 'none' as const,
+		...(nameIsDragHandle && {
+			'&:active': { cursor: 'grabbing' as const },
+		}),
+	}),
+	scoreGrid: {
+		display: 'grid',
+		gridTemplateColumns: 'minmax(120px, 1fr) 1fr',
+		gap: '12px',
+		alignItems: 'center',
 	} as SxProps,
-	score: (total: number) => (theme: Theme) => ({
+	scoreCell: {
+		gap: '4px',
+	} as SxProps,
+	scoreCaption: (theme: Theme) => ({
+		fontSize: '11px',
+		fontWeight: 600,
+		textTransform: 'uppercase' as const,
+		letterSpacing: '0.04em',
+		color: theme.palette.text.secondary,
+	}),
+	totalValue: (total: number) => (theme: Theme) => ({
 		fontWeight: 'bold',
-		fontSize: '14px',
+		fontSize: '22px',
+		lineHeight: 1.1,
 		color:
 			total >= 0
 				? total === 0
-					? theme.palette.primary.main
+					? theme.palette.text.primary
 					: theme.palette.success.main
 				: theme.palette.error.main,
 	}),
 	trendWrapper: (increasingTrendValue: number) => (theme: Theme) => ({
-		flexDirection: 'row',
+		flexDirection: 'row' as const,
 		alignItems: 'center',
 		color:
 			increasingTrendValue > 0
@@ -56,15 +72,15 @@ const styles = {
 				: increasingTrendValue < 0
 					? theme.palette.error.main
 					: theme.palette.text.secondary,
-		fontSize: '14px',
+		fontSize: '13px',
 	}),
 	trendIndicator: {
-		height: '16px',
-		marginLeft: '-4px',
+		height: '14px',
+		width: '14px',
 	} as SxProps,
 	trendMetric: {
 		fontWeight: 'bold',
-		fontSize: '14px',
+		fontSize: '13px',
 	} as SxProps,
 	gapBadge: (hasCustomGap: boolean) => (theme: Theme) => ({
 		cursor: 'pointer',

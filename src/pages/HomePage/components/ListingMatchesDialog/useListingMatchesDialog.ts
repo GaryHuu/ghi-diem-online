@@ -1,3 +1,4 @@
+import type { ConfirmModalRef } from '@/components/ConfirmModal/ConfirmModal';
 import { useBoolean } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { updateMatches } from '@/redux/slices/matchSlice';
@@ -9,7 +10,7 @@ import { generatePath, useNavigate } from 'react-router-dom';
 
 function useListingMatchesDialog() {
 	const { value: isOpen, setTrue: onOpen, setFalse: onClose } = useBoolean(false);
-	const confirmActionRef = useRef<{ confirm: (callback: () => void) => void }>();
+	const confirmActionRef = useRef<ConfirmModalRef>(null);
 	const matches = useAppSelector((state: RootState) => state.match.matches);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();

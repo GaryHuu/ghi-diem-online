@@ -39,6 +39,14 @@
 		"playing": {
 			"leaderboard": "Leaderboard",
 			"continuePlay": "Continue Playing",
+			"nextRound": "Next Round",
+			"endMatch": "End Match",
+			"roundProgress": "Round {{current}} / {{total}}",
+			"total": "Total",
+			"confirmNextRoundTitle": "Start next round?",
+			"confirmNextRoundBody": "Round {{current}} will be locked. You can still navigate back to view it.",
+			"confirmEndMatchTitle": "End the whole match?",
+			"confirmEndMatchBody": "This ends the match and opens the leaderboard. No more rounds can be added.<br />Note: if you want to keep playing, choose \"Next Round\" instead of ending the match.",
 			"paymentChart": "Payment Chart",
 			"scoreLabel": "Score: {{total}}",
 			"matchLabel": "Match: {{name}}",
@@ -64,7 +72,6 @@
 			"colorScheme": "Color Scheme",
 			"colorSchemeLight": "Light",
 			"colorSchemeDark": "Dark",
-			"colorSchemeSystem": "System",
 			"copyright": "© 2024 Gary Huu. All rights reserved."
 		},
 		"playerModifier": {

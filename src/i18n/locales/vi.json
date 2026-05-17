@@ -39,6 +39,14 @@
 		"playing": {
 			"leaderboard": "Bảng xếp hạng",
 			"continuePlay": "Chơi tiếp",
+			"nextRound": "Ván tiếp theo",
+			"endMatch": "Kết thúc trận",
+			"roundProgress": "Ván {{current}} / {{total}}",
+			"total": "Tổng",
+			"confirmNextRoundTitle": "Bắt đầu ván tiếp theo?",
+			"confirmNextRoundBody": "Ván {{current}} sẽ được khoá. Bạn vẫn có thể xem lại.",
+			"confirmEndMatchTitle": "Kết thúc cả trận?",
+			"confirmEndMatchBody": "Trận sẽ kết thúc và mở bảng xếp hạng. Không thể thêm ván mới.<br />Lưu ý: nếu bạn muốn chơi tiếp, hãy chọn \"Ván tiếp theo\" thay vì kết thúc trận.",
 			"paymentChart": "Biểu đồ thanh toán",
 			"scoreLabel": "Điểm: {{total}}",
 			"matchLabel": "Trận: {{name}}",
@@ -64,7 +72,6 @@
 			"colorScheme": "Chế độ màu",
 			"colorSchemeLight": "Sáng",
 			"colorSchemeDark": "Tối",
-			"colorSchemeSystem": "Theo hệ thống",
 			"copyright": "© 2024 Gary Huu. Đã đăng ký bản quyền."
 		},
 		"playerModifier": {
