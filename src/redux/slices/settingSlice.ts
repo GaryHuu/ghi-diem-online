@@ -1,4 +1,4 @@
-import { Gap, Language, Setting, UIMode, Unit } from '@/utils/types';
+import { ColorScheme, Gap, Language, Setting, UIMode, Unit } from '@/utils/types';
 import { settingService } from '@/services';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -20,9 +20,13 @@ const settingSlice = createSlice({
 		updateUIMode: (state, action: PayloadAction<UIMode>) => {
 			state.uiMode = action.payload;
 		},
+		updateColorScheme: (state, action: PayloadAction<ColorScheme>) => {
+			state.colorScheme = action.payload;
+		},
 	},
 });
 
-export const { updateUnit, updateGap, updateLanguage, updateUIMode } = settingSlice.actions;
+export const { updateUnit, updateGap, updateLanguage, updateUIMode, updateColorScheme } =
+	settingSlice.actions;
 
 export default settingSlice.reducer;

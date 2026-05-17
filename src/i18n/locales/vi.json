@@ -61,6 +61,10 @@
 			"uiMode": "Giao diện",
 			"uiModeCompact": "Thu gọn",
 			"uiModeFull": "Đầy đủ",
+			"colorScheme": "Chế độ màu",
+			"colorSchemeLight": "Sáng",
+			"colorSchemeDark": "Tối",
+			"colorSchemeSystem": "Theo hệ thống",
 			"copyright": "© 2024 Gary Huu. Đã đăng ký bản quyền."
 		},
 		"playerModifier": {

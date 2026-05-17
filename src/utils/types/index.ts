@@ -25,11 +25,14 @@ export type Language = 'vi' | 'en';
 
 export type UIMode = 'compact' | 'full';
 
+export type ColorScheme = 'light' | 'dark' | 'system';
+
 export interface Setting {
 	unit: Unit;
 	gap: Gap;
 	language: Language;
 	uiMode: UIMode;
+	colorScheme: ColorScheme;
 }
 
 export interface ErrorType {

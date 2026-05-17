@@ -41,6 +41,12 @@ const settingDB = {
 			needsUpdate = true;
 		}
 
+		// Handle old settings without colorScheme field
+		if (!data.colorScheme) {
+			data.colorScheme = DEFAULT_SETTING_VALUES.colorScheme;
+			needsUpdate = true;
+		}
+
 		if (needsUpdate) {
 			helpers.setToLocalStorage(DB_KEYS.SETTING, data);
 		}

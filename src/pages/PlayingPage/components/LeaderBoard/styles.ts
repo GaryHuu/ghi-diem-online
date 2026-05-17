@@ -1,6 +1,5 @@
-import { PRIMARY_COLOR } from '@/utils/constants';
 import helpers from '@/utils/helpers';
-import { SxProps } from '@mui/material';
+import { alpha, SxProps, Theme } from '@mui/material';
 
 const styles = {
 	headerWrapper: {
@@ -17,36 +16,35 @@ const styles = {
 		display: 'flex',
 		flexDirection: 'column',
 	} as SxProps,
-	leaderBoardPlayers: {
+	leaderBoardPlayers: (theme: Theme) => ({
 		padding: '1rem',
 		borderTopRightRadius: '1.5rem',
 		borderTopLeftRadius: '1.5rem',
-		backgroundColor: '#DCEEFF',
+		backgroundColor: alpha(theme.palette.primary.main, 0.12),
 		flex: 1,
 		display: 'flex',
 		flexDirection: 'column',
 		gap: '0.5rem',
-	} as SxProps,
-	player: {
+	}),
+	player: (theme: Theme) => ({
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		padding: '12px 16px',
 		borderRadius: '1rem',
-		backgroundColor: '#FFF',
-		border: `1px solid ${PRIMARY_COLOR}`,
-	} as SxProps,
+		backgroundColor: theme.palette.background.paper,
+		border: `1px solid ${theme.palette.primary.main}`,
+	}),
 	playerLeftInfo: {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
 		gap: '8px',
 	} as SxProps,
-	playerAvatar: (name: string) =>
-		({
-			bgcolor: helpers.stringToColor(name),
-			border: `1px solid ${PRIMARY_COLOR}`,
-		}) as SxProps,
+	playerAvatar: (name: string) => (theme: Theme) => ({
+		bgcolor: helpers.stringToColor(name),
+		border: `1px solid ${theme.palette.primary.main}`,
+	}),
 	playerName: {
 		fontWeight: '500',
 	} as SxProps,
@@ -54,16 +52,16 @@ const styles = {
 		fontWeight: 400,
 		fontStyle: 'italic',
 	} as SxProps,
-	top: {
-		backgroundColor: '#3E9FFF',
+	top: (theme: Theme) => ({
+		backgroundColor: theme.palette.primary.main,
 		width: '22px',
 		height: '22px',
 		borderRadius: '50%',
-		color: '#FFF',
+		color: theme.palette.primary.contrastText,
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-	} as SxProps,
+	}),
 };
 
 export default styles;

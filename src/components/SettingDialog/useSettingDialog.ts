@@ -1,6 +1,12 @@
-import { Language, Setting, UIMode } from '@/utils/types';
+import { ColorScheme, Language, Setting, UIMode } from '@/utils/types';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateGap, updateLanguage, updateUIMode, updateUnit } from '@/redux/slices/settingSlice';
+import {
+	updateColorScheme,
+	updateGap,
+	updateLanguage,
+	updateUIMode,
+	updateUnit,
+} from '@/redux/slices/settingSlice';
 import { RootState } from '@/redux/store';
 import { settingService } from '@/services';
 import { useTranslation } from 'react-i18next';
@@ -36,12 +42,19 @@ function useSettingDialog() {
 		settingService.update(newSetting);
 	};
 
+	const onColorSchemeChange = (newValue: ColorScheme) => {
+		dispatch(updateColorScheme(newValue));
+		const newSetting: Setting = { ...settingValue, colorScheme: newValue };
+		settingService.update(newSetting);
+	};
+
 	return {
 		settingValue,
 		onUnitChange,
 		onGapChange,
 		onLanguageChange,
 		onUIModeChange,
+		onColorSchemeChange,
 	};
 }
 

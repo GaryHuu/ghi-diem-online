@@ -2,7 +2,7 @@ import { Dialog } from '@/components';
 import { useBoolean, useFormatCurrency } from '@/hooks';
 import helpers from '@/utils/helpers';
 import { ArrowBack as ArrowBackIcon, Paid as PaidIcon } from '@mui/icons-material';
-import { Avatar, Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { alpha, Avatar, Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { usePlaying } from '../../hooks';
 import TopOne from '../TopOne';
@@ -41,14 +41,14 @@ function LeaderBoard() {
 						<Button
 							variant="outlined"
 							onClick={handleShowTransactions}
-							sx={{
+							sx={(theme) => ({
 								animation: 'pulse 2s infinite',
 								'@keyframes pulse': {
-									'0%': { boxShadow: '0 0 0 0 rgba(25, 118, 210, 0.4)' },
-									'70%': { boxShadow: '0 0 0 10px rgba(25, 118, 210, 0)' },
-									'100%': { boxShadow: '0 0 0 0 rgba(25, 118, 210, 0)' },
+									'0%': { boxShadow: `0 0 0 0 ${alpha(theme.palette.primary.main, 0.4)}` },
+									'70%': { boxShadow: `0 0 0 10px ${alpha(theme.palette.primary.main, 0)}` },
+									'100%': { boxShadow: `0 0 0 0 ${alpha(theme.palette.primary.main, 0)}` },
 								},
-							}}
+							})}
 						>
 							<PaidIcon />
 						</Button>

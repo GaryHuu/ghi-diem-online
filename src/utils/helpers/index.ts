@@ -35,26 +35,17 @@ export const formatCurrencyWithSymbol = (
 };
 
 /**
- * Generates a deterministic color from a string
- * @param string - Input string
- * @returns Hex color code
+ * Generates a deterministic HSL color from a string.
+ * Saturation and lightness are clamped so colors stay legible on both light
+ * and dark backgrounds. Only the hue varies per input.
  */
 export const stringToColor = (string = ''): string => {
 	let hash = 0;
-	let i;
-
-	for (i = 0; i < string.length; i += 1) {
+	for (let i = 0; i < string.length; i += 1) {
 		hash = string.charCodeAt(i) + ((hash << 5) - hash);
 	}
-
-	let color = '#';
-
-	for (i = 0; i < 3; i += 1) {
-		const value = (hash >> (i * 8)) & 0xff;
-		color += `00${value.toString(16)}`.slice(-2);
-	}
-
-	return color;
+	const hue = Math.abs(hash) % 360;
+	return `hsl(${hue}, 62%, 58%)`;
 };
 
 /**

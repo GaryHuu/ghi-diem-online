@@ -1,8 +1,8 @@
 import { Dialog } from '@/components';
-import { Box, Stack, SxProps, TextField, Typography } from '@mui/material';
+import { Box, Stack, TextField, Theme, Typography } from '@mui/material';
 import { useState } from 'react';
-import { UIMode } from '@/utils/types';
-import { LANGUAGE_OPTIONS, UI_MODE_OPTIONS, UNIT_OPTIONS } from './constants';
+import { ColorScheme, UIMode } from '@/utils/types';
+import { COLOR_SCHEME_OPTIONS, LANGUAGE_OPTIONS, UI_MODE_OPTIONS, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
 import { useTranslation } from 'react-i18next';
@@ -15,11 +15,12 @@ type Props = {
 function SettingDialog({ isOpen, onClose }: Props) {
 	const { t } = useTranslation();
 	const {
-		settingValue: { unit, gap, language, uiMode },
+		settingValue: { unit, gap, language, uiMode, colorScheme },
 		onUnitChange,
 		onGapChange,
 		// onLanguageChange,
 		onUIModeChange,
+		onColorSchemeChange,
 	} = useSettingDialog();
 
 	return (
@@ -30,11 +31,12 @@ function SettingDialog({ isOpen, onClose }: Props) {
 					<UnitSelection value={unit} onChange={onUnitChange} />
 					<GapSelection value={gap} onChange={onGapChange} />
 					<UIModeSelection value={uiMode} onChange={onUIModeChange} />
+					<ColorSchemeSelection value={colorScheme} onChange={onColorSchemeChange} />
 					{/* TODO: temporarily disabled English, re-enable later */}
 					{/* <LanguageSelection value={language} onChange={onLanguageChange} /> */}
-					<p style={{ fontSize: '14px', color: '#555' }}>
+					<Typography component="p" sx={styles.copyright}>
 						{t('components.settingDialog.copyright')}
-					</p>
+					</Typography>
 				</Stack>
 			</Dialog.DialogContent>
 		</Dialog>
@@ -51,7 +53,7 @@ type UnitItemProps = {
 
 const UnitItem = ({ label, active, onClick }: UnitItemProps) => {
 	return (
-		<Box onClick={onClick} sx={styles.unitItem(active) as SxProps}>
+		<Box onClick={onClick} sx={styles.unitItem(active)}>
 			{label}
 		</Box>
 	);
@@ -140,7 +142,32 @@ const UIModeSelection = ({ value, onChange }: UIModeSelectionProps) => {
 					<Box
 						key={option.value}
 						onClick={() => option.value !== value && onChange(option.value)}
-						sx={styles.unitItem(value === option.value) as SxProps}
+						sx={styles.unitItem(value === option.value)}
+					>
+						{t(option.labelKey)}
+					</Box>
+				))}
+			</Stack>
+		</Stack>
+	);
+};
+
+type ColorSchemeSelectionProps = {
+	value: ColorScheme;
+	onChange: (newValue: ColorScheme) => void;
+};
+
+const ColorSchemeSelection = ({ value, onChange }: ColorSchemeSelectionProps) => {
+	const { t } = useTranslation();
+	return (
+		<Stack>
+			<Typography sx={styles.title}>{t('components.settingDialog.colorScheme')}</Typography>
+			<Stack direction="row" gap="0.5rem">
+				{COLOR_SCHEME_OPTIONS.map((option) => (
+					<Box
+						key={option.value}
+						onClick={() => option.value !== value && onChange(option.value)}
+						sx={styles.unitItem(value === option.value)}
 					>
 						{t(option.labelKey)}
 					</Box>
@@ -160,13 +187,13 @@ const LanguageSelection = ({ value, onChange }: LanguageSelectionProps) => {
 					<Box
 						key={option.value}
 						onClick={() => option.value !== value && onChange(option.value)}
-						sx={{
-							...styles.unitItem(value === option.value),
+						sx={(theme: Theme) => ({
+							...(styles.unitItem(value === option.value)(theme) as Record<string, unknown>),
 							display: 'flex',
 							alignItems: 'center',
 							gap: '0.5rem',
 							cursor: 'pointer',
-						}}
+						})}
 					>
 						<img
 							src={`https://flagcdn.com/w40/${option.flagCode}.png`}
