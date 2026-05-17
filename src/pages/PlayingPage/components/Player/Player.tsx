@@ -145,9 +145,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 							sx={styles.gapBadge(hasCustomGap)}
 						>
 							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
-								{effectiveGap}
-							</Typography>
+							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
 						</Stack>
 						<Popover
 							open={Boolean(gapAnchorEl)}
