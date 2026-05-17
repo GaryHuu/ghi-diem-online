@@ -1,8 +1,7 @@
-import Crown from '@/assets/icons/crown-svgrepo-com.svg';
 import { useFormatCurrency } from '@/hooks';
 import helpers from '@/utils/helpers';
 import { Avatar, Box, Typography } from '@mui/material';
-import { CSSProperties } from 'react';
+import CrownIcon from './CrownIcon';
 import styles from './styles';
 
 type Props = {
@@ -18,11 +17,11 @@ function TopOne({ name, score, avatar }: Props) {
 		<Box>
 			<Box sx={styles.wrapper}>
 				<Box sx={styles.avatarWrapper}>
-					<img src={Crown} alt="Crown" style={styles.iconCrown as CSSProperties} />
+					<CrownIcon sx={styles.iconCrown} />
 					<Avatar src={avatar} sx={styles.avatar(name)}>
 						{helpers.getShortName(name)}
 					</Avatar>
-					<div style={styles.topNumber as CSSProperties}>1</div>
+					<Box sx={styles.topNumber}>1</Box>
 				</Box>
 			</Box>
 			<Typography sx={styles.name}>{name}</Typography>

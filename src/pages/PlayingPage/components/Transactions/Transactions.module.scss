@@ -13,3 +13,30 @@
 		}
 	}
 }
+
+:global([data-mui-color-scheme='dark']) {
+	.reactFlow {
+		:global {
+			.react-flow {
+				background-color: var(--mui-palette-background-default);
+			}
+
+			.react-flow__edge .react-flow__edge-path {
+				stroke: var(--mui-palette-text-secondary);
+			}
+
+			.react-flow__edge-text {
+				fill: var(--mui-palette-text-primary);
+			}
+
+			.react-flow__edge-textbg {
+				fill: var(--mui-palette-background-paper);
+			}
+
+			.react-flow__arrowhead polyline {
+				stroke: var(--mui-palette-text-secondary);
+				fill: var(--mui-palette-text-secondary);
+			}
+		}
+	}
+}

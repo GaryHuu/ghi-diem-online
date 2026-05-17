@@ -1,6 +1,11 @@
+import { useColorScheme } from '@mui/material/styles';
 import { ToastContainer as ToastContainerLib } from 'react-toastify';
 
 function ToastContainer() {
+	const { mode, systemMode } = useColorScheme();
+	const resolvedMode = mode === 'system' ? systemMode : mode;
+	const theme = resolvedMode === 'dark' ? 'dark' : 'light';
+
 	return (
 		<ToastContainerLib
 			position="top-center"
@@ -8,7 +13,7 @@ function ToastContainer() {
 			limit={3}
 			closeOnClick
 			hideProgressBar
-			theme="light"
+			theme={theme}
 		/>
 	);
 }

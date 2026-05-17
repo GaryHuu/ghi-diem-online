@@ -1,6 +1,5 @@
-import { PRIMARY_COLOR } from '@/utils/constants';
 import helpers from '@/utils/helpers';
-import { SxProps } from '@mui/material';
+import { SxProps, Theme } from '@mui/material';
 
 const styles = {
 	dialogContent: {
@@ -21,13 +20,13 @@ const styles = {
 			bgcolor: helpers.stringToColor(name ?? ''),
 			fontSize: '1.5rem',
 		}) as SxProps,
-	avatarBadgeBtn: {
-		backgroundColor: PRIMARY_COLOR,
-		color: '#FFF',
+	avatarBadgeBtn: (theme: Theme) => ({
+		backgroundColor: theme.palette.primary.main,
+		color: theme.palette.primary.contrastText,
 		width: 24,
 		height: 24,
-		'&:hover': { backgroundColor: '#1565c0' },
-	} as SxProps,
+		'&:hover': { backgroundColor: theme.palette.primary.dark },
+	}),
 };
 
 export default styles;

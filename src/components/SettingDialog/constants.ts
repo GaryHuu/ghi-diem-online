@@ -1,4 +1,4 @@
-import { UIMode } from '@/utils/types';
+import { ColorScheme, UIMode } from '@/utils/types';
 
 export const UNIT_OPTIONS = [
 	{
@@ -19,6 +19,21 @@ export const UI_MODE_OPTIONS: { value: UIMode; labelKey: string }[] = [
 	{
 		value: 'full',
 		labelKey: 'components.settingDialog.uiModeFull',
+	},
+];
+
+export const COLOR_SCHEME_OPTIONS: { value: ColorScheme; labelKey: string }[] = [
+	{
+		value: 'light',
+		labelKey: 'components.settingDialog.colorSchemeLight',
+	},
+	{
+		value: 'dark',
+		labelKey: 'components.settingDialog.colorSchemeDark',
+	},
+	{
+		value: 'system',
+		labelKey: 'components.settingDialog.colorSchemeSystem',
 	},
 ];
 export const LANGUAGE_OPTIONS = [

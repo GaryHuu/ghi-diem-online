@@ -1,7 +1,7 @@
 import { Dialog } from '@/components';
 import helpers from '@/utils/helpers';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { alpha, Avatar } from '@mui/material';
 import { IconButton, Stack } from '@mui/material';
 import { Handle, Position, ReactFlow, Node as ReactFlowNode } from '@xyflow/react';
 import { useMemo } from 'react';
@@ -23,12 +23,12 @@ function AvatarNode({ data, type }: AvatarNodeProps) {
 			<Stack direction="row" alignItems="center" gap="4px" sx={{ px: '6px' }}>
 				<Avatar
 					src={data.avatar}
-					sx={{
+					sx={(theme) => ({
 						width: 22,
 						height: 22,
 						fontSize: '10px',
-						bgcolor: 'rgba(255,255,255,0.3)',
-					}}
+						bgcolor: alpha(theme.palette.common.white, 0.3),
+					})}
 				>
 					{helpers.getShortName(data.label)}
 				</Avatar>

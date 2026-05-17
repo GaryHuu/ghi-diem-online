@@ -9,6 +9,7 @@ export const DEFAULT_SETTING_VALUES = {
 	gap: 1,
 	language: 'vi' as const,
 	uiMode: 'full' as const,
+	colorScheme: 'system' as const,
 };
 
 export const DATE_FORMAT = 'HH:mm DD/MM/YYYY';

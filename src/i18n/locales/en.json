@@ -61,6 +61,10 @@
 			"uiMode": "Display",
 			"uiModeCompact": "Compact",
 			"uiModeFull": "Full",
+			"colorScheme": "Color Scheme",
+			"colorSchemeLight": "Light",
+			"colorSchemeDark": "Dark",
+			"colorSchemeSystem": "System",
 			"copyright": "© 2024 Gary Huu. All rights reserved."
 		},
 		"playerModifier": {

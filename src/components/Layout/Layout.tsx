@@ -1,15 +1,47 @@
 import SettingDialog from '@/components/SettingDialog';
 import { useScrollToTop } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { updateColorScheme } from '@/redux/slices/settingSlice';
+import { RootState } from '@/redux/store';
 import { ROUTES } from '@/routes/constants';
-import { Home as HomeIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { settingService } from '@/services';
+import { ColorScheme } from '@/utils/types';
+import {
+	DarkMode as DarkModeIcon,
+	Home as HomeIcon,
+	LightMode as LightModeIcon,
+	Settings as SettingsIcon,
+	SettingsBrightness as SettingsBrightnessIcon,
+} from '@mui/icons-material';
 import { AppBar, Box, IconButton, Paper, Toolbar } from '@mui/material';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+
+const NEXT_SCHEME: Record<ColorScheme, ColorScheme> = {
+	light: 'dark',
+	dark: 'system',
+	system: 'light',
+};
+
+const SCHEME_ICON: Record<ColorScheme, typeof LightModeIcon> = {
+	light: LightModeIcon,
+	dark: DarkModeIcon,
+	system: SettingsBrightnessIcon,
+};
 
 function Layout() {
 	useScrollToTop();
 	const [isOpenSettingDialog, setIsOpenSettingDialog] = useState(false);
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	const setting = useAppSelector((state: RootState) => state.setting);
+	const SchemeIcon = SCHEME_ICON[setting.colorScheme];
+
+	const handleToggleScheme = () => {
+		const next = NEXT_SCHEME[setting.colorScheme];
+		dispatch(updateColorScheme(next));
+		settingService.update({ ...setting, colorScheme: next });
+	};
 
 	return (
 		<>
@@ -28,6 +60,13 @@ function Layout() {
 						<HomeIcon />
 					</IconButton>
 					<Box sx={{ flexGrow: 1 }} />
+					<IconButton
+						color="inherit"
+						aria-label={`color scheme: ${setting.colorScheme}`}
+						onClick={handleToggleScheme}
+					>
+						<SchemeIcon />
+					</IconButton>
 					<IconButton color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
 						<SettingsIcon />
 					</IconButton>

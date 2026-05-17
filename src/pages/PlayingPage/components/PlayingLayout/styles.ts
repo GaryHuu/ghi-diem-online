@@ -1,10 +1,9 @@
-import { PRIMARY_COLOR } from '@/utils/constants';
-import { SxProps } from '@mui/material';
+import { Theme } from '@mui/material';
 
-const styles: { [key: string]: SxProps } = {
-	wrapper: {
-		color: PRIMARY_COLOR,
-	},
+const styles = {
+	wrapper: (theme: Theme) => ({
+		color: theme.palette.primary.main,
+	}),
 };
 
 export default styles;
