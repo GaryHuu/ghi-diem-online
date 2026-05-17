@@ -11,22 +11,14 @@ import {
 	Home as HomeIcon,
 	LightMode as LightModeIcon,
 	Settings as SettingsIcon,
-	SettingsBrightness as SettingsBrightnessIcon,
 } from '@mui/icons-material';
-import { AppBar, Box, IconButton, Paper, Toolbar } from '@mui/material';
+import { AppBar, Box, IconButton, Paper, Stack, Toolbar } from '@mui/material';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-const NEXT_SCHEME: Record<ColorScheme, ColorScheme> = {
-	light: 'dark',
-	dark: 'system',
-	system: 'light',
-};
-
-const SCHEME_ICON: Record<ColorScheme, typeof LightModeIcon> = {
-	light: LightModeIcon,
-	dark: DarkModeIcon,
-	system: SettingsBrightnessIcon,
+const resolveEffective = (current: ColorScheme): 'light' | 'dark' => {
+	if (current === 'light' || current === 'dark') return current;
+	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
 function Layout() {
@@ -35,10 +27,11 @@ function Layout() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const setting = useAppSelector((state: RootState) => state.setting);
-	const SchemeIcon = SCHEME_ICON[setting.colorScheme];
+	const effectiveScheme = resolveEffective(setting.colorScheme);
+	const SchemeIcon = effectiveScheme === 'dark' ? DarkModeIcon : LightModeIcon;
 
 	const handleToggleScheme = () => {
-		const next = NEXT_SCHEME[setting.colorScheme];
+		const next: ColorScheme = effectiveScheme === 'dark' ? 'light' : 'dark';
 		dispatch(updateColorScheme(next));
 		settingService.update({ ...setting, colorScheme: next });
 	};
@@ -50,26 +43,37 @@ function Layout() {
 					<Outlet />
 				</Box>
 			</Paper>
-			<AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-				<Toolbar>
-					<IconButton
-						color="inherit"
-						aria-label="open drawer"
-						onClick={() => navigate(ROUTES.HOME)}
-					>
-						<HomeIcon />
-					</IconButton>
-					<Box sx={{ flexGrow: 1 }} />
-					<IconButton
-						color="inherit"
-						aria-label={`color scheme: ${setting.colorScheme}`}
-						onClick={handleToggleScheme}
-					>
-						<SchemeIcon />
-					</IconButton>
-					<IconButton color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
-						<SettingsIcon />
-					</IconButton>
+			<AppBar
+				position="fixed"
+				color="default"
+				elevation={0}
+				sx={{
+					top: 'auto',
+					bottom: 0,
+					backgroundColor: 'background.paper',
+					borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+				}}
+			>
+				<Toolbar sx={{ minHeight: '64px !important' }}>
+					<Stack direction="row" justifyContent="space-around" sx={{ width: '100%' }}>
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							onClick={() => navigate(ROUTES.HOME)}
+						>
+							<HomeIcon />
+						</IconButton>
+						<IconButton
+							color="inherit"
+							aria-label={`color scheme: ${setting.colorScheme}`}
+							onClick={handleToggleScheme}
+						>
+							<SchemeIcon />
+						</IconButton>
+						<IconButton color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
+							<SettingsIcon />
+						</IconButton>
+					</Stack>
 				</Toolbar>
 			</AppBar>
 			<SettingDialog isOpen={isOpenSettingDialog} onClose={() => setIsOpenSettingDialog(false)} />

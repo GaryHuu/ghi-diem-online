@@ -1,23 +1,28 @@
 import { ConfirmModal } from '@/components';
-import { Hero, PlayingHeader, PlayingLayout } from './components';
+import type {
+	ConfirmModalRef,
+	ConfirmOptions,
+} from '@/components/ConfirmModal/ConfirmModal';
+import { Hero, PlayingActionBar, PlayingHeader, PlayingLayout } from './components';
 import { usePlayingFetcher } from './hooks';
 import { useRef } from 'react';
 
 function PlayingPage() {
-	const confirmActionRef = useRef<{ confirm: (callback: () => void) => void }>();
+	const confirmActionRef = useRef<ConfirmModalRef>(null);
 
 	usePlayingFetcher();
 
-	const handleConfirm = (callback: () => void) => {
+	const handleConfirm = (callback: () => void, options?: ConfirmOptions) => {
 		confirmActionRef.current?.confirm(() => {
 			callback();
-		});
+		}, options);
 	};
 
 	return (
 		<PlayingLayout>
 			<PlayingHeader onConfirm={handleConfirm} />
 			<Hero />
+			<PlayingActionBar onConfirm={handleConfirm} />
 			<ConfirmModal ref={confirmActionRef} />
 		</PlayingLayout>
 	);

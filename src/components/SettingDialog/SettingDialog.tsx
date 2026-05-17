@@ -1,11 +1,22 @@
 import { Dialog } from '@/components';
-import { Box, Stack, TextField, Theme, Typography } from '@mui/material';
+import {
+	DarkMode as DarkModeIcon,
+	LightMode as LightModeIcon,
+	SettingsBrightness as SettingsBrightnessIcon,
+} from '@mui/icons-material';
+import { Box, Stack, TextField, Theme, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ColorScheme, UIMode } from '@/utils/types';
 import { COLOR_SCHEME_OPTIONS, LANGUAGE_OPTIONS, UI_MODE_OPTIONS, UNIT_OPTIONS } from './constants';
 import styles from './styles';
 import useSettingDialog from './useSettingDialog';
 import { useTranslation } from 'react-i18next';
+
+const COLOR_SCHEME_ICON: Record<ColorScheme, typeof LightModeIcon> = {
+	light: LightModeIcon,
+	dark: DarkModeIcon,
+	system: SettingsBrightnessIcon,
+};
 
 type Props = {
 	isOpen: boolean;
@@ -163,15 +174,21 @@ const ColorSchemeSelection = ({ value, onChange }: ColorSchemeSelectionProps) =>
 		<Stack>
 			<Typography sx={styles.title}>{t('components.settingDialog.colorScheme')}</Typography>
 			<Stack direction="row" gap="0.5rem">
-				{COLOR_SCHEME_OPTIONS.map((option) => (
-					<Box
-						key={option.value}
-						onClick={() => option.value !== value && onChange(option.value)}
-						sx={styles.unitItem(value === option.value)}
-					>
-						{t(option.labelKey)}
-					</Box>
-				))}
+				{COLOR_SCHEME_OPTIONS.map((option) => {
+					const Icon = COLOR_SCHEME_ICON[option.value];
+					const label = t(option.labelKey);
+					return (
+						<Tooltip key={option.value} title={label}>
+							<Box
+								onClick={() => option.value !== value && onChange(option.value)}
+								sx={styles.iconItem(value === option.value)}
+								aria-label={label}
+							>
+								<Icon fontSize="small" />
+							</Box>
+						</Tooltip>
+					);
+				})}
 			</Stack>
 		</Stack>
 	);

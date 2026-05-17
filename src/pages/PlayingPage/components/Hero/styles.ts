@@ -2,7 +2,8 @@ import { SxProps } from '@mui/material';
 
 const styles: { [key: string]: SxProps } = {
 	wrapper: {
-		pt: '71.5px',
+		pt: '72px',
+		pb: '100px',
 	},
 	content: {
 		padding: '1rem',

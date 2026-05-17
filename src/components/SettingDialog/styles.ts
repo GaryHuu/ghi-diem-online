@@ -15,6 +15,18 @@ const styles = {
 		color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
 		backgroundColor: active ? theme.palette.primary.main : 'transparent',
 	}),
+	iconItem: (active: boolean) => (theme: Theme) => ({
+		cursor: 'pointer',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '44px',
+		height: '40px',
+		border: `1px solid ${theme.palette.primary.main}`,
+		borderRadius: '4px',
+		color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
+		backgroundColor: active ? theme.palette.primary.main : 'transparent',
+	}),
 	copyright: (theme: Theme) => ({
 		fontSize: '14px',
 		color: theme.palette.text.secondary,

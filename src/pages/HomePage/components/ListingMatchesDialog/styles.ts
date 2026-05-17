@@ -12,7 +12,7 @@ const styles: { [key: string]: SxProps } = {
 		textAlign: 'center',
 		fontSize: '14px',
 		fontStyle: 'italic',
-		mb: '1rem',
+		padding: '1rem',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',

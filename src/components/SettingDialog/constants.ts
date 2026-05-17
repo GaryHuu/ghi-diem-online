@@ -31,10 +31,6 @@ export const COLOR_SCHEME_OPTIONS: { value: ColorScheme; labelKey: string }[] = 
 		value: 'dark',
 		labelKey: 'components.settingDialog.colorSchemeDark',
 	},
-	{
-		value: 'system',
-		labelKey: 'components.settingDialog.colorSchemeSystem',
-	},
 ];
 export const LANGUAGE_OPTIONS = [
 	{
