@@ -6,7 +6,7 @@ const styles = {
 		bottom: '64px',
 		left: 0,
 		right: 0,
-		padding: '8px 1rem',
+		padding: '12px 1rem',
 		backgroundColor: theme.palette.background.paper,
 		zIndex: 3,
 	}),

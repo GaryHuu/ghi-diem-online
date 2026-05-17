@@ -1,8 +1,5 @@
 import { ConfirmModal } from '@/components';
-import type {
-	ConfirmModalRef,
-	ConfirmOptions,
-} from '@/components/ConfirmModal/ConfirmModal';
+import type { ConfirmModalRef, ConfirmOptions } from '@/components/ConfirmModal/ConfirmModal';
 import { Hero, PlayingActionBar, PlayingHeader, PlayingLayout } from './components';
 import { usePlayingFetcher } from './hooks';
 import { useRef } from 'react';
