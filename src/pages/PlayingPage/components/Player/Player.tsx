@@ -99,15 +99,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 					<Typography sx={styles.title}>{player.name}</Typography>
 				</Stack>
 				<Box sx={styles.scoreGrid}>
-					<Stack sx={styles.scoreCell}>
-						<InputScore
-							disabled={isFinished || !!player.autoFill}
-							value={currentValue}
-							onChange={handleScoreChange}
-							gap={effectiveGap}
-						/>
-					</Stack>
-					<Stack sx={styles.scoreCell} alignItems="flex-end">
+					<Stack sx={styles.scoreCell} alignItems="flex-start">
 						<Typography sx={styles.scoreCaption}>{t('pages.playing.total')}</Typography>
 						<Stack direction="row" alignItems="baseline" gap="6px">
 							<Typography sx={styles.totalValue(total)}>{total}</Typography>
@@ -121,31 +113,47 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 							)}
 						</Stack>
 					</Stack>
+					<Stack sx={styles.scoreCell} alignItems="flex-end">
+						<InputScore
+							disabled={isFinished || !!player.autoFill}
+							value={currentValue}
+							onChange={handleScoreChange}
+							gap={effectiveGap}
+						/>
+					</Stack>
 				</Box>
 				{!isFinished && (
-					<Stack direction="row" alignItems="center" justifyContent="space-between" gap="0.5rem">
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={!!player.autoFill}
-									onChange={() => onToggleAutoFill(player.id)}
-									size="small"
-									sx={{ p: '2px' }}
-								/>
-							}
-							label={
-								<Typography sx={{ fontSize: '13px' }}>{t('common.buttons.autoFill')}</Typography>
-							}
-							sx={{ m: 0 }}
-						/>
-						<Stack
-							direction="row"
-							alignItems="center"
-							onClick={handleOpenGapPopover}
-							sx={styles.gapBadge(hasCustomGap)}
-						>
-							<SpeedIcon sx={{ fontSize: '14px' }} />
-							<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>{effectiveGap}</Typography>
+					<Box sx={styles.scoreGrid}>
+						<Stack sx={styles.scoreCell} alignItems="flex-start">
+							<Stack
+								direction="row"
+								alignItems="center"
+								onClick={handleOpenGapPopover}
+								sx={styles.gapBadge(hasCustomGap)}
+							>
+								<SpeedIcon sx={{ fontSize: '14px' }} />
+								<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+									{effectiveGap}
+								</Typography>
+							</Stack>
+						</Stack>
+						<Stack sx={styles.scoreCell} alignItems="flex-end">
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={!!player.autoFill}
+										onChange={() => onToggleAutoFill(player.id)}
+										size="small"
+										sx={{ p: '2px' }}
+									/>
+								}
+								label={
+									<Typography sx={{ fontSize: '13px' }}>
+										{t('common.buttons.autoFill')}
+									</Typography>
+								}
+								sx={{ m: 0 }}
+							/>
 						</Stack>
 						<Popover
 							open={Boolean(gapAnchorEl)}
@@ -174,7 +182,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 								)}
 							</Stack>
 						</Popover>
-					</Stack>
+					</Box>
 				)}
 			</Stack>
 			{showDragHandle && (
