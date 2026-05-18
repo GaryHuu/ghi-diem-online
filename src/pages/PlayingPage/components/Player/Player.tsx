@@ -148,9 +148,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 									/>
 								}
 								label={
-									<Typography sx={{ fontSize: '13px' }}>
-										{t('common.buttons.autoFill')}
-									</Typography>
+									<Typography sx={{ fontSize: '13px' }}>{t('common.buttons.autoFill')}</Typography>
 								}
 								sx={{ m: 0 }}
 							/>
