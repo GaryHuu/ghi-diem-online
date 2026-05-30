@@ -90,6 +90,12 @@
 		"emptyPlayer": {
 			"message": "Bạn chưa có bất kỳ người chơi nào.",
 			"instruction": "Vui lòng tạo bằng cách ấn nút bên dưới"
+		},
+		"shareCard": {
+			"title": "Chia sẻ kết quả",
+			"shareAction": "Chia sẻ",
+			"download": "Tải ảnh",
+			"error": "Không thể tạo ảnh. Vui lòng thử lại."
 		}
 	},
 	"errors": {

@@ -128,3 +128,10 @@ Currently **Vietnamese only** (English is temporarily disabled in `src/i18n/inde
 - **Drag & Drop**: Player order can be rearranged using react-beautiful-dnd (drag handle on right side, visible only in full UI mode)
 - **UI Modes**: Compact mode hides drag handles; full mode shows all controls
 - **Form Validation**: Uses Yup schemas with i18n support (e.g., `src/pages/CreatingPage/utils/schemas.ts`)
+
+<!-- SPECKIT START -->
+
+## Active Feature Plan
+
+- `specs/001-leaderboard-share-card/plan.md` — Leaderboard Share Card (polaroid standings PNG, native Canvas, no new deps)
+<!-- SPECKIT END -->
