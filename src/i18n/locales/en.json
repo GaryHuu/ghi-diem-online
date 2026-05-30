@@ -90,6 +90,12 @@
 		"emptyPlayer": {
 			"message": "You don't have any players yet.",
 			"instruction": "Please create one by clicking the button below"
+		},
+		"shareCard": {
+			"title": "Share results",
+			"shareAction": "Share",
+			"download": "Download",
+			"error": "Could not generate the image. Please try again."
 		}
 	},
 	"errors": {
