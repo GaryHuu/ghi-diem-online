@@ -14,6 +14,14 @@ export interface AdminMatchSummary {
 	deletedAt: string | null;
 }
 
+export interface AdminMatchPage {
+	items: AdminMatchSummary[];
+	count: number;
+	page: number;
+	pageSize: number;
+	totalPages: number;
+}
+
 export interface AdminMatchDetail extends Match {
 	total: number;
 	current: number;
@@ -46,9 +54,10 @@ export const adminLogin = async (username: string, password: string): Promise<st
 	return token;
 };
 
-export const adminGetMatches = (): Promise<AdminMatchSummary[]> =>
+// page is 0-based (DataGrid model); the API expects 1-based pages.
+export const adminGetMatches = (page: number, pageSize: number): Promise<AdminMatchPage> =>
 	withAuthGuard(() =>
-		apiClient.get<AdminMatchSummary[]>('/api/admin/matches', {
+		apiClient.get<AdminMatchPage>(`/api/admin/matches?page=${page + 1}&page_size=${pageSize}`, {
 			skipDeviceId: true,
 			headers: authHeaders(),
 		}),

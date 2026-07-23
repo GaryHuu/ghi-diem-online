@@ -64,7 +64,6 @@
 			"login": "Log in",
 			"logout": "Log out",
 			"back": "Back",
-			"empty": "No matches yet",
 			"table": {
 				"name": "Match name",
 				"status": "Status",
