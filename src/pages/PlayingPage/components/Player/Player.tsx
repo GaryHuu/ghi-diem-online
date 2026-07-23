@@ -1,4 +1,5 @@
 import { InputScore } from '@/components';
+import { useFlashOnChange } from '@/hooks';
 import { useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
 import helpers from '@/utils/helpers';
@@ -47,6 +48,10 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 	const currentValue = player.scores[currentGameNumber - 1] || 0;
 	const effectiveGap = player.gap ?? setting.gap;
 	const hasCustomGap = player.gap !== undefined;
+	// Live share view: flash values freshly changed by an incoming snapshot.
+	// currentGameNumber as context key so browsing rounds does not flash.
+	const flashTotal = useFlashOnChange(total, currentGameNumber) && readOnly;
+	const flashCurrent = useFlashOnChange(currentValue, currentGameNumber) && readOnly;
 	const showDragHandle = !readOnly && isDragEnabled && setting.uiMode === 'full';
 	const nameIsDragHandle = !readOnly && !!isDragEnabled && setting.uiMode === 'compact';
 
@@ -103,7 +108,11 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 					<Stack sx={styles.scoreCell} alignItems="flex-start">
 						<Typography sx={styles.scoreCaption}>{t('pages.playing.total')}</Typography>
 						<Stack direction="row" alignItems="baseline" gap="6px">
-							<Typography sx={styles.totalValue(total)}>{total}</Typography>
+							<Typography
+								sx={[styles.totalValue(total), ...(flashTotal ? [styles.scoreFlash] : [])]}
+							>
+								{total}
+							</Typography>
 							{showTrend && (
 								<Stack sx={styles.trendWrapper(increasingTrendValue)}>
 									{increasingTrendValue > 0 && <TrendingUpIcon sx={styles.trendIndicator} />}
@@ -116,7 +125,11 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 					</Stack>
 					<Stack sx={styles.scoreCell} alignItems="flex-end">
 						{readOnly ? (
-							<Typography sx={styles.totalValue(currentValue)}>{currentValue}</Typography>
+							<Typography
+								sx={[styles.totalValue(currentValue), ...(flashCurrent ? [styles.scoreFlash] : [])]}
+							>
+								{currentValue}
+							</Typography>
 						) : (
 							<InputScore
 								disabled={isFinished || !!player.autoFill}

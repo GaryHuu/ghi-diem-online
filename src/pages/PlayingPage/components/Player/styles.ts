@@ -52,6 +52,17 @@ const styles = {
 		letterSpacing: '0.04em',
 		color: theme.palette.text.secondary,
 	}),
+	scoreFlash: (theme: Theme) => ({
+		borderRadius: '4px',
+		padding: '0 4px',
+		margin: '0 -4px',
+		animation: 'score-flash 1.2s ease-out',
+		'@keyframes score-flash': {
+			'0%': { backgroundColor: alpha(theme.palette.primary.main, 0.45) },
+			'50%': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },
+			'100%': { backgroundColor: 'transparent' },
+		},
+	}),
 	totalValue: (total: number) => (theme: Theme) => ({
 		fontWeight: 'bold',
 		fontSize: '22px',
