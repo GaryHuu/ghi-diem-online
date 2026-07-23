@@ -1,39 +1,29 @@
-import type { ConfirmOptions } from '@/components/ConfirmModal/ConfirmModal';
 import {
-	FlagOutlined as FlagOutlinedIcon,
 	KeyboardArrowLeft as KeyboardArrowLeftIcon,
 	KeyboardArrowRight as KeyboardArrowRightIcon,
 	KeyboardDoubleArrowRight as KeyboardDoubleArrowRightIcon,
+	Share as ShareIcon,
 } from '@mui/icons-material';
 import { Box, Button, IconButton, LinearProgress, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useBoolean } from '@/hooks';
 import { usePlaying } from '../../hooks';
+import ShareLinkDialog from '../ShareLinkDialog';
 import styles from './styles';
 
-type Props = {
-	onConfirm: (callback: () => void, options?: ConfirmOptions) => void;
-};
-
-function PlayingHeader({ onConfirm }: Props) {
+function PlayingHeader() {
 	const { t } = useTranslation();
-	const { match, onShowGameNumber, moveToEnd, onFinish } = usePlaying();
+	const { match, onShowGameNumber, moveToEnd } = usePlaying();
+	const { value: isShareOpen, setTrue: openShare, setFalse: closeShare } = useBoolean(false);
 	const currentGame = match?.current;
 	const totalGame = match?.total;
-	const isFinished = match?.data.isFinished ?? false;
-	const isLastGame = !!currentGame && currentGame === totalGame;
+	const matchId = match?.data.id;
 	const isShowMoveToLast = totalGame && currentGame && totalGame - currentGame > 1;
 	const progress = currentGame && totalGame ? (currentGame / totalGame) * 100 : 0;
-	const canEndMatch = !isFinished && isLastGame;
 
 	const onChangeGame = (gameNumber: number) => () => {
 		onShowGameNumber(gameNumber);
 	};
-
-	const handleEndMatch = () =>
-		onConfirm(onFinish, {
-			titleKey: 'pages.playing.confirmEndMatchTitle',
-			bodyKey: 'pages.playing.confirmEndMatchBody',
-		});
 
 	return (
 		<Box sx={styles.wrapper}>
@@ -74,15 +64,15 @@ function PlayingHeader({ onConfirm }: Props) {
 				<Button
 					variant="outlined"
 					size="medium"
-					startIcon={<FlagOutlinedIcon />}
-					onClick={handleEndMatch}
-					disabled={!canEndMatch}
-					sx={styles.endMatchButton}
+					startIcon={<ShareIcon />}
+					onClick={openShare}
+					sx={styles.shareButton}
 				>
-					<Typography sx={styles.endMatchLabel}>{t('pages.playing.endMatch')}</Typography>
+					<Typography sx={styles.shareLabel}>{t('components.shareLink.action')}</Typography>
 				</Button>
 			</Stack>
 			<LinearProgress variant="determinate" value={progress} sx={styles.progressBar} />
+			<ShareLinkDialog isOpen={isShareOpen} onClose={closeShare} matchId={matchId} />
 		</Box>
 	);
 }

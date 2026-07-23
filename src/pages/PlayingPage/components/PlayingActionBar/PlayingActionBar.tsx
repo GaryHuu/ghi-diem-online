@@ -1,14 +1,12 @@
 import {
 	ArrowForward as ArrowForwardIcon,
+	FlagOutlined as FlagOutlinedIcon,
 	Leaderboard as LeaderboardIcon,
-	Share as ShareIcon,
 } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { ConfirmOptions } from '@/components/ConfirmModal/ConfirmModal';
-import { useBoolean } from '@/hooks';
 import { usePlaying } from '../../hooks';
-import ShareLinkDialog from '../ShareLinkDialog';
 import styles from './styles';
 
 type Props = {
@@ -17,19 +15,24 @@ type Props = {
 
 function PlayingActionBar({ onConfirm }: Props) {
 	const { t } = useTranslation();
-	const { match, onPlayContinue, toggleShowResult } = usePlaying();
-	const { value: isShareOpen, setTrue: openShare, setFalse: closeShare } = useBoolean(false);
+	const { match, onPlayContinue, toggleShowResult, onFinish } = usePlaying();
 	const currentGame = match?.current;
 	const totalGame = match?.total;
-	const matchId = match?.data.id;
 	const isFinished = match?.data.isFinished;
 	const isLastGame = currentGame === totalGame;
+	const canEndMatch = !isFinished && isLastGame;
 
 	const handleNextRound = () =>
 		onConfirm(onPlayContinue, {
 			titleKey: 'pages.playing.confirmNextRoundTitle',
 			bodyKey: 'pages.playing.confirmNextRoundBody',
 			bodyParams: { current: currentGame },
+		});
+
+	const handleEndMatch = () =>
+		onConfirm(onFinish, {
+			titleKey: 'pages.playing.confirmEndMatchTitle',
+			bodyKey: 'pages.playing.confirmEndMatchBody',
 		});
 
 	const primaryButton = isFinished ? (
@@ -64,13 +67,13 @@ function PlayingActionBar({ onConfirm }: Props) {
 					fullWidth
 					variant="outlined"
 					size="large"
-					startIcon={<ShareIcon />}
-					onClick={openShare}
+					startIcon={<FlagOutlinedIcon />}
+					onClick={handleEndMatch}
+					disabled={!canEndMatch}
 				>
-					{t('components.shareLink.action')}
+					{t('pages.playing.endMatch')}
 				</Button>
 			</Stack>
-			<ShareLinkDialog isOpen={isShareOpen} onClose={closeShare} matchId={matchId} />
 		</Box>
 	);
 }

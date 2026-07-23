@@ -17,7 +17,7 @@ function PlayingPage() {
 
 	return (
 		<PlayingLayout>
-			<PlayingHeader onConfirm={handleConfirm} />
+			<PlayingHeader />
 			<Hero />
 			<PlayingActionBar onConfirm={handleConfirm} />
 			<ConfirmModal ref={confirmActionRef} />

@@ -44,7 +44,7 @@ const styles = {
 			backgroundColor: theme.palette.primary.main,
 		},
 	}),
-	endMatchButton: (theme: Theme) => ({
+	shareButton: (theme: Theme) => ({
 		borderColor: theme.palette.primary.main,
 		color: theme.palette.primary.main,
 		textTransform: 'none' as const,
@@ -52,7 +52,7 @@ const styles = {
 		whiteSpace: 'nowrap' as const,
 		flexShrink: 0,
 	}),
-	endMatchLabel: {
+	shareLabel: {
 		fontSize: '14px',
 		fontWeight: 'bold',
 	} as SxProps,
