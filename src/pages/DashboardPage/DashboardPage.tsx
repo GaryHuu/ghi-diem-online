@@ -5,6 +5,7 @@ import {
 	Chip,
 	CircularProgress,
 	IconButton,
+	MenuItem,
 	Stack,
 	Table,
 	TableBody,
@@ -12,9 +13,11 @@ import {
 	TableHead,
 	TableRow,
 	TextField,
+	Tooltip,
 	Typography,
 } from '@mui/material';
 import dayjs from 'dayjs';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LeaderBoard, Player, PlayingLayout } from '../PlayingPage/components';
 import { usePlaying } from '../PlayingPage/hooks';
@@ -39,6 +42,12 @@ function DashboardPage() {
 		openMatch,
 		backToList,
 	} = useDashboard();
+
+	const [deviceFilter, setDeviceFilter] = useState('');
+	const deviceIds = useMemo(() => [...new Set(matches.map((m) => m.deviceId))], [matches]);
+	const visibleMatches = deviceFilter
+		? matches.filter((m) => m.deviceId === deviceFilter)
+		: matches;
 
 	if (view === 'login') {
 		return (
@@ -138,38 +147,63 @@ function DashboardPage() {
 			) : matches.length === 0 ? (
 				<Typography>{t('pages.dashboard.empty')}</Typography>
 			) : (
-				<Table size="small">
-					<TableHead>
-						<TableRow>
-							<TableCell>{t('pages.dashboard.table.name')}</TableCell>
-							<TableCell>{t('pages.dashboard.table.status')}</TableCell>
-							<TableCell align="right">{t('pages.dashboard.table.rounds')}</TableCell>
-							<TableCell align="right">{t('pages.dashboard.table.players')}</TableCell>
-							<TableCell>{t('pages.dashboard.table.createdAt')}</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{matches.map((item) => (
-							<TableRow key={item.id} hover sx={styles.row} onClick={() => openMatch(item.id)}>
-								<TableCell>{item.name}</TableCell>
-								<TableCell>
-									<Chip
-										size="small"
-										color={item.isFinished ? 'default' : 'primary'}
-										label={
-											item.isFinished
-												? t('pages.dashboard.status.finished')
-												: t('pages.dashboard.status.playing')
-										}
-									/>
-								</TableCell>
-								<TableCell align="right">{item.total}</TableCell>
-								<TableCell align="right">{item.playerCount}</TableCell>
-								<TableCell>{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</TableCell>
-							</TableRow>
+				<>
+					<TextField
+						select
+						size="small"
+						label={t('pages.dashboard.filterDevice')}
+						value={deviceFilter}
+						onChange={(event) => setDeviceFilter(event.target.value)}
+						sx={styles.deviceFilter}
+					>
+						<MenuItem value="">{t('pages.dashboard.allDevices')}</MenuItem>
+						{deviceIds.map((deviceId) => (
+							<MenuItem key={deviceId} value={deviceId}>
+								{deviceId.slice(0, 8)}
+							</MenuItem>
 						))}
-					</TableBody>
-				</Table>
+					</TextField>
+					<Table size="small">
+						<TableHead>
+							<TableRow>
+								<TableCell>{t('pages.dashboard.table.name')}</TableCell>
+								<TableCell>{t('pages.dashboard.table.status')}</TableCell>
+								<TableCell>{t('pages.dashboard.table.device')}</TableCell>
+								<TableCell align="right">{t('pages.dashboard.table.rounds')}</TableCell>
+								<TableCell align="right">{t('pages.dashboard.table.players')}</TableCell>
+								<TableCell>{t('pages.dashboard.table.createdAt')}</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{visibleMatches.map((item) => (
+								<TableRow key={item.id} hover sx={styles.row} onClick={() => openMatch(item.id)}>
+									<TableCell>{item.name}</TableCell>
+									<TableCell>
+										<Chip
+											size="small"
+											color={item.isFinished ? 'default' : 'primary'}
+											label={
+												item.isFinished
+													? t('pages.dashboard.status.finished')
+													: t('pages.dashboard.status.playing')
+											}
+										/>
+									</TableCell>
+									<TableCell>
+										<Tooltip title={item.deviceId}>
+											<Typography component="span" sx={styles.deviceId}>
+												{item.deviceId.slice(0, 8)}
+											</Typography>
+										</Tooltip>
+									</TableCell>
+									<TableCell align="right">{item.total}</TableCell>
+									<TableCell align="right">{item.playerCount}</TableCell>
+									<TableCell>{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</>
 			)}
 		</Box>
 	);

@@ -70,12 +70,15 @@
 				"status": "Trạng thái",
 				"rounds": "Số ván",
 				"players": "Số người chơi",
-				"createdAt": "Ngày tạo"
+				"createdAt": "Ngày tạo",
+				"device": "Thiết bị"
 			},
 			"status": {
 				"playing": "Đang chơi",
 				"finished": "Đã kết thúc"
-			}
+			},
+			"filterDevice": "Lọc theo thiết bị",
+			"allDevices": "Tất cả thiết bị"
 		}
 	},
 	"components": {

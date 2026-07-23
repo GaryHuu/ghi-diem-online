@@ -70,12 +70,15 @@
 				"status": "Status",
 				"rounds": "Rounds",
 				"players": "Players",
-				"createdAt": "Created at"
+				"createdAt": "Created at",
+				"device": "Device"
 			},
 			"status": {
 				"playing": "Playing",
 				"finished": "Finished"
-			}
+			},
+			"filterDevice": "Filter by device",
+			"allDevices": "All devices"
 		}
 	},
 	"components": {
