@@ -29,6 +29,9 @@ function DashboardPage() {
 		username,
 		password,
 		matches,
+		paginationModel,
+		rowCount,
+		setPaginationModel,
 		isSubmitting,
 		isLoadingList,
 		isLoadingDetail,
@@ -195,30 +198,23 @@ function DashboardPage() {
 					<LogoutIcon />
 				</IconButton>
 			</Stack>
-			{isLoadingList ? (
-				<Box sx={styles.stateWrapper}>
-					<CircularProgress />
-				</Box>
-			) : matches.length === 0 ? (
-				<Typography>{t('pages.dashboard.empty')}</Typography>
-			) : (
-				<DataGrid
-					rows={matches}
-					columns={columns}
-					autoHeight
-					disableRowSelectionOnClick
-					onRowClick={(params) => openMatch(params.row.id)}
-					localeText={viVN.components.MuiDataGrid.defaultProps.localeText}
-					slots={{ toolbar: GridToolbar }}
-					slotProps={{ toolbar: { showQuickFilter: true } }}
-					initialState={{
-						pagination: { paginationModel: { pageSize: 10 } },
-						sorting: { sortModel: [{ field: 'createdAt', sort: 'desc' }] },
-					}}
-					pageSizeOptions={[10, 25, 50]}
-					sx={styles.grid}
-				/>
-			)}
+			<DataGrid
+				rows={matches}
+				columns={columns}
+				autoHeight
+				disableRowSelectionOnClick
+				onRowClick={(params) => openMatch(params.row.id)}
+				localeText={viVN.components.MuiDataGrid.defaultProps.localeText}
+				slots={{ toolbar: GridToolbar }}
+				slotProps={{ toolbar: { showQuickFilter: true } }}
+				loading={isLoadingList}
+				paginationMode="server"
+				rowCount={rowCount}
+				paginationModel={paginationModel}
+				onPaginationModelChange={setPaginationModel}
+				pageSizeOptions={[10, 25, 50]}
+				sx={styles.grid}
+			/>
 		</Box>
 	);
 }

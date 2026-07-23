@@ -22,6 +22,8 @@ function useDashboard() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [matches, setMatches] = useState<AdminMatchSummary[]>([]);
+	const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
+	const [rowCount, setRowCount] = useState(0);
 	const [selectedId, setSelectedId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isLoadingList, setIsLoadingList] = useState(false);
@@ -38,14 +40,17 @@ function useDashboard() {
 
 	const loadMatches = useCallback(() => {
 		setIsLoadingList(true);
-		adminGetMatches()
-			.then(setMatches)
+		adminGetMatches(paginationModel.page, paginationModel.pageSize)
+			.then(({ items, count }) => {
+				setMatches(items);
+				setRowCount(count);
+			})
 			.catch((error) => {
 				if (error instanceof AdminAuthError) clearSession();
 				toast.error(translateError(error, t));
 			})
 			.finally(() => setIsLoadingList(false));
-	}, [clearSession, t]);
+	}, [clearSession, t, paginationModel]);
 
 	useEffect(() => {
 		if (token) loadMatches();
@@ -93,6 +98,9 @@ function useDashboard() {
 		username,
 		password,
 		matches,
+		paginationModel,
+		rowCount,
+		setPaginationModel,
 		isSubmitting,
 		isLoadingList,
 		isLoadingDetail,
