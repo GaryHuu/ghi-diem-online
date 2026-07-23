@@ -10,6 +10,7 @@ export interface AdminMatchSummary {
 	total: number;
 	playerCount: number;
 	createdAt: string;
+	deviceId: string;
 }
 
 export interface AdminMatchDetail extends Match {

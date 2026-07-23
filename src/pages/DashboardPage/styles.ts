@@ -35,6 +35,14 @@ const styles: Record<string, SxProps<Theme>> = {
 	row: {
 		cursor: 'pointer',
 	},
+	deviceFilter: {
+		marginBottom: '12px',
+		minWidth: '220px',
+	},
+	deviceId: {
+		fontFamily: 'monospace',
+		fontSize: '13px',
+	},
 	header: (theme: Theme) => ({
 		position: 'sticky',
 		top: 0,
