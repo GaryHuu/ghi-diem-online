@@ -71,14 +71,13 @@
 				"rounds": "Số ván",
 				"players": "Số người chơi",
 				"createdAt": "Ngày tạo",
-				"device": "Thiết bị"
+				"device": "Thiết bị",
+				"deletedAt": "Đã xóa"
 			},
 			"status": {
 				"playing": "Đang chơi",
 				"finished": "Đã kết thúc"
-			},
-			"filterDevice": "Lọc theo thiết bị",
-			"allDevices": "Tất cả thiết bị"
+			}
 		}
 	},
 	"components": {

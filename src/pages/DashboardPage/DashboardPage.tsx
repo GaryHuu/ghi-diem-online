@@ -1,3 +1,4 @@
+import { AdminMatchSummary } from '@/api';
 import { ArrowBack as ArrowBackIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import {
 	Box,
@@ -5,19 +6,15 @@ import {
 	Chip,
 	CircularProgress,
 	IconButton,
-	MenuItem,
 	Stack,
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableRow,
 	TextField,
 	Tooltip,
 	Typography,
 } from '@mui/material';
+import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
+import { viVN } from '@mui/x-data-grid/locales';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LeaderBoard, Player, PlayingLayout } from '../PlayingPage/components';
 import { usePlaying } from '../PlayingPage/hooks';
@@ -43,11 +40,69 @@ function DashboardPage() {
 		backToList,
 	} = useDashboard();
 
-	const [deviceFilter, setDeviceFilter] = useState('');
-	const deviceIds = useMemo(() => [...new Set(matches.map((m) => m.deviceId))], [matches]);
-	const visibleMatches = deviceFilter
-		? matches.filter((m) => m.deviceId === deviceFilter)
-		: matches;
+	const columns: GridColDef<AdminMatchSummary>[] = useMemo(
+		() => [
+			{ field: 'name', headerName: t('pages.dashboard.table.name'), flex: 1, minWidth: 150 },
+			{
+				field: 'isFinished',
+				headerName: t('pages.dashboard.table.status'),
+				width: 130,
+				renderCell: (params) => (
+					<Chip
+						size="small"
+						color={params.value ? 'default' : 'primary'}
+						label={
+							params.value
+								? t('pages.dashboard.status.finished')
+								: t('pages.dashboard.status.playing')
+						}
+					/>
+				),
+			},
+			{
+				field: 'deviceId',
+				headerName: t('pages.dashboard.table.device'),
+				width: 120,
+				renderCell: (params) => (
+					<Tooltip title={params.value}>
+						<Typography component="span" sx={styles.deviceId}>
+							{params.value.slice(0, 8)}
+						</Typography>
+					</Tooltip>
+				),
+			},
+			{ field: 'total', headerName: t('pages.dashboard.table.rounds'), type: 'number', width: 90 },
+			{
+				field: 'playerCount',
+				headerName: t('pages.dashboard.table.players'),
+				type: 'number',
+				width: 130,
+			},
+			{
+				field: 'createdAt',
+				headerName: t('pages.dashboard.table.createdAt'),
+				width: 150,
+				valueFormatter: (value: string) => dayjs(value).format('DD/MM/YYYY HH:mm'),
+			},
+			{
+				field: 'deletedAt',
+				headerName: t('pages.dashboard.table.deletedAt'),
+				width: 160,
+				renderCell: (params) =>
+					params.value ? (
+						<Chip
+							size="small"
+							color="error"
+							variant="outlined"
+							label={dayjs(params.value).format('DD/MM/YYYY HH:mm')}
+						/>
+					) : (
+						'—'
+					),
+			},
+		],
+		[t],
+	);
 
 	if (view === 'login') {
 		return (
@@ -147,63 +202,22 @@ function DashboardPage() {
 			) : matches.length === 0 ? (
 				<Typography>{t('pages.dashboard.empty')}</Typography>
 			) : (
-				<>
-					<TextField
-						select
-						size="small"
-						label={t('pages.dashboard.filterDevice')}
-						value={deviceFilter}
-						onChange={(event) => setDeviceFilter(event.target.value)}
-						sx={styles.deviceFilter}
-					>
-						<MenuItem value="">{t('pages.dashboard.allDevices')}</MenuItem>
-						{deviceIds.map((deviceId) => (
-							<MenuItem key={deviceId} value={deviceId}>
-								{deviceId.slice(0, 8)}
-							</MenuItem>
-						))}
-					</TextField>
-					<Table size="small">
-						<TableHead>
-							<TableRow>
-								<TableCell>{t('pages.dashboard.table.name')}</TableCell>
-								<TableCell>{t('pages.dashboard.table.status')}</TableCell>
-								<TableCell>{t('pages.dashboard.table.device')}</TableCell>
-								<TableCell align="right">{t('pages.dashboard.table.rounds')}</TableCell>
-								<TableCell align="right">{t('pages.dashboard.table.players')}</TableCell>
-								<TableCell>{t('pages.dashboard.table.createdAt')}</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{visibleMatches.map((item) => (
-								<TableRow key={item.id} hover sx={styles.row} onClick={() => openMatch(item.id)}>
-									<TableCell>{item.name}</TableCell>
-									<TableCell>
-										<Chip
-											size="small"
-											color={item.isFinished ? 'default' : 'primary'}
-											label={
-												item.isFinished
-													? t('pages.dashboard.status.finished')
-													: t('pages.dashboard.status.playing')
-											}
-										/>
-									</TableCell>
-									<TableCell>
-										<Tooltip title={item.deviceId}>
-											<Typography component="span" sx={styles.deviceId}>
-												{item.deviceId.slice(0, 8)}
-											</Typography>
-										</Tooltip>
-									</TableCell>
-									<TableCell align="right">{item.total}</TableCell>
-									<TableCell align="right">{item.playerCount}</TableCell>
-									<TableCell>{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</>
+				<DataGrid
+					rows={matches}
+					columns={columns}
+					autoHeight
+					disableRowSelectionOnClick
+					onRowClick={(params) => openMatch(params.row.id)}
+					localeText={viVN.components.MuiDataGrid.defaultProps.localeText}
+					slots={{ toolbar: GridToolbar }}
+					slotProps={{ toolbar: { showQuickFilter: true } }}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 10 } },
+						sorting: { sortModel: [{ field: 'createdAt', sort: 'desc' }] },
+					}}
+					pageSizeOptions={[10, 25, 50]}
+					sx={styles.grid}
+				/>
 			)}
 		</Box>
 	);
