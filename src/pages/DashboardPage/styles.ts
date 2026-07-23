@@ -32,12 +32,10 @@ const styles: Record<string, SxProps<Theme>> = {
 		fontSize: '18px',
 		fontWeight: 'bold',
 	},
-	row: {
-		cursor: 'pointer',
-	},
-	deviceFilter: {
-		marginBottom: '12px',
-		minWidth: '220px',
+	grid: {
+		'& .MuiDataGrid-row': {
+			cursor: 'pointer',
+		},
 	},
 	deviceId: {
 		fontFamily: 'monospace',

@@ -11,6 +11,7 @@ export interface AdminMatchSummary {
 	playerCount: number;
 	createdAt: string;
 	deviceId: string;
+	deletedAt: string | null;
 }
 
 export interface AdminMatchDetail extends Match {
