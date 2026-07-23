@@ -1,19 +1,26 @@
 import type { ConfirmModalRef } from '@/components/ConfirmModal/ConfirmModal';
 import { useBoolean } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { updateMatches } from '@/redux/slices/matchSlice';
+import { fetchMatches } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
 import { ROUTES } from '@/routes/constants';
 import { matchService } from '@/services';
-import { useRef } from 'react';
+import { getSharedHistory, removeSharedHistory } from '@/utils/helpers';
+import { useRef, useState } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
 
 function useListingMatchesDialog() {
-	const { value: isOpen, setTrue: onOpen, setFalse: onClose } = useBoolean(false);
+	const { value: isOpen, setTrue: openDialog, setFalse: onClose } = useBoolean(false);
 	const confirmActionRef = useRef<ConfirmModalRef>(null);
 	const matches = useAppSelector((state: RootState) => state.match.matches);
+	const [sharedMatches, setSharedMatches] = useState(getSharedHistory);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+
+	const onOpen = () => {
+		setSharedMatches(getSharedHistory());
+		openDialog();
+	};
 
 	const onItemClick = (id: number) => {
 		onClose();
@@ -21,11 +28,19 @@ function useListingMatchesDialog() {
 		navigate(path);
 	};
 
+	const onSharedItemClick = (token: string) => {
+		onClose();
+		navigate(generatePath(ROUTES.SHARE, { token }));
+	};
+
+	const onDeleteSharedItem = (token: string) => {
+		setSharedMatches(removeSharedHistory(token));
+	};
+
 	const onDeleteItem = (id: number) => {
-		confirmActionRef.current?.confirm(() => {
-			matchService.delete(id);
-			const newMatch = matchService.getAll();
-			dispatch(updateMatches(newMatch));
+		confirmActionRef.current?.confirm(async () => {
+			await matchService.delete(id);
+			dispatch(fetchMatches());
 		});
 	};
 
@@ -40,8 +55,11 @@ function useListingMatchesDialog() {
 		matches,
 		finishedMatches,
 		inProgressMatches,
+		sharedMatches,
 		onItemClick,
 		onDeleteItem,
+		onSharedItemClick,
+		onDeleteSharedItem,
 		confirmActionRef,
 	};
 }

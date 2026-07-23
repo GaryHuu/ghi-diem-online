@@ -19,7 +19,7 @@ export const translateError = (error: unknown, t: TFunction): string => {
 		try {
 			const parsed = JSON.parse(message);
 			if (parsed.key && parsed.params) {
-				return t(parsed.key, parsed.params);
+				return t(parsed.key, parsed.params) as string;
 			}
 		} catch {
 			// Not JSON, return as is

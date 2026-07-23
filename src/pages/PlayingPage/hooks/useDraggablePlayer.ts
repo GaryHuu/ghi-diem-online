@@ -16,7 +16,7 @@ function useDraggablePlayer() {
 	const matchId = match?.data.id as number;
 	const players = match?.data.players ?? [];
 
-	const onDragEnd: OnDragEndResponder = (result, provided) => {
+	const onDragEnd: OnDragEndResponder = async (result) => {
 		try {
 			if (!match) {
 				throw new Error(t('errors.match.notFound'));
@@ -36,9 +36,7 @@ function useDraggablePlayer() {
 			clonePlayers.splice(result.source.index, 1);
 			clonePlayers.splice(result.destination.index, 0, sourcePlayer);
 
-			matchService.updatePositionOfPlayer(matchId, clonePlayers);
-
-			const newMatch = matchService.get(matchId);
+			const newMatch = await matchService.updatePositionOfPlayer(matchId, clonePlayers);
 			dispatch(updateMatchDetailData(newMatch));
 			toast.success(t('toast.positionChanged'));
 		} catch (error) {

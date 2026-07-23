@@ -1,5 +1,5 @@
 import { Layout } from '@/components';
-import { CreatingPage, HomePage, PlayingPage } from '@/pages';
+import { CreatingPage, DashboardPage, HomePage, PlayingPage, SharedViewPage } from '@/pages';
 import { createBrowserRouter } from 'react-router-dom';
 import { ROUTES } from './constants';
 
@@ -19,6 +19,14 @@ const router = createBrowserRouter([
 			{
 				path: ROUTES.MATCH,
 				element: <PlayingPage />,
+			},
+			{
+				path: ROUTES.SHARE,
+				element: <SharedViewPage />,
+			},
+			{
+				path: ROUTES.DASHBOARD,
+				element: <DashboardPage />,
 			},
 		],
 	},

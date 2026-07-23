@@ -31,9 +31,10 @@ type Props = {
 	onRename: (player: PlayerType) => void;
 	dragHandleProps?: DraggableProvidedDragHandleProps;
 	isDragEnabled?: boolean;
+	readOnly?: boolean;
 };
 
-function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
+function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: Props) {
 	const { t } = useTranslation();
 	const setting = useAppSelector((state: RootState) => state.setting);
 	const { match, onScorePlayerChange, onToggleAutoFill, onUpdatePlayerGap } = usePlaying();
@@ -46,8 +47,8 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 	const currentValue = player.scores[currentGameNumber - 1] || 0;
 	const effectiveGap = player.gap ?? setting.gap;
 	const hasCustomGap = player.gap !== undefined;
-	const showDragHandle = isDragEnabled && setting.uiMode === 'full';
-	const nameIsDragHandle = !!isDragEnabled && setting.uiMode === 'compact';
+	const showDragHandle = !readOnly && isDragEnabled && setting.uiMode === 'full';
+	const nameIsDragHandle = !readOnly && !!isDragEnabled && setting.uiMode === 'compact';
 
 	const [gapAnchorEl, setGapAnchorEl] = useState<HTMLElement | null>(null);
 	const [gapDisplayValue, setGapDisplayValue] = useState<string>(effectiveGap.toString());
@@ -89,7 +90,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 					direction="row"
 					alignItems="center"
 					gap="6px"
-					onClick={() => onRename(player)}
+					onClick={() => !readOnly && onRename(player)}
 					sx={styles.nameRow(nameIsDragHandle)}
 					{...(nameIsDragHandle && dragHandleProps ? dragHandleProps : {})}
 				>
@@ -114,15 +115,19 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled }: Props) {
 						</Stack>
 					</Stack>
 					<Stack sx={styles.scoreCell} alignItems="flex-end">
-						<InputScore
-							disabled={isFinished || !!player.autoFill}
-							value={currentValue}
-							onChange={handleScoreChange}
-							gap={effectiveGap}
-						/>
+						{readOnly ? (
+							<Typography sx={styles.totalValue(currentValue)}>{currentValue}</Typography>
+						) : (
+							<InputScore
+								disabled={isFinished || !!player.autoFill}
+								value={currentValue}
+								onChange={handleScoreChange}
+								gap={effectiveGap}
+							/>
+						)}
 					</Stack>
 				</Box>
-				{!isFinished && (
+				{!isFinished && !readOnly && (
 					<Box sx={styles.scoreGrid}>
 						<Stack sx={styles.scoreCell} alignItems="flex-start">
 							<Stack

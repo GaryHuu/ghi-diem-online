@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/redux/hooks';
-import { updateMatches } from '@/redux/slices/matchSlice';
+import { fetchMatches } from '@/redux/slices/matchSlice';
 import { ROUTES } from '@/routes/constants';
 import { matchService } from '@/services';
 import { translateError } from '@/utils/helpers';
@@ -19,12 +19,10 @@ function useCreatingPage() {
 		resolver: yupResolver(schema),
 	});
 
-	const onSubmit = (data: CreatingPageForm) => {
+	const onSubmit = async (data: CreatingPageForm) => {
 		try {
-			const newMatch = matchService.create(data.name);
-			const newMatches = matchService.getAll();
-
-			dispatch(updateMatches(newMatches));
+			const newMatch = await matchService.create(data.name);
+			dispatch(fetchMatches());
 
 			const path = generatePath(ROUTES.MATCH, { id: newMatch.id });
 			navigate(path);

@@ -36,8 +36,11 @@ function ListingMatchesDialog({ children }: Props) {
 		onClose,
 		inProgressMatches,
 		finishedMatches,
+		sharedMatches,
 		onItemClick,
 		onDeleteItem,
+		onSharedItemClick,
+		onDeleteSharedItem,
 		confirmActionRef,
 	} = useListingMatchesDialog();
 
@@ -69,6 +72,41 @@ function ListingMatchesDialog({ children }: Props) {
 							<Typography sx={styles.empty}>
 								<SentimentVeryDissatisfiedIcon color="action" />
 								{t('components.listingMatches.noFinished')}
+							</Typography>
+						)}
+						<Divider variant="middle" />
+						<ListSubheader>{t('components.listingMatches.shared')}</ListSubheader>
+						{sharedMatches.map((entry) => (
+							<ListItem
+								disablePadding
+								key={entry.token}
+								secondaryAction={
+									<IconButton
+										edge="end"
+										aria-label="delete"
+										onClick={() => onDeleteSharedItem(entry.token)}
+									>
+										<DeleteIcon />
+									</IconButton>
+								}
+							>
+								<ListItemButton onClick={() => onSharedItemClick(entry.token)}>
+									<ListItemAvatar>
+										<Avatar sx={{ backgroundColor: helpers.stringToColor(entry.name) }}>
+											{helpers.getShortName(entry.name)}
+										</Avatar>
+									</ListItemAvatar>
+									<ListItemText
+										primary={entry.name}
+										secondary={dayjs(entry.viewedAt).format(DATE_FORMAT)}
+									/>
+								</ListItemButton>
+							</ListItem>
+						))}
+						{sharedMatches.length === 0 && (
+							<Typography sx={styles.empty}>
+								<SentimentVeryDissatisfiedIcon color="action" />
+								{t('components.listingMatches.noShared')}
 							</Typography>
 						)}
 					</List>
@@ -109,7 +147,7 @@ const Item = ({
 					{helpers.getShortName(match.name)}
 				</Avatar>
 			</ListItemAvatar>
-			<ListItemText primary={match.name} secondary={dayjs(match.id).format(DATE_FORMAT)} />
+			<ListItemText primary={match.name} secondary={dayjs(match.createdAt).format(DATE_FORMAT)} />
 		</ListItemButton>
 	</ListItem>
 );

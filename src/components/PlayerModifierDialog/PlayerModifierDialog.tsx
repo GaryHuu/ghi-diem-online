@@ -21,8 +21,8 @@ import { Mode, PlayerForm } from './types';
 
 type Props = {
 	children: ReactNode;
-	onSubmit?: (name: string, id?: number) => void;
-	onAvatarChange?: (playerId: number, avatar?: string) => void;
+	/** avatar: Base64 string, null to remove, undefined when unchanged */
+	onSubmit?: (name: string, id?: number, avatar?: string | null) => void;
 };
 
 export type PlayerModifierDialogRefType = {
@@ -54,14 +54,12 @@ const resizeImage = (file: File): Promise<string> => {
 };
 
 const PlayerModifierDialog = forwardRef(
-	(
-		{ children, onSubmit = () => {}, onAvatarChange }: Props,
-		ref: Ref<PlayerModifierDialogRefType>,
-	) => {
+	({ children, onSubmit = () => {} }: Props, ref: Ref<PlayerModifierDialogRefType>) => {
 		const { t } = useTranslation();
 		const [mode, setMode] = useState<Mode>(Mode.Create);
 		const [isOpen, setIsOpen] = useState(false);
 		const [avatarPreview, setAvatarPreview] = useState<string | undefined>();
+		const avatarDirtyRef = useRef(false);
 		const editedPlayerRef = useRef<PlayerForm | null>(null);
 		const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,6 +82,7 @@ const PlayerModifierDialog = forwardRef(
 			reset();
 			setMode(Mode.Create);
 			setAvatarPreview(undefined);
+			avatarDirtyRef.current = false;
 			editedPlayerRef.current = null;
 			helpers.scrollToTop();
 		};
@@ -126,7 +125,11 @@ const PlayerModifierDialog = forwardRef(
 					setError('name', { message });
 					return;
 				}
-				onSubmit(value, editedPlayerRef.current?.id);
+				onSubmit(
+					value,
+					editedPlayerRef.current?.id,
+					avatarDirtyRef.current ? (avatarPreview ?? null) : undefined,
+				);
 			}
 
 			handleClose();
@@ -136,24 +139,22 @@ const PlayerModifierDialog = forwardRef(
 			fileInputRef.current?.click();
 		};
 
-		const handleFileChange = useCallback(
-			async (e: React.ChangeEvent<HTMLInputElement>) => {
-				const file = e.target.files?.[0];
-				if (!file || !editedPlayerRef.current?.id) return;
+		const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0];
+			if (!file || !editedPlayerRef.current?.id) return;
 
-				const base64 = await resizeImage(file);
-				setAvatarPreview(base64);
-				onAvatarChange?.(editedPlayerRef.current.id, base64);
+			// Preview only -- persisted together with the name on submit.
+			const base64 = await resizeImage(file);
+			setAvatarPreview(base64);
+			avatarDirtyRef.current = true;
 
-				if (fileInputRef.current) fileInputRef.current.value = '';
-			},
-			[onAvatarChange],
-		);
+			if (fileInputRef.current) fileInputRef.current.value = '';
+		}, []);
 
 		const handleRemoveAvatar = () => {
 			if (!editedPlayerRef.current?.id) return;
 			setAvatarPreview(undefined);
-			onAvatarChange?.(editedPlayerRef.current.id, undefined);
+			avatarDirtyRef.current = true;
 		};
 
 		useImperativeHandle(ref, () => ({
@@ -162,6 +163,7 @@ const PlayerModifierDialog = forwardRef(
 				setMode(Mode.Edit);
 				setValue('name', player?.name ?? '');
 				setAvatarPreview(player?.avatar);
+				avatarDirtyRef.current = false;
 				editedPlayerRef.current = player;
 			},
 		}));

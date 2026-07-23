@@ -1,6 +1,6 @@
 import { Match } from '@/utils/types';
 import { matchService } from '@/services';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MatchDetail {
 	isShowResult?: boolean;
@@ -15,9 +15,11 @@ interface MatchState {
 }
 
 const initialState: MatchState = {
-	matches: matchService.getAll(),
+	matches: [],
 	matchDetail: undefined,
 };
+
+export const fetchMatches = createAsyncThunk('match/fetchMatches', () => matchService.getAll());
 
 const matchSlice = createSlice({
 	name: 'match',
@@ -31,6 +33,14 @@ const matchSlice = createSlice({
 			if (!state.matchDetail) return;
 			state.matchDetail.data = action.payload;
 		},
+		updatePlayerScore: (
+			state,
+			action: PayloadAction<{ playerId: number; gameIndex: number; value: number }>,
+		) => {
+			const player = state.matchDetail?.data.players.find((p) => p.id === action.payload.playerId);
+			if (!player) return;
+			player.scores[action.payload.gameIndex] = action.payload.value;
+		},
 		updateIsShowResult: (state, action: PayloadAction<boolean>) => {
 			if (!state.matchDetail) return;
 			state.matchDetail.isShowResult = action.payload;
@@ -38,18 +48,20 @@ const matchSlice = createSlice({
 		updateMatchDetail: (state, action: PayloadAction<MatchDetail>) => {
 			state.matchDetail = action.payload;
 		},
-		updateMatches: (state, action: PayloadAction<Match[]>) => {
+	},
+	extraReducers: (builder) => {
+		builder.addCase(fetchMatches.fulfilled, (state, action) => {
 			state.matches = action.payload;
-		},
+		});
 	},
 });
 
 export const {
 	updateMatchDetail,
-	updateMatches,
 	updateCurrentGame,
 	updateIsShowResult,
 	updateMatchDetailData,
+	updatePlayerScore,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;
