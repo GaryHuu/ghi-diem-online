@@ -52,6 +52,30 @@
 			"matchLabel": "Trận: {{name}}",
 			"individualGap": "Giá trị tăng/giảm riêng",
 			"resetToGlobal": "Đặt lại về mặc định"
+		},
+		"shared": {
+			"liveBadge": "Đang xem trực tiếp",
+			"notFound": "Không tìm thấy trận đấu được chia sẻ"
+		},
+		"dashboard": {
+			"title": "Bảng điều khiển",
+			"username": "Tên đăng nhập",
+			"password": "Mật khẩu",
+			"login": "Đăng nhập",
+			"logout": "Đăng xuất",
+			"back": "Quay lại",
+			"empty": "Chưa có trận đấu nào",
+			"table": {
+				"name": "Tên trận",
+				"status": "Trạng thái",
+				"rounds": "Số ván",
+				"players": "Số người chơi",
+				"createdAt": "Ngày tạo"
+			},
+			"status": {
+				"playing": "Đang chơi",
+				"finished": "Đã kết thúc"
+			}
 		}
 	},
 	"components": {
@@ -85,7 +109,9 @@
 			"inProgress": "Đang diễn ra",
 			"finished": "Đã kết thúc",
 			"noInProgress": "Không có bất kỳ trận đấu nào đang diễn ra",
-			"noFinished": "Không có bất kỳ trận đấu nào đã kết thúc"
+			"noFinished": "Không có bất kỳ trận đấu nào đã kết thúc",
+			"shared": "Được chia sẻ với bạn",
+			"noShared": "Chưa xem trận được chia sẻ nào"
 		},
 		"emptyPlayer": {
 			"message": "Bạn chưa có bất kỳ người chơi nào.",
@@ -96,6 +122,14 @@
 			"shareAction": "Chia sẻ",
 			"download": "Tải ảnh",
 			"error": "Không thể tạo ảnh. Vui lòng thử lại."
+		},
+		"shareLink": {
+			"action": "Chia sẻ trực tiếp",
+			"title": "Chia sẻ trận đấu",
+			"description": "Bất kỳ ai có liên kết này đều có thể xem bảng điểm trực tiếp (chỉ xem).",
+			"copy": "Sao chép",
+			"copied": "Đã sao chép",
+			"close": "Đóng"
 		}
 	},
 	"errors": {
@@ -117,7 +151,10 @@
 			"invalidScore": "Điểm số không hợp lệ",
 			"scoreNotZeroWithNumber": "Tổng số điểm của ván đấu {{gameNumber}} không bằng 0",
 			"scoreNotZero": "Tổng số điểm của ván đấu hiện tại không bằng 0"
-		}
+		},
+		"network": "Không thể kết nối máy chủ. Vui lòng thử lại.",
+		"unauthorized": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+		"unknown": "Đã có lỗi xảy ra. Vui lòng thử lại."
 	},
 	"validation": {
 		"matchName": {

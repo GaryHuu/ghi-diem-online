@@ -1,8 +1,11 @@
+import { useAppDispatch } from '@/redux/hooks';
+import { fetchMatches } from '@/redux/slices/matchSlice';
 import { ROUTES } from '@/routes/constants';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Banner, ListingMatchesDialog, Title } from './components';
@@ -11,6 +14,11 @@ import { styles } from './utils';
 function HomePage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(fetchMatches());
+	}, [dispatch]);
 
 	const handleStartNewGameClick = () => {
 		navigate(ROUTES.CREATE_NEW_MATCH);

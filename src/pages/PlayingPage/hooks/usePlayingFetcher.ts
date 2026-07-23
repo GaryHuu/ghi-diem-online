@@ -16,12 +16,12 @@ function usePlayingFetcher() {
 	const { params } = useAddQueryParams();
 	const { t } = useTranslation();
 
-	const fetchMatch = useCallback(() => {
+	const fetchMatch = useCallback(async () => {
 		try {
 			if (!id) throw new Error('errors.match.notFound');
 
-			const newMatch = matchService.get(+id);
-			const totalGameNumber = matchService.getCurrentGameNumber(+id);
+			const newMatch = await matchService.get(+id);
+			const totalGameNumber = newMatch.players.find(Boolean)?.scores.length || 1;
 			const gameNumberParam = params.get('gN');
 			const current = gameNumberParam ? +gameNumberParam : totalGameNumber;
 			const payload = {

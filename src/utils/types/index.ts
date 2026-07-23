@@ -10,6 +10,7 @@ export interface Player {
 export interface MatchWithoutPlayers {
 	id: number;
 	name: string;
+	createdAt?: string;
 	isFinished?: boolean;
 }
 

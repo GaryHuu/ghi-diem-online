@@ -13,7 +13,7 @@ import styles from './styles';
 import DragDropPlayer from '../DragDropPlayer';
 
 function Hero() {
-	const { isEmptyPlayer, isFinished, match, onAdjustPlayer, onUpdatePlayerAvatar } = usePlaying();
+	const { isEmptyPlayer, isFinished, match, onAdjustPlayer } = usePlaying();
 	const playerModifierDialogRef = useRef<PlayerModifierDialogRefType>(null);
 
 	const onRenamePlayer = (player: PlayerType) => {
@@ -41,11 +41,7 @@ function Hero() {
 						)}
 					</DragDropPlayer>
 					{isAllowedActionForPlayer && (
-						<PlayerModifierDialog
-							ref={playerModifierDialogRef}
-							onSubmit={onAdjustPlayer}
-							onAvatarChange={onUpdatePlayerAvatar}
-						>
+						<PlayerModifierDialog ref={playerModifierDialogRef} onSubmit={onAdjustPlayer}>
 							<Button variant="contained" size="small" startIcon={<AddIcon />} />
 						</PlayerModifierDialog>
 					)}

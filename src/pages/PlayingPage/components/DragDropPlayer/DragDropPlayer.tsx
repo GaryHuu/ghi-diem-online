@@ -47,7 +47,7 @@ function DragDropPlayer({ children, isAllow }: DragDropPlayerProps) {
 										{...provider.draggableProps}
 										style={getDragItemStyle(provider.draggableProps.style as CSSProperties)}
 									>
-										{children(player, provider.dragHandleProps, isAllow)}
+										{children(player, provider.dragHandleProps ?? undefined, isAllow)}
 									</div>
 								)}
 							</Draggable>

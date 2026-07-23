@@ -1,229 +1,72 @@
-import { DB_KEYS } from '@/utils/constants';
-import { Match, MatchWithoutPlayers, Player } from '@/utils/types';
-import {
-	getFromLocalStorage,
-	setToLocalStorage,
-	removeFromLocalStorage,
-	getKeyStoragePlayersOfMatch,
-} from '@/utils/helpers';
+import { apiClient } from '@/api';
+import { Match, Player } from '@/utils/types';
 
-/**
- * Gets all match metadata from localStorage
- * @returns Array of match metadata without players
- */
-const getMatchesMetadata = (): MatchWithoutPlayers[] => {
-	return getFromLocalStorage<MatchWithoutPlayers[]>(DB_KEYS.MY_IDS_OF_MATCHES, []);
+// avatar: null explicitly clears it server-side (undefined would be dropped by JSON.stringify)
+type PlayerUpdate = Partial<Pick<Player, 'name' | 'gap'>> & {
+	avatar?: string | null;
+	order?: number;
 };
 
-/**
- * Saves match metadata to localStorage
- * @param matchesMetadata - Array of match metadata to save
- */
-const saveMatchesMetadata = (matchesMetadata: MatchWithoutPlayers[]): void => {
-	setToLocalStorage(DB_KEYS.MY_IDS_OF_MATCHES, matchesMetadata);
-};
+const getMatches = (): Promise<Match[]> => apiClient.get<Match[]>('/api/matches');
 
-/**
- * Gets players for a specific match from localStorage
- * @param matchId - The match ID
- * @returns Array of players
- */
-const getMatchPlayers = (matchId: number): Player[] => {
-	return getFromLocalStorage<Player[]>(getKeyStoragePlayersOfMatch(matchId), []);
-};
+const getMatch = (id: number): Promise<Match> => apiClient.get<Match>(`/api/matches/${id}`);
 
-/**
- * Saves players for a specific match to localStorage
- * @param matchId - The match ID
- * @param players - Array of players to save
- */
-const saveMatchPlayers = (matchId: number, players: Player[]): void => {
-	setToLocalStorage(getKeyStoragePlayersOfMatch(matchId), players);
-};
+const createMatch = (name: string): Promise<Match> =>
+	apiClient.post<Match>('/api/matches', { name, players: [] });
 
-/**
- * Checks if a player name already exists in the match (case-insensitive)
- * @param players - Array of existing players
- * @param name - Name to check
- * @param excludePlayerId - Optional player ID to exclude from check (for updates)
- * @returns true if name exists
- */
-const isPlayerNameDuplicate = (
-	players: Player[],
-	name: string,
-	excludePlayerId?: number,
-): boolean => {
-	return players.some(
-		(p) =>
-			p.name.trim().toLowerCase() === name.trim().toLowerCase() &&
-			(!excludePlayerId || p.id !== excludePlayerId),
-	);
-};
+const deleteMatch = (id: number): Promise<void> => apiClient.delete<void>(`/api/matches/${id}`);
 
-/**
- * Creates a new match
- * @param newMatchBasicInfo - Match metadata
- * @returns The created match with empty players array
- */
-const createMatch = (newMatchBasicInfo: MatchWithoutPlayers): Match => {
-	const matchesMetadata = getMatchesMetadata();
-	matchesMetadata.unshift(newMatchBasicInfo);
-	saveMatchesMetadata(matchesMetadata);
-	saveMatchPlayers(newMatchBasicInfo.id, []);
+const addPlayerToMatch = (matchId: number, name: string): Promise<Match> =>
+	apiClient.post<Match>(`/api/matches/${matchId}/players`, { name });
 
-	return {
-		...newMatchBasicInfo,
-		players: [],
-	};
-};
+const updatePlayer = (matchId: number, playerId: number, data: PlayerUpdate): Promise<Match> =>
+	apiClient.put<Match>(`/api/matches/${matchId}/players/${playerId}`, data);
 
-/**
- * Updates match metadata
- * @param match - Match metadata to update
- * @returns Updated match metadata or undefined if not found
- */
-const updateMatch = (match: MatchWithoutPlayers): MatchWithoutPlayers | undefined => {
-	const matchesMetadata = getMatchesMetadata();
-	const index = matchesMetadata.findIndex((m) => m.id === match.id);
+const updateScore = (
+	matchId: number,
+	playerId: number,
+	gameIndex: number,
+	value: number,
+): Promise<Match> =>
+	apiClient.put<Match>(`/api/matches/${matchId}/scores`, { playerId, gameIndex, value });
 
-	if (index === -1) return undefined;
-
-	matchesMetadata[index] = {
-		id: match.id,
-		name: match.name,
-		isFinished: match.isFinished,
-	};
-	saveMatchesMetadata(matchesMetadata);
-
-	return matchesMetadata[index];
-};
-
-/**
- * Gets a match by ID with its players
- * @param id - Match ID
- * @returns Match with players or undefined if not found
- */
-const getMatch = (id: number): Match | undefined => {
-	const matchesMetadata = getMatchesMetadata();
-	const matchMetadata = matchesMetadata.find((m) => m.id === id);
-
-	if (!matchMetadata) return undefined;
-
-	const players = getMatchPlayers(matchMetadata.id);
-
-	return {
-		...matchMetadata,
-		players,
-	};
-};
-
-/**
- * Gets all matches with their players
- * @returns Array of all matches
- */
-const getMatches = (): Match[] => {
-	const matchesMetadata = getMatchesMetadata();
-
-	return matchesMetadata.map((matchMetadata) => {
-		const players = getMatchPlayers(matchMetadata.id);
-		return { ...matchMetadata, players };
-	});
-};
-
-/**
- * Adds a player to a match
- * @param id - Match ID
- * @param player - Player to add
- * @returns The added player or undefined if name already exists
- */
-const addPlayerToMatch = (id: number, player: Player): Player | undefined => {
-	const players = getMatchPlayers(id);
-
-	if (isPlayerNameDuplicate(players, player.name)) {
-		return undefined;
+const updatePlayersPosition = async (matchId: number, players: Player[]): Promise<Match> => {
+	let match: Match | undefined;
+	for (let index = 0; index < players.length; index++) {
+		match = await updatePlayer(matchId, players[index].id, { order: index });
 	}
-
-	players.push(player);
-	saveMatchPlayers(id, players);
-
-	return player;
+	return match ?? getMatch(matchId);
 };
 
-/**
- * Gets a specific player from a match
- * @param matchId - Match ID
- * @param playerId - Player ID
- * @returns Player or undefined if not found
- */
-const getPlayerOfMatch = (matchId: number, playerId: number): Player | undefined => {
-	const players = getMatchPlayers(matchId);
-	return players.find((p) => p.id === playerId);
-};
+const toggleAutoFill = (matchId: number, playerId: number): Promise<Match> =>
+	apiClient.post<Match>(`/api/matches/${matchId}/players/${playerId}/toggle-autofill`);
 
-/**
- * Updates a player in a match
- * @param matchId - Match ID
- * @param player - Updated player data
- * @returns Updated player or undefined if not found or name is duplicate
- */
-const updatePlayerOfMatch = (matchId: number, player: Player): Player | undefined => {
-	const players = getMatchPlayers(matchId);
+const nextGame = (id: number): Promise<Match> =>
+	apiClient.post<Match>(`/api/matches/${id}/next-game`);
 
-	if (isPlayerNameDuplicate(players, player.name, player.id)) {
-		return undefined;
-	}
+const endGame = (id: number): Promise<Match> =>
+	apiClient.post<Match>(`/api/matches/${id}/end-game`);
 
-	const index = players.findIndex((p) => p.id === player.id);
-	if (index === -1) return undefined;
+const shareMatch = (id: number): Promise<{ token: string }> =>
+	apiClient.post<{ token: string }>(`/api/matches/${id}/share`);
 
-	players[index] = player;
-	saveMatchPlayers(matchId, players);
-
-	return player;
-};
-
-/**
- * Updates all players in a match
- * @param id - Match ID
- * @param players - Updated players array
- * @returns Updated players array
- */
-const updatePlayersOfMatch = (id: number, players: Player[]): Player[] => {
-	saveMatchPlayers(id, players);
-	return players;
-};
-
-/**
- * Deletes a match and its players
- * @param id - Match ID
- */
-const deleteMatch = (id: number): void => {
-	const matchesMetadata = getMatchesMetadata();
-	const newMatchesMetadata = matchesMetadata.filter((match) => match.id !== id);
-	saveMatchesMetadata(newMatchesMetadata);
-	removeFromLocalStorage(getKeyStoragePlayersOfMatch(id));
-};
-
-/**
- * Updates the order/position of players in a match
- * @param id - Match ID
- * @param players - Reordered players array
- */
-const updatePlayersPositionOfMatch = (id: number, players: Player[]): void => {
-	saveMatchPlayers(id, players);
-};
+const getSharedMatch = (token: string): Promise<Match> =>
+	apiClient.get<Match>(`/api/shared/${token}`, { skipDeviceId: true });
 
 const matchDB = {
-	createMatch,
-	updateMatch,
-	getMatch,
 	getMatches,
-	addPlayerToMatch,
-	getPlayerOfMatch,
-	updatePlayerOfMatch,
-	updatePlayersOfMatch,
+	getMatch,
+	createMatch,
 	deleteMatch,
-	updatePlayersPositionOfMatch,
+	addPlayerToMatch,
+	updatePlayer,
+	updateScore,
+	updatePlayersPosition,
+	toggleAutoFill,
+	nextGame,
+	endGame,
+	shareMatch,
+	getSharedMatch,
 };
 
 export default matchDB;

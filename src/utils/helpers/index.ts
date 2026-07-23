@@ -130,6 +130,13 @@ export const scrollToTop = (): void => {
 // Export error translator
 export { translateError } from './errorTranslator';
 
+// Export device id helper
+export { getDeviceId } from './deviceId';
+
+// Export shared-view history helpers
+export { getSharedHistory, saveSharedHistory, removeSharedHistory } from './shareHistory';
+export type { SharedHistoryEntry } from './shareHistory';
+
 // Default export for backward compatibility
 const helpers = {
 	formatCurrency,
