@@ -16,6 +16,15 @@ const styles: Record<string, SxProps<Theme>> = {
 		justifyContent: 'center',
 		py: '16px',
 	},
+	qrWrapper: {
+		display: 'flex',
+		justifyContent: 'center',
+		// White tile behind the QR keeps it scannable in dark mode.
+		'& svg': {
+			backgroundColor: '#fff',
+			borderRadius: '8px',
+		},
+	},
 };
 
 export default styles;

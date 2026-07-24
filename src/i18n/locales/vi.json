@@ -128,6 +128,7 @@
 			"action": "Chia sẻ trực tiếp",
 			"title": "Chia sẻ trận đấu",
 			"description": "Bất kỳ ai có liên kết này đều có thể xem bảng điểm trực tiếp (chỉ xem).",
+			"copyHint": "Hoặc sao chép liên kết:",
 			"copy": "Sao chép",
 			"copied": "Đã sao chép",
 			"close": "Đóng"
