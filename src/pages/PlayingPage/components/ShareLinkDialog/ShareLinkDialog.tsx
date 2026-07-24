@@ -3,6 +3,7 @@ import { matchService } from '@/services';
 import { translateError } from '@/utils/helpers';
 import { ContentCopy as ContentCopyIcon } from '@mui/icons-material';
 import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
+import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -51,13 +52,19 @@ function ShareLinkDialog({ isOpen, onClose, matchId }: Props) {
 						<CircularProgress size={24} />
 					</Box>
 				) : (
-					<TextField
-						value={shareUrl}
-						InputProps={{ readOnly: true }}
-						size="small"
-						fullWidth
-						onFocus={(e) => e.target.select()}
-					/>
+					<>
+						<Box sx={styles.qrWrapper}>
+							<QRCodeSVG value={shareUrl} size={140} marginSize={2} />
+						</Box>
+						<Typography sx={styles.description}>{t('components.shareLink.copyHint')}</Typography>
+						<TextField
+							value={shareUrl}
+							InputProps={{ readOnly: true }}
+							size="small"
+							fullWidth
+							onFocus={(e) => e.target.select()}
+						/>
+					</>
 				)}
 			</Dialog.DialogContent>
 			<Dialog.DialogActions>
