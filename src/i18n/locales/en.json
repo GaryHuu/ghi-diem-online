@@ -103,7 +103,8 @@
 			"titleCreate": "Add Player Information",
 			"titleEdit": "Edit Player Information",
 			"playerNameLabel": "Player Name",
-			"tip": "*Tip: Add multiple players by adding a comma (,) between player names."
+			"tip": "*Tip: Add multiple players by adding a comma (,) between player names.",
+			"editTip": "*You can change the name and tap the picture to change the avatar."
 		},
 		"listingMatches": {
 			"title": "Select Match",

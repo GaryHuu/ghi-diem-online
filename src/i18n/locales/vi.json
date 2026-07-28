@@ -103,7 +103,8 @@
 			"titleCreate": "Thêm thông tin người chơi",
 			"titleEdit": "Sửa thông tin người chơi",
 			"playerNameLabel": "Tên người chơi",
-			"tip": "*Mẹo: Thêm nhiều người chơi bằng cách thêm dấu phẩy (,) giữa các tên người chơi."
+			"tip": "*Mẹo: Thêm nhiều người chơi bằng cách thêm dấu phẩy (,) giữa các tên người chơi.",
+			"editTip": "*Bạn có thể đổi tên và bấm vào ảnh để đổi ảnh đại diện."
 		},
 		"listingMatches": {
 			"title": "Chọn trận đấu",
