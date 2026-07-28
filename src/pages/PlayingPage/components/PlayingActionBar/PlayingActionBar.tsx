@@ -54,6 +54,7 @@ function PlayingActionBar({ onConfirm }: Props) {
 			endIcon={<ArrowForwardIcon />}
 			onClick={handleNextRound}
 			sx={styles.primaryButton}
+			data-tour="next-round"
 		>
 			<Typography sx={styles.primaryLabel}>{t('pages.playing.nextRound')}</Typography>
 		</Button>
@@ -70,6 +71,7 @@ function PlayingActionBar({ onConfirm }: Props) {
 					startIcon={<FlagOutlinedIcon />}
 					onClick={handleEndMatch}
 					disabled={!canEndMatch}
+					data-tour="end-match"
 				>
 					{t('pages.playing.endMatch')}
 				</Button>

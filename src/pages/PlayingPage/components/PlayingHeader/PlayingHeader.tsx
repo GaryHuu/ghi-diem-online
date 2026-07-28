@@ -67,6 +67,7 @@ function PlayingHeader() {
 					startIcon={<ShareIcon />}
 					onClick={openShare}
 					sx={styles.shareButton}
+					data-tour="share"
 				>
 					<Typography sx={styles.shareLabel}>{t('components.shareLink.action')}</Typography>
 				</Button>

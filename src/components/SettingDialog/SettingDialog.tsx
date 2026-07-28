@@ -1,11 +1,15 @@
 import { Dialog } from '@/components';
+import { TOUR_REPLAY_EVENT } from '@/hooks/usePlayingTour';
+import { ROUTES } from '@/routes/constants';
 import {
 	DarkMode as DarkModeIcon,
+	HelpOutline as HelpOutlineIcon,
 	LightMode as LightModeIcon,
 	SettingsBrightness as SettingsBrightnessIcon,
 } from '@mui/icons-material';
-import { Box, Stack, TextField, Theme, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Stack, TextField, Theme, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useMatch } from 'react-router-dom';
 import { ColorScheme, UIMode } from '@/utils/types';
 import { COLOR_SCHEME_OPTIONS, LANGUAGE_OPTIONS, UI_MODE_OPTIONS, UNIT_OPTIONS } from './constants';
 import styles from './styles';
@@ -33,6 +37,13 @@ function SettingDialog({ isOpen, onClose }: Props) {
 		onUIModeChange,
 		onColorSchemeChange,
 	} = useSettingDialog();
+	// The tour lives on the match page, so only offer replay from there.
+	const isOnMatchPage = !!useMatch(ROUTES.MATCH);
+
+	const handleReplayTour = () => {
+		onClose();
+		window.dispatchEvent(new Event(TOUR_REPLAY_EVENT));
+	};
 
 	return (
 		<Dialog isOpen={isOpen} onClose={onClose}>
@@ -43,6 +54,17 @@ function SettingDialog({ isOpen, onClose }: Props) {
 					<GapSelection value={gap} onChange={onGapChange} />
 					<UIModeSelection value={uiMode} onChange={onUIModeChange} />
 					<ColorSchemeSelection value={colorScheme} onChange={onColorSchemeChange} />
+					{isOnMatchPage && (
+						<Button
+							variant="outlined"
+							size="small"
+							startIcon={<HelpOutlineIcon />}
+							onClick={handleReplayTour}
+							sx={{ alignSelf: 'flex-start' }}
+						>
+							{t('components.tour.replay')}
+						</Button>
+					)}
 					{/* TODO: temporarily disabled English, re-enable later */}
 					{/* <LanguageSelection value={language} onChange={onLanguageChange} /> */}
 					<Typography component="p" sx={styles.copyright}>

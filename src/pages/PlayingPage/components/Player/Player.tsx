@@ -123,7 +123,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 							)}
 						</Stack>
 					</Stack>
-					<Stack sx={styles.scoreCell} alignItems="flex-end">
+					<Stack sx={styles.scoreCell} alignItems="flex-end" data-tour="player-score">
 						{readOnly ? (
 							<Typography
 								sx={[styles.totalValue(currentValue), ...(flashCurrent ? [styles.scoreFlash] : [])]}
@@ -148,6 +148,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 								alignItems="center"
 								onClick={handleOpenGapPopover}
 								sx={styles.gapBadge(hasCustomGap)}
+								data-tour="player-gap"
 							>
 								<SpeedIcon sx={{ fontSize: '14px' }} />
 								<Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
@@ -157,6 +158,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 						</Stack>
 						<Stack sx={styles.scoreCell} alignItems="flex-end">
 							<FormControlLabel
+								data-tour="player-autofill"
 								control={
 									<Checkbox
 										checked={!!player.autoFill}

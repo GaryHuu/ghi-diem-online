@@ -4,3 +4,4 @@ export { default as useAddQueryParams } from './useAddQueryParams';
 export { default as useFormatCurrency } from './useFormatCurrency';
 export { default as useShareSocket } from './useShareSocket';
 export { default as useFlashOnChange } from './useFlashOnChange';
+export { default as usePlayingTour } from './usePlayingTour';
