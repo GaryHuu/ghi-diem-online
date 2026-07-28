@@ -37,7 +37,6 @@ function PlayingActionBar({ onConfirm }: Props) {
 
 	const primaryButton = isFinished ? (
 		<Button
-			fullWidth
 			variant="contained"
 			size="large"
 			startIcon={<LeaderboardIcon />}
@@ -48,7 +47,6 @@ function PlayingActionBar({ onConfirm }: Props) {
 		</Button>
 	) : isLastGame ? (
 		<Button
-			fullWidth
 			variant="contained"
 			size="large"
 			endIcon={<ArrowForwardIcon />}
@@ -62,19 +60,19 @@ function PlayingActionBar({ onConfirm }: Props) {
 
 	return (
 		<Box sx={styles.wrapper}>
-			<Stack gap="8px">
-				{primaryButton}
+			<Stack direction="row" gap="8px">
 				<Button
-					fullWidth
 					variant="outlined"
 					size="large"
-					startIcon={<FlagOutlinedIcon />}
+					startIcon={<FlagOutlinedIcon fontSize="small" />}
 					onClick={handleEndMatch}
 					disabled={!canEndMatch}
 					data-tour="end-match"
+					sx={styles.endButton}
 				>
-					{t('pages.playing.endMatch')}
+					<Typography sx={styles.endLabel}>{t('pages.playing.endMatch')}</Typography>
 				</Button>
+				{primaryButton}
 			</Stack>
 		</Box>
 	);
