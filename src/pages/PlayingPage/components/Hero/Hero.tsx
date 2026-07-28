@@ -42,7 +42,7 @@ function Hero() {
 					</DragDropPlayer>
 					{isAllowedActionForPlayer && (
 						<PlayerModifierDialog ref={playerModifierDialogRef} onSubmit={onAdjustPlayer}>
-							<Button variant="contained" size="small" startIcon={<AddIcon />} />
+							<Button variant="contained" size="small" startIcon={<AddIcon />} data-tour="add-player" />
 						</PlayerModifierDialog>
 					)}
 				</Stack>

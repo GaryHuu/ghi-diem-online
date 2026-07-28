@@ -132,6 +132,28 @@
 			"copy": "Copy",
 			"copied": "Copied",
 			"close": "Close"
+		},
+		"tour": {
+			"replay": "View tutorial",
+			"welcomeTitle": "Welcome to Ghi Điểm Online! 👋",
+			"welcomeDesc": "Let me walk you through the main features, it only takes a minute. Hit ✕ anytime to skip.",
+			"addPlayerTitle": "Add players",
+			"addPlayerDesc": "Tap this button to add players.<br /><br />Tip: enter several names separated by commas (e.g. An, Binh, Chi) to add them at once.<br /><br />Add at least 2 players to continue!",
+			"addPlayerDone": "This button adds players.<br /><br />Tip: enter several comma-separated names to add them at once.",
+			"scoreTitle": "Enter scores each round",
+			"scoreDesc": "Enter each player's score for the current round with +/- or by typing.<br /><br />Key rule: the scores of all players in a round must sum to 0 (winners gain what losers lose).",
+			"autoFillTitle": "Auto fill",
+			"autoFillDesc": "Tick this for one player and their score is computed automatically as whatever makes the round sum to 0.<br /><br />No calculator needed!",
+			"gapTitle": "Personal step size",
+			"gapDesc": "This badge is this player's own +/- step size.<br /><br />Tap it to adjust just for them, without affecting others.",
+			"settingsTitle": "Global settings",
+			"settingsDesc": "Settings that apply to the whole match live here:<br />• Currency unit<br />• Global step size<br />• Compact/full UI<br />• Light/dark mode",
+			"nextRoundTitle": "New round — the most important button!",
+			"nextRoundDesc": "After each round, enter everyone's scores (sum = 0) and press this to move on.<br /><br />A match is made of many rounds, so don't cram everything into one.<br /><br />I'll tag along for your first 3 rounds!",
+			"companionTitle": "Round {{round}}! 🎉",
+			"companionDesc": "Keep it up: enter this round's scores (sum = 0) then press New round.<br /><br />({{round}}/3)",
+			"congratsTitle": "You're a pro now! 🏆",
+			"congratsDesc": "First 3 rounds done!<br /><br />When the game is over, press <b>End match</b> to see the leaderboard and the who-pays-whom map.<br /><br />Want friends to watch live on their phones? Press <b>Share live</b> at the top for a link or QR code.<br /><br />Have fun!"
 		}
 	},
 	"errors": {

@@ -11,3 +11,76 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+
+/* While a tour runs, driver.js puts its overlay at z-index 10000 and disables
+   pointer events on everything outside the spotlight. Tour steps ask the user
+   to open real dialogs (add player, settings, gap), so MUI portals must stay
+   above the overlay and remain clickable. Scoped to body.driver-active, which
+   driver.js only sets during a tour. */
+body.driver-active {
+	.MuiModal-root,
+	.MuiPopover-root {
+		z-index: 10001;
+	}
+
+	.MuiModal-root,
+	.MuiModal-root *,
+	.MuiPopover-root,
+	.MuiPopover-root * {
+		pointer-events: auto;
+	}
+}
+
+/* Onboarding tour popover: follows the MUI color scheme so it stays legible
+   in both light and dark mode. */
+.driver-popover.ghidiem-tour {
+	background-color: var(--mui-palette-background-paper);
+	color: var(--mui-palette-text-primary);
+	max-width: 320px;
+
+	.driver-popover-title,
+	.driver-popover-description,
+	.driver-popover-progress-text {
+		color: var(--mui-palette-text-primary);
+	}
+
+	.driver-popover-title {
+		font-size: 16px;
+	}
+
+	.driver-popover-description {
+		font-size: 14px;
+		line-height: 1.5;
+	}
+
+	.driver-popover-close-btn {
+		color: var(--mui-palette-text-secondary);
+	}
+
+	.driver-popover-footer button {
+		background-color: var(--mui-palette-primary-main);
+		color: var(--mui-palette-primary-contrastText);
+		border: none;
+		text-shadow: none;
+		border-radius: 6px;
+		padding: 4px 12px;
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	.driver-popover-arrow-side-top.driver-popover-arrow {
+		border-top-color: var(--mui-palette-background-paper);
+	}
+
+	.driver-popover-arrow-side-bottom.driver-popover-arrow {
+		border-bottom-color: var(--mui-palette-background-paper);
+	}
+
+	.driver-popover-arrow-side-left.driver-popover-arrow {
+		border-left-color: var(--mui-palette-background-paper);
+	}
+
+	.driver-popover-arrow-side-right.driver-popover-arrow {
+		border-right-color: var(--mui-palette-background-paper);
+	}
+}

@@ -70,7 +70,11 @@ function Layout() {
 						>
 							<SchemeIcon />
 						</IconButton>
-						<IconButton color="inherit" onClick={() => setIsOpenSettingDialog(true)}>
+						<IconButton
+							color="inherit"
+							onClick={() => setIsOpenSettingDialog(true)}
+							data-tour="settings"
+						>
 							<SettingsIcon />
 						</IconButton>
 					</Stack>
