@@ -29,6 +29,20 @@ body.driver-active {
 	.MuiPopover-root * {
 		pointer-events: auto;
 	}
+
+	/* On small screens the popover would cover the dialog it just told the user
+	   to open, so step aside while a dialog is on screen. The tour resumes as
+	   soon as the dialog closes. */
+	&:has(.MuiDialog-root) {
+		.driver-overlay {
+			display: none;
+		}
+
+		/* driver.js sets display inline on the popover, so this needs !important. */
+		.driver-popover {
+			display: none !important;
+		}
+	}
 }
 
 /* Onboarding tour popover: follows the MUI color scheme so it stays legible
