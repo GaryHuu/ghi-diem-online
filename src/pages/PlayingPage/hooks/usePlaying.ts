@@ -4,6 +4,7 @@ import {
 	fetchMatches,
 	updateCurrentGame,
 	updateIsShowResult,
+	toggleAutoFill,
 	updateMatchDetail,
 	updateMatchDetailData,
 	updatePlayerScore,
@@ -200,13 +201,25 @@ function usePlaying() {
 	 * Toggles autoFill for a player (only one at a time)
 	 * @param playerId - Player ID
 	 */
-	const onToggleAutoFill = async (playerId: number): Promise<void> => {
-		try {
-			const updatedMatch = await matchService.togglePlayerAutoFill(matchId, playerId);
-			dispatch(updateMatchDetailData(updatedMatch));
-		} catch (error) {
-			toast.error(translateError(error, t));
-		}
+	const onToggleAutoFill = (playerId: number): void => {
+		dispatch(toggleAutoFill(playerId));
+
+		matchService
+			.togglePlayerAutoFill(matchId, playerId)
+			.then((updatedMatch) => {
+				// Skip reconciling while score cells still have pending writes,
+				// otherwise this snapshot would clobber their optimistic values.
+				if (scoreTimers.current.size === 0) dispatch(updateMatchDetailData(updatedMatch));
+			})
+			.catch(async (error) => {
+				toast.error(translateError(error, t));
+				// Resync so the optimistic state does not silently diverge.
+				try {
+					dispatch(updateMatchDetailData(await matchService.get(matchId)));
+				} catch {
+					// Keep the optimistic state; next successful call resyncs.
+				}
+			});
 	};
 
 	/**

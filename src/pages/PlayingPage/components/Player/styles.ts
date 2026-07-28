@@ -19,14 +19,16 @@ const styles = {
 			fontSize: '0.85rem',
 			bgcolor: helpers.stringToColor(name),
 		}) as SxProps,
-	title: (theme: Theme) => ({
+	title: {
 		whiteSpace: 'nowrap' as const,
 		fontWeight: 'bold',
 		fontSize: '15px',
 		userSelect: 'none' as const,
-		textDecoration: 'underline dotted',
-		textDecorationColor: theme.palette.action.disabled,
-		textUnderlineOffset: '3px',
+	} as SxProps,
+	editIcon: (theme: Theme) => ({
+		fontSize: '15px',
+		color: theme.palette.action.active,
+		flexShrink: 0,
 	}),
 	nameRow: (nameIsDragHandle: boolean) => ({
 		cursor: nameIsDragHandle ? ('grab' as const) : ('pointer' as const),

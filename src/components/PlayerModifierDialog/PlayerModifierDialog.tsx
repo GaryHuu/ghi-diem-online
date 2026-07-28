@@ -233,11 +233,11 @@ const PlayerModifierDialog = forwardRef(
 								helperText={errors.name?.message}
 								autoFocus
 							/>
-							{mode === Mode.Create && (
-								<Typography variant="body2" color="text.secondary" sx={styles.tip}>
-									{t('components.playerModifier.tip')}
-								</Typography>
-							)}
+							<Typography variant="body2" color="text.secondary" sx={styles.tip}>
+								{mode === Mode.Create
+									? t('components.playerModifier.tip')
+									: t('components.playerModifier.editTip')}
+							</Typography>
 						</Dialog.DialogContent>
 						<Dialog.DialogActions>
 							<Button variant="text" color="inherit" size="small" onClick={handleClose}>

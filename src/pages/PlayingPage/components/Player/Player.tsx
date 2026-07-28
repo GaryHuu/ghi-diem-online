@@ -6,6 +6,7 @@ import helpers from '@/utils/helpers';
 import { Player as PlayerType } from '@/utils/types';
 import {
 	DragIndicator as DragIndicatorIcon,
+	EditOutlined as EditOutlinedIcon,
 	Remove as RemoveIcon,
 	Speed as SpeedIcon,
 	TrendingDown as TrendingDownIcon,
@@ -103,6 +104,7 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 						{helpers.getShortName(player.name)}
 					</Avatar>
 					<Typography sx={styles.title}>{player.name}</Typography>
+					{!readOnly && <EditOutlinedIcon sx={styles.editIcon} />}
 				</Stack>
 				<Box sx={styles.scoreGrid}>
 					<Stack sx={styles.scoreCell} alignItems="flex-start">
