@@ -65,7 +65,8 @@ const apiClient = {
 	post: <T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> =>
 		request<T>(path, { ...options, method: 'POST', body }),
 	put: <T>(path: string, body?: unknown): Promise<T> => request<T>(path, { method: 'PUT', body }),
-	delete: <T>(path: string): Promise<T> => request<T>(path, { method: 'DELETE' }),
+	delete: <T>(path: string, options?: RequestOptions): Promise<T> =>
+		request<T>(path, { ...options, method: 'DELETE' }),
 };
 
 export default apiClient;

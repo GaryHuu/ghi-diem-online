@@ -70,9 +70,19 @@
 				"rounds": "Số ván",
 				"players": "Số người chơi",
 				"createdAt": "Ngày tạo",
+				"updatedAt": "Ngày cập nhật",
 				"device": "Thiết bị",
-				"deletedAt": "Đã xóa"
+				"deletedAt": "Đã xóa",
+				"actions": "Hành động"
 			},
+			"deleteAction": "Xóa trận",
+			"restoreAction": "Mở lại trận",
+			"confirmDeleteTitle": "Xóa trận này?",
+			"confirmDeleteBody": "Trận \"{{name}}\" sẽ bị ẩn khỏi thiết bị của người chơi.<br />Bạn có thể mở lại sau.",
+			"confirmRestoreTitle": "Mở lại trận này?",
+			"confirmRestoreBody": "Trận \"{{name}}\" sẽ hiện lại trên thiết bị của người chơi.",
+			"deleteSuccess": "Đã xóa trận",
+			"restoreSuccess": "Đã mở lại trận",
 			"status": {
 				"playing": "Đang chơi",
 				"finished": "Đã kết thúc"

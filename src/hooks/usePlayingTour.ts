@@ -17,6 +17,8 @@ type Params = {
 	currentRound?: number;
 	/** Tour only runs for the match owner on a live match. */
 	isEnabled: boolean;
+	/** Gate for the unprompted first run; replay ignores it. */
+	canAutoStart: boolean;
 };
 
 /**
@@ -27,7 +29,7 @@ type Params = {
  * Phase 2 (companion): the tour steps aside and watches the real match, showing
  * one nudge per genuine round transition until round 3, then congratulates.
  */
-function usePlayingTour({ playerCount, currentRound, isEnabled }: Params) {
+function usePlayingTour({ playerCount, currentRound, isEnabled, canAutoStart }: Params) {
 	const { t } = useTranslation();
 	const driverRef = useRef<Driver | null>(null);
 	const startedRef = useRef(false);
@@ -151,11 +153,11 @@ function usePlayingTour({ playerCount, currentRound, isEnabled }: Params) {
 
 	// Auto-start the upfront sequence once per device.
 	useEffect(() => {
-		if (!isEnabled || startedRef.current) return;
+		if (!isEnabled || !canAutoStart || startedRef.current) return;
 		if (getTourPhase() !== 'pending') return;
 		startedRef.current = true;
 		startBasics();
-	}, [isEnabled, startBasics]);
+	}, [isEnabled, canAutoStart, startBasics]);
 
 	// Action gate: advance the add-player step as soon as the match has 2 players.
 	useEffect(() => {

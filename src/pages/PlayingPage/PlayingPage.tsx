@@ -16,6 +16,9 @@ function PlayingPage() {
 		// Only the owner's live match is a valid tour stage (never share/dashboard,
 		// never a finished match).
 		isEnabled: !!match && !match.data.isFinished,
+		// Auto-start only on a brand new match. Someone dropping into a game
+		// already in progress should not be walked through "add players".
+		canAutoStart: match?.total === 1,
 	});
 
 	const handleConfirm = (callback: () => void, options?: ConfirmOptions) => {
