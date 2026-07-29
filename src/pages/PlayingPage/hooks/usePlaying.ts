@@ -1,3 +1,4 @@
+import { ApiError } from '@/api';
 import { useAddQueryParams } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -10,6 +11,7 @@ import {
 	updatePlayerScore,
 } from '@/redux/slices/matchSlice';
 import { RootState } from '@/redux/store';
+import { ROUTES } from '@/routes/constants';
 import { matchService } from '@/services';
 import { translateError, scrollToTop } from '@/utils/helpers';
 import { PlayerLeaderBoard } from '@/utils/types';
@@ -17,8 +19,18 @@ import { validateSingleGameScore } from '@/utils/validators/matchValidator';
 import { toast } from 'react-toastify';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const SCORE_DEBOUNCE_MS = 400;
+
+/** The match is gone for this device, e.g. an admin deleted it. */
+const isMatchGone = (error: unknown) => error instanceof ApiError && error.status === 404;
+
+/**
+ * Every component calls usePlaying on its own, so a gone match can fail several
+ * writes at once. A fixed id keeps react-toastify from stacking the same toast.
+ */
+const MATCH_GONE_TOAST_ID = 'match-gone';
 
 /**
  * Custom hook for managing playing page state and operations
@@ -31,6 +43,7 @@ function usePlaying() {
 	const isShowResult = match?.isShowResult ?? false;
 	const { updateQueryParams } = useAddQueryParams();
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 
 	/**
 	 * One debounce timer per (playerId, gameIndex) score cell so edits to
@@ -45,6 +58,27 @@ function usePlaying() {
 			timers.clear();
 		};
 	}, []);
+
+	/**
+	 * Reports a failed mutation. When the match itself is gone the user is sent
+	 * back home, since nothing they do on this page can succeed anymore.
+	 * @returns true when the match is gone, so callers skip their resync
+	 */
+	const onMutationError = (error: unknown): boolean => {
+		if (!isMatchGone(error)) {
+			toast.error(translateError(error, t));
+			return false;
+		}
+
+		// Only this instance's cells; other player rows have their own timers and
+		// cancel them through the unmount cleanup once we navigate away.
+		scoreTimers.current.forEach((timer) => clearTimeout(timer));
+		scoreTimers.current.clear();
+		toast.error(translateError(error, t), { toastId: MATCH_GONE_TOAST_ID });
+		// Replace so the back button does not lead into the deleted match.
+		navigate(ROUTES.HOME, { replace: true });
+		return true;
+	};
 
 	/**
 	 * Memoize players to ensure stable reference and prevent unnecessary recalculations
@@ -111,7 +145,7 @@ function usePlaying() {
 			dispatch(updateMatchDetail(payload));
 			updateQueryParams({ gN: nextGameNumber.toString() });
 		} catch (error) {
-			toast.error(translateError(error, t));
+			onMutationError(error);
 		} finally {
 			scrollToTop();
 		}
@@ -127,7 +161,7 @@ function usePlaying() {
 			toggleShowResult();
 			dispatch(fetchMatches());
 		} catch (error) {
-			toast.error(translateError(error, t));
+			onMutationError(error);
 		} finally {
 			scrollToTop();
 		}
@@ -150,7 +184,7 @@ function usePlaying() {
 				: await matchService.addPlayer(matchId, name);
 			dispatch(updateMatchDetailData(updatedMatch));
 		} catch (error) {
-			toast.error(translateError(error, t));
+			onMutationError(error);
 		}
 	};
 
@@ -184,7 +218,7 @@ function usePlaying() {
 				// otherwise this snapshot would clobber their optimistic values.
 				if (timers.size === 0) dispatch(updateMatchDetailData(updatedMatch));
 			} catch (error) {
-				toast.error(translateError(error, t));
+				if (onMutationError(error)) return;
 				// Resync so the optimistic value does not silently diverge.
 				try {
 					dispatch(updateMatchDetailData(await matchService.get(matchId)));
@@ -212,7 +246,7 @@ function usePlaying() {
 				if (scoreTimers.current.size === 0) dispatch(updateMatchDetailData(updatedMatch));
 			})
 			.catch(async (error) => {
-				toast.error(translateError(error, t));
+				if (onMutationError(error)) return;
 				// Resync so the optimistic state does not silently diverge.
 				try {
 					dispatch(updateMatchDetailData(await matchService.get(matchId)));
@@ -232,7 +266,7 @@ function usePlaying() {
 			const updatedMatch = await matchService.updatePlayerGap(matchId, playerId, gap);
 			dispatch(updateMatchDetailData(updatedMatch));
 		} catch (error) {
-			toast.error(translateError(error, t));
+			onMutationError(error);
 		}
 	};
 
