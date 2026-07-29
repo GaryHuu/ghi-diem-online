@@ -70,9 +70,19 @@
 				"rounds": "Rounds",
 				"players": "Players",
 				"createdAt": "Created at",
+				"updatedAt": "Updated at",
 				"device": "Device",
-				"deletedAt": "Deleted"
+				"deletedAt": "Deleted",
+				"actions": "Actions"
 			},
+			"deleteAction": "Delete match",
+			"restoreAction": "Restore match",
+			"confirmDeleteTitle": "Delete this match?",
+			"confirmDeleteBody": "\"{{name}}\" will be hidden from the players' devices.<br />You can restore it later.",
+			"confirmRestoreTitle": "Restore this match?",
+			"confirmRestoreBody": "\"{{name}}\" will show up again on the players' devices.",
+			"deleteSuccess": "Match deleted",
+			"restoreSuccess": "Match restored",
 			"status": {
 				"playing": "Playing",
 				"finished": "Finished"

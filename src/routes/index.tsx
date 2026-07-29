@@ -28,6 +28,10 @@ const router = createBrowserRouter([
 				path: ROUTES.DASHBOARD,
 				element: <DashboardPage />,
 			},
+			{
+				path: ROUTES.DASHBOARD_DETAIL,
+				element: <DashboardPage />,
+			},
 		],
 	},
 ]);

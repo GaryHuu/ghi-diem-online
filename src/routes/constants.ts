@@ -4,6 +4,7 @@ export const ROUTES = {
 	MATCH: '/match/:id',
 	SHARE: '/share/:token',
 	DASHBOARD: '/dashboard',
+	DASHBOARD_DETAIL: '/dashboard/:id',
 };
 
 export const MIN_PLAYERS_OF_MATCH = 2;

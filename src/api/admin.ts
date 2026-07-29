@@ -10,6 +10,7 @@ export interface AdminMatchSummary {
 	total: number;
 	playerCount: number;
 	createdAt: string;
+	updatedAt: string;
 	deviceId: string;
 	deletedAt: string | null;
 }
@@ -69,4 +70,21 @@ export const adminGetMatch = (id: number): Promise<AdminMatchDetail> =>
 			skipDeviceId: true,
 			headers: authHeaders(),
 		}),
+	);
+
+export const adminDeleteMatch = (id: number): Promise<AdminMatchSummary> =>
+	withAuthGuard(() =>
+		apiClient.delete<AdminMatchSummary>(`/api/admin/matches/${id}`, {
+			skipDeviceId: true,
+			headers: authHeaders(),
+		}),
+	);
+
+export const adminRestoreMatch = (id: number): Promise<AdminMatchSummary> =>
+	withAuthGuard(() =>
+		apiClient.post<AdminMatchSummary>(
+			`/api/admin/matches/${id}/restore`,
+			{},
+			{ skipDeviceId: true, headers: authHeaders() },
+		),
 	);

@@ -1,5 +1,12 @@
 import { AdminMatchSummary } from '@/api';
-import { ArrowBack as ArrowBackIcon, Logout as LogoutIcon } from '@mui/icons-material';
+import { ConfirmModal } from '@/components';
+import type { ConfirmModalRef } from '@/components/ConfirmModal/ConfirmModal';
+import {
+	ArrowBack as ArrowBackIcon,
+	DeleteOutline as DeleteOutlineIcon,
+	Logout as LogoutIcon,
+	RestoreFromTrash as RestoreFromTrashIcon,
+} from '@mui/icons-material';
 import {
 	Box,
 	Button,
@@ -11,10 +18,10 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import { viVN } from '@mui/x-data-grid/locales';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LeaderBoard, Player, PlayingLayout } from '../PlayingPage/components';
 import { usePlaying } from '../PlayingPage/hooks';
@@ -34,14 +41,28 @@ function DashboardPage() {
 		setPaginationModel,
 		isSubmitting,
 		isLoadingList,
-		isLoadingDetail,
+		isDetailReady,
 		setUsername,
 		setPassword,
 		login,
 		logout,
 		openMatch,
 		backToList,
+		setMatchDeleted,
 	} = useDashboard();
+	const confirmRef = useRef<ConfirmModalRef>(null);
+
+	const confirmSetDeleted = (row: AdminMatchSummary, isDeleted: boolean) => {
+		confirmRef.current?.confirm(() => setMatchDeleted(row.id, isDeleted), {
+			titleKey: isDeleted
+				? 'pages.dashboard.confirmDeleteTitle'
+				: 'pages.dashboard.confirmRestoreTitle',
+			bodyKey: isDeleted
+				? 'pages.dashboard.confirmDeleteBody'
+				: 'pages.dashboard.confirmRestoreBody',
+			bodyParams: { name: row.name },
+		});
+	};
 
 	const columns: GridColDef<AdminMatchSummary>[] = useMemo(
 		() => [
@@ -88,6 +109,12 @@ function DashboardPage() {
 				valueFormatter: (value: string) => dayjs(value).format('DD/MM/YYYY HH:mm'),
 			},
 			{
+				field: 'updatedAt',
+				headerName: t('pages.dashboard.table.updatedAt'),
+				width: 150,
+				valueFormatter: (value: string) => dayjs(value).format('DD/MM/YYYY HH:mm'),
+			},
+			{
 				field: 'deletedAt',
 				headerName: t('pages.dashboard.table.deletedAt'),
 				width: 160,
@@ -103,7 +130,31 @@ function DashboardPage() {
 						'—'
 					),
 			},
+			{
+				field: 'actions',
+				type: 'actions',
+				headerName: t('pages.dashboard.table.actions'),
+				width: 90,
+				getActions: ({ row }) => {
+					const isDeleted = !!row.deletedAt;
+					const label = t(
+						isDeleted ? 'pages.dashboard.restoreAction' : 'pages.dashboard.deleteAction',
+					);
+					return [
+						<GridActionsCellItem
+							key="toggle-deleted"
+							icon={isDeleted ? <RestoreFromTrashIcon /> : <DeleteOutlineIcon />}
+							label={label}
+							title={label}
+							color={isDeleted ? 'primary' : 'error'}
+							onClick={() => confirmSetDeleted(row, !isDeleted)}
+						/>,
+					];
+				},
+			},
 		],
+		// confirmSetDeleted closes over stable refs only.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[t],
 	);
 
@@ -141,7 +192,7 @@ function DashboardPage() {
 	}
 
 	if (view === 'detail') {
-		if (isLoadingDetail || !match) {
+		if (!isDetailReady || !match) {
 			return (
 				<Box sx={styles.stateWrapper}>
 					<CircularProgress />
@@ -215,6 +266,7 @@ function DashboardPage() {
 				pageSizeOptions={[10, 25, 50]}
 				sx={styles.grid}
 			/>
+			<ConfirmModal ref={confirmRef} />
 		</Box>
 	);
 }
