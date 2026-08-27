@@ -9,6 +9,7 @@ import {
 	Slide,
 } from '@mui/material';
 import React, { ReactNode, Ref } from 'react';
+import { useOverlayLock } from './openDialogRegistry';
 
 type Props = {
 	isOpen: boolean;
@@ -17,6 +18,8 @@ type Props = {
 } & Omit<DialogProps, 'open' | 'onClose'>;
 
 function Dialog({ isOpen, onClose = () => {}, children, ...other }: Props) {
+	useOverlayLock(isOpen);
+
 	return (
 		<DialogMUI
 			open={isOpen}

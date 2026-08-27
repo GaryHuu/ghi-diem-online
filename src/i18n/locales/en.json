@@ -51,7 +51,11 @@
 			"scoreLabel": "Score: {{total}}",
 			"matchLabel": "Match: {{name}}",
 			"individualGap": "Individual increment/decrement",
-			"resetToGlobal": "Reset to default"
+			"resetToGlobal": "Reset to default",
+			"remindNextRoundTitle": "Forgot to start a new round?",
+			"remindNextRoundBody": "Round {{current}} has been quiet for a while. If the table is already playing the next round, start a new round so the old scores are not overwritten.",
+			"remindNextRoundConfirm": "New round",
+			"remindNextRoundDismiss": "Stay on this round"
 		},
 		"shared": {
 			"liveBadge": "Live view",

@@ -51,7 +51,11 @@
 			"scoreLabel": "Điểm: {{total}}",
 			"matchLabel": "Trận: {{name}}",
 			"individualGap": "Giá trị tăng/giảm riêng",
-			"resetToGlobal": "Đặt lại về mặc định"
+			"resetToGlobal": "Đặt lại về mặc định",
+			"remindNextRoundTitle": "Quên bấm Ván mới?",
+			"remindNextRoundBody": "Ván {{current}} đã yên một lúc rồi. Nếu cả bàn đang chơi ván tiếp theo, hãy sang ván mới để không ghi đè điểm ván cũ.",
+			"remindNextRoundConfirm": "Sang ván mới",
+			"remindNextRoundDismiss": "Tiếp tục ván này"
 		},
 		"shared": {
 			"liveBadge": "Đang xem trực tiếp",
