@@ -7,6 +7,9 @@ export type ConfirmOptions = {
 	titleKey?: string;
 	bodyKey?: string;
 	bodyParams?: Record<string, unknown>;
+	confirmKey?: string;
+	cancelKey?: string;
+	autoFocusCancel?: boolean;
 };
 
 export type ConfirmModalRef = {
@@ -49,11 +52,11 @@ const ConfirmModal = React.forwardRef<ConfirmModalRef>((_props, ref) => {
 				</Dialog.DialogContentText>
 			</Dialog.DialogContent>
 			<Dialog.DialogActions>
-				<Button onClick={handleCancel} color="inherit">
-					{t('components.confirmModal.cancel')}
+				<Button onClick={handleCancel} color="inherit" autoFocus={options.autoFocusCancel}>
+					{t(options.cancelKey ?? 'components.confirmModal.cancel')}
 				</Button>
-				<Button onClick={handleConfirm} autoFocus>
-					{t('components.confirmModal.confirm')}
+				<Button onClick={handleConfirm} autoFocus={!options.autoFocusCancel}>
+					{t(options.confirmKey ?? 'components.confirmModal.confirm')}
 				</Button>
 			</Dialog.DialogActions>
 		</Dialog>

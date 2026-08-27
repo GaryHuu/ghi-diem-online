@@ -220,7 +220,7 @@ function usePlayingTour({ playerCount, currentRound, isEnabled, canAutoStart }: 
 
 	useEffect(() => destroy, [destroy]);
 
-	return { replay };
+	return { replay, isTourActive: () => driverRef.current?.isActive() ?? false };
 }
 
 export default usePlayingTour;

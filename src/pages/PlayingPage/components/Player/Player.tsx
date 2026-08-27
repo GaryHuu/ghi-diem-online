@@ -1,4 +1,5 @@
 import { InputScore } from '@/components';
+import { useOverlayLock } from '@/components/Dialog/openDialogRegistry';
 import { useFlashOnChange } from '@/hooks';
 import { useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
@@ -58,6 +59,8 @@ function Player({ player, onRename, dragHandleProps, isDragEnabled, readOnly }: 
 
 	const [gapAnchorEl, setGapAnchorEl] = useState<HTMLElement | null>(null);
 	const [gapDisplayValue, setGapDisplayValue] = useState<string>(effectiveGap.toString());
+	// The gap Popover bypasses the shared Dialog wrapper, so register it itself.
+	useOverlayLock(Boolean(gapAnchorEl));
 
 	const handleScoreChange = (newValue: number) => {
 		onScorePlayerChange(player.id, currentGameNumber, newValue);

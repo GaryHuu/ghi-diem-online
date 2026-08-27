@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is "Ghi Điểm Online" (https://www.ghidiem.online/) - a Vietnamese score-tracking web application for multi-player card games. The app allows users to create matches, add players, track scores across multiple games, and view leaderboards. All data is persisted in browser localStorage.
+This is "Ghi Điểm Online" (https://www.ghidiem.online/) - a Vietnamese score-tracking web application for multi-player card games. The app allows users to create matches, add players, track scores across multiple games, and view leaderboards. Match data is persisted through a backend API (the `ghi-diem-api` Django Ninja repo); user settings stay in browser localStorage.
 
 ## Development Commands
 
@@ -12,23 +12,26 @@ This is "Ghi Điểm Online" (https://www.ghidiem.online/) - a Vietnamese score-
 npm run dev          # Start development server (Vite)
 npm run build        # Build for production
 npm run preview      # Preview production build
-npm run lint         # Run ESLint
+npm run lint         # Run ESLint (js/jsx only — does NOT cover .ts/.tsx files)
 npm run format       # Format code with Prettier
 npm run pre-commit   # Lint + format (used by Husky)
 ```
+
+**Verification gotcha**: `npm run lint` uses `--ext js,jsx` so it lints only 2 JS files, and the Vite build strips types without checking them. To actually gate TypeScript changes, run `npx tsc --noEmit` plus `npx eslint --max-warnings 0 <changed files by path>` (path-passed files are linted regardless of `--ext`; `react-hooks/exhaustive-deps` is warn-level, so `--max-warnings 0` is required for it to bite). There is no test runner in this repo.
 
 ## Architecture Overview
 
 ### Data Layer
 
-**localStorage-based Database**: The app uses a custom localStorage abstraction layer instead of a traditional backend:
+**Backend API for match data, localStorage for settings**: The `db` layer is a thin client over the backend REST API:
 
-- `src/db/match/index.ts` - Match and player CRUD operations
-- `src/db/setting/index.ts` - User settings persistence (with migration for missing fields like `uiMode`)
-- `src/services/match/index.ts` - Business logic layer that validates operations before calling DB functions
+- `src/api/client.ts` - `apiClient` fetch wrapper; base URL from `VITE_API_URL` (dev: `http://localhost:8000`, run the `ghi-diem-api` repo via `docker compose up -d`)
+- `src/db/match/index.ts` - Match and player CRUD via `/api/matches/...` endpoints
+- `src/db/setting/index.ts` - User settings persistence in localStorage (with migration for missing fields like `uiMode`)
+- `src/services/match/index.ts` - Business logic layer that runs client-side input validation before calling DB functions
 - `src/services/setting/index.ts` - Settings service layer
 
-**Key Constraint**: The score-tracking system enforces that the sum of all players' scores for each game must equal zero (zero-sum game rules). This validation occurs in `matchService.validateGameNumber`, `matchService.nextGame`, and `matchService.endGame`.
+**Key Constraint**: The score-tracking system enforces that the sum of all players' scores for each game must equal zero (zero-sum game rules). Client-side helpers live in `src/utils/validators/matchValidator.ts` (`validateSingleGameScore`, `validateAllGameScores` - used e.g. when navigating between games); the backend enforces the rules on writes.
 
 ### Player Data Model
 
@@ -57,13 +60,15 @@ Redux slices located in `src/redux/slices/`:
 
 ### Routing Structure
 
-Three main routes defined in `src/routes/index.tsx`:
+Routes defined in `src/routes/index.tsx` (paths in `src/routes/constants.ts`):
 
 1. **HomePage** (`/`) - Landing page with match listing and creation
-2. **CreatingPage** (`/creating`) - New match setup form
-3. **PlayingPage** (`/match?id=<matchId>&gN=<gameNumber>`) - Active match scoring interface
-   - Query params: `id` for match ID, `gN` for current game number
+2. **CreatingPage** (`/match/create`) - New match setup form
+3. **PlayingPage** (`/match/:id?gN=<gameNumber>`) - Active match scoring interface
+   - `gN` query param = current game number
    - Main hook: `usePlaying` (src/pages/PlayingPage/hooks/usePlaying.ts) coordinates all match operations
+4. **SharedViewPage** (`/share/:token`) - Read-only live view of a shared match
+5. **DashboardPage** (`/dashboard`, `/dashboard/:id`) - Admin match management (delete/restore)
 
 ### Component Architecture
 
@@ -84,17 +89,18 @@ Three main routes defined in `src/routes/index.tsx`:
 
 ### Key Hooks
 
-- `usePlaying` - Main match orchestration (score updates, game navigation, player management)
+- `usePlaying` - Main match orchestration (score updates, game navigation, player management). Called independently by many components (9 call sites), so per-match logic that must run exactly once belongs in `PlayingPage`, not here
 - `usePlayingFetcher` - Data fetching for match state
 - `useDraggablePlayer` - Drag and drop reordering logic
 - `useTransactions` - Calculates payment flows between players
-- Shared hooks in `src/hooks/`: `useBoolean`, `useFormatCurrency`, `useScrollToTop`, `useAddQueryParams`
+- `useNextGameReminder` - Reminds players to press "Ván mới" when the current round stays balanced (sum = 0) and untouched for 90s; once per round, wired once in `PlayingPage`
+- Shared hooks in `src/hooks/`: `useBoolean`, `useFormatCurrency`, `useScrollToTop`, `useAddQueryParams`, `usePlayingTour` (driver.js onboarding tour, exposes `isTourActive`)
 
 ### Key Data Flow Pattern
 
 1. User action triggers handler in page-level hook (e.g., `usePlaying`)
 2. Handler calls service layer (`matchService`) which validates business rules
-3. Service calls database layer (`matchDB`) to persist to localStorage
+3. Service calls database layer (`matchDB`) which hits the backend API (score writes are optimistic in Redux and debounced 400ms before the API call)
 4. Service returns updated data
 5. Hook dispatches Redux action to update global state
 6. Components re-render from Redux store via `useAppSelector`
@@ -124,7 +130,9 @@ Currently **Vietnamese only** (English is temporarily disabled in `src/i18n/inde
 - **Trend Indicators**: Player component shows previous game score trend (TrendingUp/Down icons, color-coded green/red/gray)
 - **AutoFill**: Players flagged with `autoFill` are highlighted (#e3f2fd) and disabled from manual scoring
 - **Per-Player Gap**: Individual gap override via speed icon badge with popover editor
-- **Avatar Upload**: Images resized to max 200x200px and stored as Base64 in localStorage
+- **Avatar Upload**: Images resized to max 200x200px and sent to the backend as Base64
+- **Dialogs & Overlays**: All dialogs go through the shared `Dialog` wrapper (`src/components/Dialog/`), which registers itself in `openDialogRegistry.ts` (`useOverlayLock`/`hasOpenOverlay`). Self-opening UI (e.g. the next-game reminder) checks this registry so it never stacks on an open overlay; a new overlay that bypasses the wrapper must call `useOverlayLock` itself
+- **Next-Game Reminder**: `useNextGameReminder` + reused `ConfirmModal` (`confirmKey`/`cancelKey`/`autoFocusCancel` options); dialog cannot be closed via backdrop/ESC (the wrapper's default noop `onClose`)
 - **Drag & Drop**: Player order can be rearranged using react-beautiful-dnd (drag handle on right side, visible only in full UI mode)
 - **UI Modes**: Compact mode hides drag handles; full mode shows all controls
 - **Form Validation**: Uses Yup schemas with i18n support (e.g., `src/pages/CreatingPage/utils/schemas.ts`)
