@@ -93,7 +93,7 @@ Routes defined in `src/routes/index.tsx` (paths in `src/routes/constants.ts`):
 - `usePlayingFetcher` - Data fetching for match state
 - `useDraggablePlayer` - Drag and drop reordering logic
 - `useTransactions` - Calculates payment flows between players
-- `useNextGameReminder` - Reminds players to press "Ván mới" when the current round stays balanced (sum = 0) and untouched for 90s; once per round, wired once in `PlayingPage`
+- `useNextGameReminder` - Reminds players to press "Ván mới" when the current round stays balanced (sum = 0) and untouched for 90s; dismissing silences it only until the round's scores change again. Wired once in `PlayingPage`
 - Shared hooks in `src/hooks/`: `useBoolean`, `useFormatCurrency`, `useScrollToTop`, `useAddQueryParams`, `usePlayingTour` (driver.js onboarding tour, exposes `isTourActive`)
 
 ### Key Data Flow Pattern

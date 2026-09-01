@@ -13,9 +13,10 @@ type Params = {
 /**
  * Watches the current (latest) game and fires `onDue` once it has stayed
  * balanced (sum = 0 with at least one non-zero score) for 90s with no score
- * changes — the player likely forgot to press "Ván mới". At most once per game
- * (in-memory; a reload may remind again). While suppressed, the timer re-arms
- * without burning the game's single reminder.
+ * changes — the player likely forgot to press "Ván mới". Dismissing silences
+ * the game only until its scores change again: each new edit re-arms another
+ * 90s countdown. While suppressed, the timer re-arms without burning the
+ * silence-until-next-edit state.
  */
 function useNextGameReminder({ isSuppressed, onDue }: Params) {
 	const match = useAppSelector((state: RootState) => state.match.matchDetail);
@@ -35,6 +36,14 @@ function useNextGameReminder({ isSuppressed, onDue }: Params) {
 		if (!match || match.current !== match.total) return '';
 		return match.data.players.map((p) => p.scores[match.current - 1] ?? 0).join(',');
 	}, [match]);
+
+	// A new edit lifts the silence from an earlier reminder on this game.
+	// Must run before the eligibility memo below reads remindedRef.
+	const prevSignatureRef = useRef(scoreSignature);
+	if (prevSignatureRef.current !== scoreSignature) {
+		prevSignatureRef.current = scoreSignature;
+		remindedRef.current.delete(`${matchId}-${gameNumber}`);
+	}
 
 	const eligible = useMemo(() => {
 		if (!match || matchId === undefined || gameNumber === undefined) return false;
